@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.py[cod]
+*.ipynb_checkpoints
+
+# Node
+node_modules/
+dist/
+.env
+
+# System
+.DS_Store
