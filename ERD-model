@@ -1,0 +1,67 @@
+Table regions {
+  id SERIAL [pk]
+  name TEXT // "Республика Алтай"
+  code TEXT // "22"
+  type TEXT // "республика", "край", "область"
+}
+
+Table years {
+  id SERIAL [pk]
+  year INTEGER // Например, 2022
+}
+
+Table indicator_types {
+  id SERIAL [pk]
+  name TEXT // "social", "climate", "economic", "infrastructure", "policy"
+  description TEXT
+}
+
+Table indicators {
+  id SERIAL [pk]
+  type_id INTEGER [ref: > indicator_types.id]
+  name TEXT // "Смертность", "Температура", "ВРП"
+  unit TEXT // "чел", "мм", "млн. руб"
+  theme TEXT // "Демография", "Температура", "Промышленность"
+  subcategory TEXT // "Смертность до 1 года", "Средняя t", "Добыча"
+  description TEXT
+}
+
+Table data_sources {
+  id SERIAL [pk]
+  name TEXT // "Росстат", "NASA Earthdata"
+  url TEXT
+  organization TEXT
+  date_collected DATE
+  data_status TEXT // "официальные", "оценочные"
+  notes TEXT
+}
+
+Table indicator_values {
+  id SERIAL [pk]
+  indicator_id INTEGER [ref: > indicators.id]
+  region_id INTEGER [ref: > regions.id]
+  year_id INTEGER [ref: > years.id]
+  value NUMERIC
+  source_id INTEGER [ref: > data_sources.id]
+  method TEXT // "API", "Excel", "DOCX", "PDF"
+  is_forecasted BOOLEAN // true — если прогностическое значение
+}
+
+Table indicator_relations {
+  id SERIAL [pk]
+  cause_id INTEGER [ref: > indicators.id] // Влияющий показатель
+  effect_id INTEGER [ref: > indicators.id] // Зависимый показатель
+  influence_type TEXT // "положительное", "отрицательное"
+  strength TEXT // "высокая", "средняя", "слабая"
+  description TEXT
+}
+
+Table events {
+  id SERIAL [pk]
+  name TEXT // "Паводок в Республике Алтай"
+  region_id INTEGER [ref: > regions.id]
+  year_id INTEGER [ref: > years.id]
+  event_type TEXT // "пожар", "наводнение", "ЧС"
+  impact TEXT // "Эвакуация", "Ущерб"
+  description TEXT
+}
