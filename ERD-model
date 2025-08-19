@@ -56,3 +56,13 @@ Table program_regions {
   program_id INTEGER [ref: > regional_programs.id]
   region_id INTEGER [ref: > regions.id]
 }
+
+Table events {
+  id SERIAL [pk]
+  region_id INTEGER [ref: > regions.id]
+  date DATE
+  type TEXT
+  severity NUMERIC
+  description TEXT
+  economic_loss NUMERIC
+}
