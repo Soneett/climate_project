@@ -6,11 +6,24 @@ Table regions {
   parent_id INTEGER [ref: > regions.id]
 }
 
+Table units {
+  id SERIAL [pk]
+  code TEXT
+  name TEXT
+}
+
+Table indicator_subtypes {
+  id SERIAL [pk]
+  name TEXT
+}
+
 Table indicators {
   id SERIAL [pk]
   name TEXT
-  unit TEXT
+  unit_id INTEGER [ref: > units.id]
   type TEXT
+  theme TEXT
+  subtype_id INTEGER [ref: > indicator_subtypes.id]
 }
 
 Table data_sources {
