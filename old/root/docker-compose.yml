@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:18
+    restart: always
+    environment:
+      POSTGRES_DB: climate_db
+      POSTGRES_USER: climate_user
+      POSTGRES_PASSWORD: climate_pass
+    ports:
+      - "5434:5432"   # проброс порта на Windows
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend   # папка с твоим Python-кодом
+    command: tail -f /dev/null   # контейнер остаётся запущенным
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=climate_user
+      - DB_PASS=climate_pass
+      - DB_NAME=climate_db
+
+volumes:
+  db_data:
