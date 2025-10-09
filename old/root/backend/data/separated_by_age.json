@@ -1,0 +1,532 @@
+{
+  "population_by_age": {
+    "rows_count": 101,
+    "rows": [
+      {
+        "year": 2024,
+        "age_code": "0",
+        "value": 2674
+      },
+      {
+        "year": 2024,
+        "age_code": "1",
+        "value": 2734
+      },
+      {
+        "year": 2024,
+        "age_code": "2",
+        "value": 2739
+      },
+      {
+        "year": 2024,
+        "age_code": "3",
+        "value": 2724
+      },
+      {
+        "year": 2024,
+        "age_code": "4",
+        "value": 2788
+      },
+      {
+        "year": 2024,
+        "age_code": "5",
+        "value": 3117
+      },
+      {
+        "year": 2024,
+        "age_code": "6",
+        "value": 3199
+      },
+      {
+        "year": 2024,
+        "age_code": "7",
+        "value": 3608
+      },
+      {
+        "year": 2024,
+        "age_code": "8",
+        "value": 3709
+      },
+      {
+        "year": 2024,
+        "age_code": "9",
+        "value": 4075
+      },
+      {
+        "year": 2024,
+        "age_code": "10",
+        "value": 4130
+      },
+      {
+        "year": 2024,
+        "age_code": "11",
+        "value": 4332
+      },
+      {
+        "year": 2024,
+        "age_code": "12",
+        "value": 4333
+      },
+      {
+        "year": 2024,
+        "age_code": "13",
+        "value": 3879
+      },
+      {
+        "year": 2024,
+        "age_code": "14",
+        "value": 3929
+      },
+      {
+        "year": 2024,
+        "age_code": "15",
+        "value": 3983
+      },
+      {
+        "year": 2024,
+        "age_code": "16",
+        "value": 3573
+      },
+      {
+        "year": 2024,
+        "age_code": "17",
+        "value": 2990
+      },
+      {
+        "year": 2024,
+        "age_code": "18",
+        "value": 2973
+      },
+      {
+        "year": 2024,
+        "age_code": "19",
+        "value": 2775
+      },
+      {
+        "year": 2024,
+        "age_code": "20",
+        "value": 2466
+      },
+      {
+        "year": 2024,
+        "age_code": "21",
+        "value": 2247
+      },
+      {
+        "year": 2024,
+        "age_code": "22",
+        "value": 2460
+      },
+      {
+        "year": 2024,
+        "age_code": "23",
+        "value": 2501
+      },
+      {
+        "year": 2024,
+        "age_code": "24",
+        "value": 2223
+      },
+      {
+        "year": 2024,
+        "age_code": "25",
+        "value": 2511
+      },
+      {
+        "year": 2024,
+        "age_code": "26",
+        "value": 2357
+      },
+      {
+        "year": 2024,
+        "age_code": "27",
+        "value": 2330
+      },
+      {
+        "year": 2024,
+        "age_code": "28",
+        "value": 2434
+      },
+      {
+        "year": 2024,
+        "age_code": "29",
+        "value": 2517
+      },
+      {
+        "year": 2024,
+        "age_code": "30",
+        "value": 2221
+      },
+      {
+        "year": 2024,
+        "age_code": "31",
+        "value": 2062
+      },
+      {
+        "year": 2024,
+        "age_code": "32",
+        "value": 2087
+      },
+      {
+        "year": 2024,
+        "age_code": "33",
+        "value": 2480
+      },
+      {
+        "year": 2024,
+        "age_code": "34",
+        "value": 2707
+      },
+      {
+        "year": 2024,
+        "age_code": "35",
+        "value": 3357
+      },
+      {
+        "year": 2024,
+        "age_code": "36",
+        "value": 3547
+      },
+      {
+        "year": 2024,
+        "age_code": "37",
+        "value": 3447
+      },
+      {
+        "year": 2024,
+        "age_code": "38",
+        "value": 3331
+      },
+      {
+        "year": 2024,
+        "age_code": "39",
+        "value": 3334
+      },
+      {
+        "year": 2024,
+        "age_code": "40",
+        "value": 3656
+      },
+      {
+        "year": 2024,
+        "age_code": "41",
+        "value": 3384
+      },
+      {
+        "year": 2024,
+        "age_code": "42",
+        "value": 3283
+      },
+      {
+        "year": 2024,
+        "age_code": "43",
+        "value": 2926
+      },
+      {
+        "year": 2024,
+        "age_code": "44",
+        "value": 2950
+      },
+      {
+        "year": 2024,
+        "age_code": "45",
+        "value": 2850
+      },
+      {
+        "year": 2024,
+        "age_code": "46",
+        "value": 2974
+      },
+      {
+        "year": 2024,
+        "age_code": "47",
+        "value": 2897
+      },
+      {
+        "year": 2024,
+        "age_code": "48",
+        "value": 2793
+      },
+      {
+        "year": 2024,
+        "age_code": "49",
+        "value": 2832
+      },
+      {
+        "year": 2024,
+        "age_code": "50",
+        "value": 2437
+      },
+      {
+        "year": 2024,
+        "age_code": "51",
+        "value": 2589
+      },
+      {
+        "year": 2024,
+        "age_code": "52",
+        "value": 2389
+      },
+      {
+        "year": 2024,
+        "age_code": "53",
+        "value": 2273
+      },
+      {
+        "year": 2024,
+        "age_code": "54",
+        "value": 2122
+      },
+      {
+        "year": 2024,
+        "age_code": "55",
+        "value": 2081
+      },
+      {
+        "year": 2024,
+        "age_code": "56",
+        "value": 2074
+      },
+      {
+        "year": 2024,
+        "age_code": "57",
+        "value": 2092
+      },
+      {
+        "year": 2024,
+        "age_code": "58",
+        "value": 2080
+      },
+      {
+        "year": 2024,
+        "age_code": "59",
+        "value": 2155
+      },
+      {
+        "year": 2024,
+        "age_code": "60",
+        "value": 2321
+      },
+      {
+        "year": 2024,
+        "age_code": "61",
+        "value": 2401
+      },
+      {
+        "year": 2024,
+        "age_code": "62",
+        "value": 2567
+      },
+      {
+        "year": 2024,
+        "age_code": "63",
+        "value": 2590
+      },
+      {
+        "year": 2024,
+        "age_code": "64",
+        "value": 2475
+      },
+      {
+        "year": 2024,
+        "age_code": "65",
+        "value": 2430
+      },
+      {
+        "year": 2024,
+        "age_code": "66",
+        "value": 2354
+      },
+      {
+        "year": 2024,
+        "age_code": "67",
+        "value": 2228
+      },
+      {
+        "year": 2024,
+        "age_code": "68",
+        "value": 2069
+      },
+      {
+        "year": 2024,
+        "age_code": "69",
+        "value": 1990
+      },
+      {
+        "year": 2024,
+        "age_code": "70",
+        "value": 1666
+      },
+      {
+        "year": 2024,
+        "age_code": "71",
+        "value": 1566
+      },
+      {
+        "year": 2024,
+        "age_code": "72",
+        "value": 1501
+      },
+      {
+        "year": 2024,
+        "age_code": "73",
+        "value": 1331
+      },
+      {
+        "year": 2024,
+        "age_code": "74",
+        "value": 1249
+      },
+      {
+        "year": 2024,
+        "age_code": "75",
+        "value": 938
+      },
+      {
+        "year": 2024,
+        "age_code": "76",
+        "value": 834
+      },
+      {
+        "year": 2024,
+        "age_code": "77",
+        "value": 642
+      },
+      {
+        "year": 2024,
+        "age_code": "78",
+        "value": 344
+      },
+      {
+        "year": 2024,
+        "age_code": "79",
+        "value": 194
+      },
+      {
+        "year": 2024,
+        "age_code": "80",
+        "value": 208
+      },
+      {
+        "year": 2024,
+        "age_code": "81",
+        "value": 281
+      },
+      {
+        "year": 2024,
+        "age_code": "82",
+        "value": 382
+      },
+      {
+        "year": 2024,
+        "age_code": "83",
+        "value": 412
+      },
+      {
+        "year": 2024,
+        "age_code": "84",
+        "value": 388
+      },
+      {
+        "year": 2024,
+        "age_code": "85",
+        "value": 357
+      },
+      {
+        "year": 2024,
+        "age_code": "86",
+        "value": 322
+      },
+      {
+        "year": 2024,
+        "age_code": "87",
+        "value": 205
+      },
+      {
+        "year": 2024,
+        "age_code": "88",
+        "value": 160
+      },
+      {
+        "year": 2024,
+        "age_code": "89",
+        "value": 134
+      },
+      {
+        "year": 2024,
+        "age_code": "90",
+        "value": 116
+      },
+      {
+        "year": 2024,
+        "age_code": "91",
+        "value": 108
+      },
+      {
+        "year": 2024,
+        "age_code": "92",
+        "value": 53
+      },
+      {
+        "year": 2024,
+        "age_code": "93",
+        "value": 59
+      },
+      {
+        "year": 2024,
+        "age_code": "94",
+        "value": 56
+      },
+      {
+        "year": 2024,
+        "age_code": "95",
+        "value": 44
+      },
+      {
+        "year": 2024,
+        "age_code": "96",
+        "value": 9
+      },
+      {
+        "year": 2024,
+        "age_code": "97",
+        "value": 23
+      },
+      {
+        "year": 2024,
+        "age_code": "98",
+        "value": 11
+      },
+      {
+        "year": 2024,
+        "age_code": "99",
+        "value": 12
+      },
+      {
+        "year": 2024,
+        "age_code": "100 и старше",
+        "value": 15
+      }
+    ]
+  },
+  "population_by_sex": {
+    "rows_count": 3,
+    "rows": [
+      {
+        "year": 2024,
+        "sex_code": "A",
+        "value": 210765
+      },
+      {
+        "year": 2024,
+        "sex_code": "M",
+        "value": 99213
+      },
+      {
+        "year": 2024,
+        "sex_code": "F",
+        "value": 111552
+      }
+    ]
+  }
+}

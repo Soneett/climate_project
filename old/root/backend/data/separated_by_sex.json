@@ -1,0 +1,22 @@
+{
+  "population_by_sex": {
+    "rows_count": 3,
+    "rows": [
+      {
+        "year": 2024,
+        "sex_code": "A",
+        "value": 210765
+      },
+      {
+        "year": 2024,
+        "sex_code": "M",
+        "value": 99213
+      },
+      {
+        "year": 2024,
+        "sex_code": "F",
+        "value": 111552
+      }
+    ]
+  }
+}

@@ -1,0 +1,247 @@
+{
+  "indicator_values": {
+    "rows_count": 48,
+    "rows": [
+      {
+        "year": 1990,
+        "value": 121,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 1995,
+        "value": 80,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2000,
+        "value": 68,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2003,
+        "value": 81,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2004,
+        "value": 62,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2005,
+        "value": 50,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2006,
+        "value": 52,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2007,
+        "value": 55,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2008,
+        "value": 50,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2009,
+        "value": 41,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2010,
+        "value": 40,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2011,
+        "value": 51,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2012,
+        "value": 61,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2013,
+        "value": 56,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2014,
+        "value": 42,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2015,
+        "value": 41,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2016,
+        "value": 40,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2017,
+        "value": 35,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2018,
+        "value": 28,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2019,
+        "value": 33,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2020,
+        "value": 22,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2021,
+        "value": 21,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2022,
+        "value": 23,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 2023,
+        "value": 18,
+        "indicator_key": "deaths_abs"
+      },
+      {
+        "year": 1990,
+        "value": 121,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 1995,
+        "value": 80,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2000,
+        "value": 68,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2003,
+        "value": 81,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2004,
+        "value": 62,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2005,
+        "value": 50,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2006,
+        "value": 52,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2007,
+        "value": 55,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2008,
+        "value": 50,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2009,
+        "value": 41,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2010,
+        "value": 40,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2011,
+        "value": 51,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2012,
+        "value": 61,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2013,
+        "value": 56,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2014,
+        "value": 42,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2015,
+        "value": 41,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2016,
+        "value": 40,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2017,
+        "value": 35,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2018,
+        "value": 28,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2019,
+        "value": 33,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2020,
+        "value": 22,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2021,
+        "value": 21,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2022,
+        "value": 23,
+        "indicator_key": "infant_deaths_abs"
+      },
+      {
+        "year": 2023,
+        "value": 18,
+        "indicator_key": "infant_deaths_abs"
+      }
+    ]
+  }
+}
