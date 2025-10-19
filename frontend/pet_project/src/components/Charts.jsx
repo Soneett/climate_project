@@ -94,10 +94,10 @@ export default function Dashboard() {
 
     return (
         <div>
-            <div style={{ width: '100%', height: 400, marginBottom: 50 }}>
+            <div style={{ width: '100%', height: 700, marginBottom: 100, marginTop: 100}}>
                 <ReactECharts ref={lineRef} option={lineOption} style={{ height: '100%', width: '100%' }} />
             </div>
-            <div style={{ width: '100%', height: 600 }}>
+            <div style={{ width: '100%', height: 800}}>
                 <ReactECharts ref={pieRef} option={pieOption} style={{ height: '100%', width: '100%' }} />
             </div>
         </div>
