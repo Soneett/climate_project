@@ -1,0 +1,43 @@
+.bar {
+  width: 100%;
+  background-color: #B7CCAD;
+  position: sticky;
+  top: var(--navbar-height, 70px);
+  z-index: 55;
+  height: calc(var(--navbar-height, 70px) * 1.5);
+  display: flex;
+  align-items: center;
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 16px;
+  display: flex;
+  gap: 0; /* убираем gap, чтобы flex распределял равномерно */
+}
+
+.cell {
+  flex: 1; /* каждый элемент занимает равную долю */
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  text-align: center; /* выравниваем текст по центру */
+  transition: background 0.2s;
+}
+
+.cell:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.active {
+  background-color: #BDDCAE;
+}
+
+.text {
+  white-space: pre-line;
+}
