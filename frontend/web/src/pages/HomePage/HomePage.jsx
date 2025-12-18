@@ -10,7 +10,7 @@ export default function HomePage() {
     <main className={styles.hero} role="main" aria-label="Главная">
       <div className={styles.overlay}>
         <h1 className={styles.title}>
-          Социально-климатический профиль
+          Социально-климатический профиль:
           <br />
           <span className={styles.region}>{region}</span>
         </h1>

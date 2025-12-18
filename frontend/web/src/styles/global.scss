@@ -1,0 +1,59 @@
+@use './tokens' as *;
+
+// Import normalize
+@import './normalize.css';
+
+// ============================================================================
+// Global CSS Variables
+// ============================================================================
+:root {
+  --navbar-height: #{$navbar-height};
+  --subbar-height: #{$subbar-height};
+}
+
+// ============================================================================
+// Base HTML & Body
+// ============================================================================
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  line-height: $line-height-normal;
+  color: $color-text-primary;
+  background-color: $color-bg-page;
+  margin: 0;
+  padding: 0;
+}
+
+// ============================================================================
+// Global Button Reset
+// ============================================================================
+button {
+  font-family: inherit;
+  cursor: pointer;
+  
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+// ============================================================================
+// Focus Visible
+// ============================================================================
+*:focus-visible {
+  outline: 2px solid $color-primary;
+  outline-offset: 2px;
+}
+
+// ============================================================================
+// Smooth Scrolling
+// ============================================================================
+html:has(:target) {
+  scroll-behavior: smooth;
+}

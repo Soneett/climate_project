@@ -1,43 +1,64 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
 .bar {
   width: 100%;
-  background-color: #B7CCAD;
+  background-color: $color-primary-light;
   position: sticky;
-  top: var(--navbar-height, 70px);
-  z-index: 55;
-  height: calc(var(--navbar-height, 70px) * 1.5);
+  top: $navbar-height;
+  z-index: $z-index-sticky;
+  height: $subbar-height;
   display: flex;
   align-items: center;
+  box-shadow: $shadow-sm;
 }
 
 .inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-  padding: 0 16px;
+  @include container;
   display: flex;
-  gap: 0; /* убираем gap, чтобы flex распределял равномерно */
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: $border-radius-sm;
+  }
 }
 
 .cell {
-  flex: 1; /* каждый элемент занимает равную долю */
-  padding: 8px 12px;
-  border-radius: 8px;
+  flex: 1;
+  min-width: max-content;
+  padding: $spacing-2 $spacing-3;
+  border-radius: $border-radius-md;
   cursor: pointer;
   border: none;
   background: transparent;
-  font-size: 14px;
-  text-align: center; /* выравниваем текст по центру */
-  transition: background 0.2s;
-}
+  font-size: $font-size-sm;
+  text-align: center;
+  transition: background-color $transition-base;
+  white-space: pre-line;
 
-.cell:hover {
-  background-color: rgba(255, 255, 255, 0.3);
+  &:hover {
+    background-color: $color-hover-overlay;
+  }
+
+  @include media-md {
+    padding: $spacing-3 $spacing-4;
+    font-size: $font-size-base;
+  }
 }
 
 .active {
-  background-color: #BDDCAE;
+  background-color: $color-primary-lighter;
+  font-weight: $font-weight-medium;
 }
 
 .text {
-  white-space: pre-line;
+  display: block;
+  line-height: $line-height-tight;
 }

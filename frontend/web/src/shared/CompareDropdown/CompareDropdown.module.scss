@@ -1,0 +1,166 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+@use 'sass:color';
+
+.root {
+  position: relative;
+  display: inline-block;
+}
+
+.trigger {
+  @include button-reset;
+  @include interactive-hover;
+  
+  padding: $spacing-2 $spacing-3;
+  font-size: $font-size-sm;
+  border-radius: $border-radius-md;
+  white-space: nowrap;
+
+  @include media-md {
+    font-size: $font-size-base;
+    padding: $spacing-2 $spacing-4;
+  }
+}
+
+.caret {
+  margin-left: $spacing-2;
+  font-size: $font-size-xs;
+  opacity: 0.8;
+}
+
+.panel {
+  position: absolute;
+  top: calc(100% + $spacing-2);
+  left: 0;
+  right: 0;
+  min-width: 280px;
+  max-width: 90vw;
+  background: $color-bg-primary;
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-xl;
+  padding: $spacing-3;
+  z-index: $z-index-dropdown;
+  border: $border-width solid $color-border;
+
+  @include media-sm {
+    min-width: 320px;
+    max-width: 400px;
+    right: auto;
+  }
+
+  @include media-md {
+    padding: $spacing-4;
+  }
+}
+
+.instructions {
+  font-size: $font-size-sm;
+  margin-bottom: $spacing-2;
+  color: $color-text-secondary;
+}
+
+.list {
+  max-height: 240px;
+  overflow: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: $border-width solid $color-gray-100;
+  border-radius: $border-radius-sm;
+  background: $color-bg-secondary;
+
+  @include media-md {
+    max-height: 280px;
+  }
+}
+
+.item {
+  padding: $spacing-2 $spacing-3;
+  display: flex;
+  align-items: center;
+  border-bottom: $border-width solid $color-border;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: $color-gray-50;
+  }
+}
+
+.label {
+  display: flex;
+  gap: $spacing-2;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+  
+  input[type="checkbox"] {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.labelText {
+  font-size: $font-size-sm;
+  flex: 1;
+
+  @include media-md {
+    font-size: $font-size-base;
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: $spacing-2;
+  margin-top: $spacing-3;
+
+  @include media-md {
+    gap: $spacing-3;
+  }
+}
+
+.clear,
+.confirm {
+  @include button-reset;
+  
+  padding: $spacing-2 $spacing-3;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-sm;
+  transition: all $transition-fast;
+  flex: 1;
+
+  @include media-md {
+    font-size: $font-size-base;
+    padding: $spacing-2 $spacing-4;
+  }
+}
+
+.clear {
+  background: transparent;
+  border: $border-width solid $color-border;
+  color: $color-text-secondary;
+
+  &:hover {
+    background: $color-gray-50;
+    border-color: $color-gray-300;
+  }
+}
+
+.confirm {
+  background: $color-primary;
+  color: $color-white;
+  border: none;
+
+  &:hover:not(:disabled) {
+    background: color.adjust($color-primary, $lightness: -10%);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

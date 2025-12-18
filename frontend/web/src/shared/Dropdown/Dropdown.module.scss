@@ -1,0 +1,25 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.root {
+  position: relative;
+  display: inline-block;
+}
+
+.panel {
+  position: absolute;
+  top: calc(100% + $spacing-2);
+  left: 0;
+  min-width: 240px;
+  background: $color-bg-primary;
+  border-radius: $border-radius-md;
+  padding: $spacing-3;
+  box-shadow: $shadow-xl;
+  z-index: $z-index-dropdown;
+  border: $border-width solid $color-border;
+
+  @include media-md {
+    min-width: 280px;
+    padding: $spacing-4;
+  }
+}

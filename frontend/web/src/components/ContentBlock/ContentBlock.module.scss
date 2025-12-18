@@ -1,0 +1,16 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.block {
+  width: 100%;
+  margin-bottom: $spacing-8;
+  scroll-margin-top: calc($navbar-height + $subbar-height + $spacing-4);
+  
+  @include media-md {
+    margin-bottom: $spacing-10;
+  }
+  
+  @include media-lg {
+    margin-bottom: $spacing-12;
+  }
+}

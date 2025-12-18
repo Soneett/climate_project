@@ -1,35 +1,48 @@
-:root {
-  --nav-highlight: rgba(255, 255, 255, 0.32);
-}
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
 
 .header {
   width: 100%;
-  background: #9FB69F;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-  position: fixed;
+  background: $color-primary;
+  box-shadow: $shadow-sm;
+  position:fixed;
   top: 0;
   left: 0;
-  z-index: 60;
-  height: var(--navbar-height, 70px);
+  z-index: $z-index-fixed;
+  height: $navbar-height;
 }
 
-
 .inner {
-  max-width: 1200px;
-  margin: 0 auto;
+  @include container;
   height: 100%;
   display: flex;
   align-items: center;
-  padding: 0 16px;
-  gap: 20px;
+  gap: $spacing-4;
+
+  @include media-md {
+    gap: $spacing-5;
+  }
 }
 
 .brand {
   flex: 0 0 auto;
-  font-weight: 600;
-  font-size: 16px;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-sm;
   cursor: pointer;
-  line-height: 1.05;
+  line-height: $line-height-tight;
+  transition: opacity $transition-fast;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  @include media-md {
+    font-size: $font-size-base;
+  }
+
+  @include media-lg {
+    font-size: $font-size-lg;
+  }
 }
 
 .controls {
@@ -37,18 +50,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: $spacing-2;
+  min-width: 0;
+
+  @include media-md {
+    gap: $spacing-4;
+  }
 }
 
-.item, .itemRight {
+.item,
+.itemRight {
   position: relative;
   display: flex;
   align-items: center;
   min-width: 0;
-  padding: 8px 12px;
-  border-radius: 8px;
-  transition: background-color 0.15s ease;
-  cursor: default;
 }
 
 .itemRight {
@@ -57,20 +72,33 @@
 }
 
 .btn {
-  background: transparent;
-  border: none;
-  font-size: 15px;
-  border-radius: 8px;
-  padding: 8px 12px;
-  transition: background-color 0.15s ease;
+  @include button-reset;
+  @include interactive-hover;
+  
+  font-size: $font-size-sm;
+  border-radius: $border-radius-md;
+  padding: $spacing-2 $spacing-3;
+  white-space: nowrap;
+
+  @include media-md {
+    font-size: $font-size-base;
+    padding: $spacing-2 $spacing-4;
+  }
 }
 
-.btn:hover {
-  background-color: rgba(255, 255, 255, 0.32);
-}
+// Mobile responsive
+@media (max-width: #{$breakpoint-md - 1px}) {
+  .inner {
+    padding: 0 $spacing-3;
+    gap: $spacing-2;
+  }
 
-@media (max-width: 768px) {
-  .inner { padding: 0 12px; gap: 8px; }
-  .brand { font-size: 14px; }
-  .item, .itemRight { padding: 6px 8px; }
+  .brand {
+    font-size: $font-size-xs;
+  }
+
+  .btn {
+    font-size: $font-size-xs;
+    padding: $spacing-1 $spacing-2;
+  }
 }

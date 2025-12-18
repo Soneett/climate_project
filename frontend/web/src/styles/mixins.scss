@@ -1,0 +1,111 @@
+@use './tokens' as *;
+
+// ============================================================================
+// Responsive Breakpoints
+// ============================================================================
+@mixin media-sm {
+  @media (min-width: $breakpoint-sm) {
+    @content;
+  }
+}
+
+@mixin media-md {
+  @media (min-width: $breakpoint-md) {
+    @content;
+  }
+}
+
+@mixin media-lg {
+  @media (min-width: $breakpoint-lg) {
+    @content;
+  }
+}
+
+@mixin media-xl {
+  @media (min-width: $breakpoint-xl) {
+    @content;
+  }
+}
+
+// ============================================================================
+// Button Reset
+// ============================================================================
+@mixin button-reset {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+// ============================================================================
+// Interactive States
+// ============================================================================
+@mixin interactive-hover {
+  transition: background-color $transition-fast, box-shadow $transition-fast;
+  
+  &:hover {
+    background-color: $color-hover-overlay;
+  }
+  
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px $color-focus-ring;
+  }
+}
+
+// ============================================================================
+// Card Style
+// ============================================================================
+@mixin card {
+  background: $color-bg-primary;
+  border-radius: $border-radius-md;
+  padding: $spacing-6;
+  box-shadow: $shadow-md;
+}
+
+// ============================================================================
+// Container
+// ============================================================================
+@mixin container {
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding: 0 $container-padding;
+  width: 100%;
+}
+
+// ============================================================================
+// Flexbox Centering
+// ============================================================================
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ============================================================================
+// Truncate Text
+// ============================================================================
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ============================================================================
+// Visually Hidden (for accessibility)
+// ============================================================================
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

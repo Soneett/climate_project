@@ -1,24 +1,31 @@
-import React, { useState } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { RegionContext } from "./context/RegionContext";
-import RootWithNav from "./components/RootWithNav/RootWithNav.jsx";
-import ComparePage from "./components/ComparePage/ComparePage.jsx";
-import RegionIndicatorsPage from "./components/RegionIndicatorsPage/RegionIndicatorsPage.jsx";
+import RegionContextProvider from "./context/RegionContextProvider";
+import HomePage from "./pages/HomePage/HomePage";
+import ComparePage from "./pages/ComparePage/ComparePage";
+import RegionIndicatorsPage from "./pages/RegionIndicatorsPage/RegionIndicatorsPage";
+import Layout from "./shared/Layout/Layout";
 
 const App = () => {
-  const [region, setRegion] = useState("Республика Алтай");
-
   return (
-    <RegionContext.Provider value={{ region, setRegion }}>
+    <RegionContextProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<RootWithNav />} />
+          <Route path="/" element={
+            <Layout>
+              <HomePage />
+            </Layout>
+          } />
           <Route path="/compare" element={<ComparePage />} />
           <Route path="/indicators" element={<RegionIndicatorsPage />} />
-          <Route path="*" element={<RootWithNav />} />
+          <Route path="*" element={
+            <Layout>
+              <HomePage />
+            </Layout>
+          } />
         </Routes>
       </Router>
-    </RegionContext.Provider>
+    </RegionContextProvider>
   );
 }
 

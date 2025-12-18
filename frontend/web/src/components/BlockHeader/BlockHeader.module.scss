@@ -1,0 +1,25 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.header {
+  background-color: #366164;
+  color: $color-white;
+  border-radius: $border-radius-md;
+  padding: $spacing-4 $spacing-6;
+  text-align: center;
+  width: 100%;
+  
+  @include media-md {
+    padding: $spacing-5 $spacing-8;
+  }
+}
+
+.title {
+  margin: 0;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  
+  @include media-md {
+    font-size: $font-size-xl;
+  }
+}

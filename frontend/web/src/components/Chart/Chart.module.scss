@@ -1,0 +1,45 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.chart {
+  width: 100%;
+  min-height: 300px;
+  background: $color-bg-primary;
+  border-radius: $border-radius-md;
+  margin-top: $spacing-4;
+  
+  @include media-md {
+    min-height: 400px;
+  }
+}
+
+.placeholder {
+  @include flex-center;
+  flex-direction: column;
+  height: 300px;
+  color: $color-text-secondary;
+  
+  @include media-md {
+    height: 400px;
+  }
+}
+
+.text {
+  margin: 0;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-medium;
+  
+  @include media-md {
+    font-size: $font-size-xl;
+  }
+}
+
+.subtext {
+  margin: $spacing-2 0 0 0;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  
+  @include media-md {
+    font-size: $font-size-base;
+  }
+}

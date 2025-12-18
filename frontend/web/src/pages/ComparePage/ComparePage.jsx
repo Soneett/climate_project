@@ -1,6 +1,7 @@
 // ComparePage.jsx
 import React from "react";
 import { useLocation } from "react-router-dom";
+import Layout from "../../shared/Layout/Layout";
 import styles from "./ComparePage.module.scss";
 
 const ComparePage = () => {
@@ -10,15 +11,13 @@ const ComparePage = () => {
   const r2 = params.get("r2") || "—";
 
   return (
-    <div className={styles.page}>
-      <header className={styles.header}>
-        <div className={styles.inner}></div>
-      </header>
-
-      <main className={styles.main}>
-        <h2 className={styles.title}>Сравнение: {r1} vs {r2}</h2>
-      </main>
-    </div>
+    <Layout>
+      <div className={styles.page}>
+        <main className={styles.main}>
+          <h2 className={styles.title}>Сравнение: {r1} vs {r2}</h2>
+        </main>
+      </div>
+    </Layout>
   );
 }
 

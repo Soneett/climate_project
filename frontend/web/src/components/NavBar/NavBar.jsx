@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./NavBar.module.scss";
-import CompareDropdown from "../dropdowns/CompareDropdown/CompareDropdown";
-import ChangeRegionDropdown from "../dropdowns/ChangeRegionDropdown/ChangeRegionDropdown";
+import CompareDropdown from "../../shared/CompareDropdown/CompareDropdown";
+import ChangeRegionDropdown from "../../shared/ChangeRegionDropdown/ChangeRegionDropdown";
 import NavItemWithSubmenu from "../NavItemWithSubmenu/NavItemWithSubmenu";
 import {useNavigate} from "react-router-dom";
 
@@ -51,7 +51,18 @@ const NavBar = ({
   return (
     <header className={styles.header} role="banner">
       <div className={styles.inner}>
-        <div className={styles.brand}>Лаборатория урбанистических исследований ВШЭ</div>
+        <div 
+          className={styles.brand}
+          role="button"
+          tabIndex={0}
+          onClick={() => navigate("/")}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") navigate("/");
+          }}
+          aria-label="Перейти на главную"
+        >
+          Лаборатория урбанистических исследований ВШЭ
+        </div>
 
         <nav className={styles.controls} aria-label="Главная навигация">
           <div className={styles.item}>

@@ -3,7 +3,7 @@ import styles from "./NavItemWithSubmenu.module.scss";
 
 const NavItemWithSubmenu = (
   {
-    id, label, submenu = [],
+    id: _id, label, submenu = [],
     isActive = false,
     onActivate = () => {},
   }) => {

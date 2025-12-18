@@ -1,0 +1,110 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+@use 'sass:color';
+
+.menu {
+  position: fixed;
+  right: $spacing-4;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: $z-index-fixed;
+  
+  @include media-md {
+    right: $spacing-6;
+  }
+}
+
+.toggle {
+  @include button-reset;
+  @include flex-center;
+  
+  width: 48px;
+  height: 48px;
+  background-color: $color-primary-light;
+  color: $color-text-primary;
+  border-radius: 50%;
+  box-shadow: $shadow-lg;
+  
+  transition: all $transition-base;
+  
+  &:hover {
+    background-color: color.adjust($color-primary-light, $lightness: -8%);
+    box-shadow: $shadow-xl;
+    transform: scale(1.05);
+  }
+  
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+.dropdown {
+  position: absolute;
+  right: 60px;
+  top: 0;
+  min-width: 250px;
+  max-width: 300px;
+  
+  background: $color-bg-primary;
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-xl;
+  
+  animation: slideIn 0.2s ease-out;
+  
+  @include media-md {
+    min-width: 280px;
+    max-width: 350px;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: $spacing-2;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.item {
+  margin: 0;
+}
+
+.link {
+  @include button-reset;
+  
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: $spacing-3 $spacing-4;
+  
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  
+  border-radius: $border-radius-sm;
+  transition: background-color $transition-fast;
+  
+  &:hover {
+    background-color: $color-bg-secondary;
+  }
+  
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: -2px;
+  }
+  
+  @include media-md {
+    font-size: $font-size-base;
+  }
+}
