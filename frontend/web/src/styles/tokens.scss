@@ -1,6 +1,3 @@
-// Design Tokens - Centralized Design System
-// All design values in one place for consistency and maintainability
-
 // ============================================================================
 // Brand Colors
 // ============================================================================
@@ -123,7 +120,7 @@ $breakpoint-2xl: 1536px;
 // ============================================================================
 $navbar-height: 70px;
 $subbar-height: calc($navbar-height * 0.75);
-$container-max-width: 1200px;
+$container-max-width: 1300px;
 $container-padding: $spacing-4;
 
 // ============================================================================

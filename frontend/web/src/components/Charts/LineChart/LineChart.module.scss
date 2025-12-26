@@ -1,0 +1,69 @@
+@use '../../../styles/tokens' as *;
+@use '../../../styles/mixins' as *;
+
+
+.chart {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 320px;  /* нижняя граница (можно поднять) */
+  background: $color-bg-primary;
+  border-radius: $border-radius-md;
+  margin-top: $spacing-4;
+  padding: $spacing-4;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  @include media-md {
+    min-height: 420px;
+    padding: $spacing-6;
+  }
+}
+
+.echarts {
+  width: 100%;
+  height: 100%;
+  flex: 1 1 auto;
+  min-height: 500px;
+  box-sizing: border-box;
+
+  /* Гарантируем, что внутренние дивы ECharts также 100% по высоте */
+  & > div {
+    height: 28% !important;
+  }
+}
+
+/* Вспомогательные классы (оставлены для совместимости) */
+.placeholder {
+  @include flex-center;
+  flex-direction: column;
+  width: 100%;
+  color: $color-text-secondary;
+  text-align: center;
+  padding: $spacing-4;
+
+  @include media-md {
+    padding: $spacing-6;
+  }
+}
+
+.text {
+  margin: 0;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-medium;
+
+  @include media-md {
+    font-size: $font-size-xl;
+  }
+}
+
+.subtext {
+  margin: $spacing-2 0 0 0;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+
+  @include media-md {
+    font-size: $font-size-base;
+  }
+}

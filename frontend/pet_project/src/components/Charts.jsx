@@ -36,7 +36,7 @@ const lineOption = {
         name: 'Количество людей'
     },
     series: [
-        { name: 'Население', type: 'line', data: [120000, 121500, 123000, 124500, 126000], smooth: true },
+        { name: 'Население', type: 'line', data: [120000, 13500, 123000, 124500, 126000], smooth: true },
         { name: 'Родившиеся', type: 'line', data: [15000, 14800, 14700, 14500, 14400], smooth: true },
         { name: 'Умершие', type: 'line', data: [8000, 8200, 8300, 8400, 8500], smooth: true },
         { name: 'Миграция', type: 'line', data: [2000, 1800, 2200, 2100, 2300], smooth: true }
