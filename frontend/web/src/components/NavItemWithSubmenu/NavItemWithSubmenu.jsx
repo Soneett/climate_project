@@ -44,7 +44,7 @@ const NavItemWithSubmenu = (
 
   return (
     <div
-      className={`${styles.root} ${open ? styles.open : ""}`}
+      className={`${styles.root} ${open ? styles.open : ""} ${isActive ? styles.active : ""}`}
       ref={rootRef}
     >
       <div

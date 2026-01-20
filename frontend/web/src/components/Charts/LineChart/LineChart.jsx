@@ -1,44 +1,113 @@
-import React, { useRef, useEffect } from "react";
-import ReactECharts from "echarts-for-react";
-import styles from "./LineChart.module.scss";
+import React, { useRef, useEffect } from 'react';
+import ReactECharts from 'echarts-for-react';
+import styles from './LineChart.module.scss';
 
-/* корректное объявление опций */
-const lineOption = {
-  title: { text: "Демографические показатели региона", left: "center" },
-  tooltip: { trigger: "axis" },
-  legend: { data: ["Население", "Родившиеся", "Умершие", "Миграция"], top: 40 },
-  grid: { left: "3%", right: "4%", bottom: "6%", containLabel: true },
-  toolbox: { feature: { saveAsImage: {} } },
-  xAxis: { type: "category", name: "Год", nameLocation: "middle", nameGap: 25, data: ["2021", "2022", "2023", "2024", "2025"] },
-  yAxis: { type: "value", name: "Количество людей" },
-  series: [
-    { name: "Население", type: "line", data: [120000, 130500, 115000, 100500, 126000], smooth: true },
-    { name: "Родившиеся", type: "line", data: [15000, 20800, 14700, 14500, 14400], smooth: true },
-    { name: "Умершие", type: "line", data: [8000, 8200, 8300, 8400, 18500], smooth: true },
-    { name: "Миграция", type: "line", data: [2000, 1800, 2200, 2100, 2300], smooth: true }
-  ]
-};
-
-const LineChart = ({ type = "line" }) => {
+const LineChart = ({ title, labels = [], datasets = [] }) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
-    const handleResize = () => chartRef.current?.getEchartsInstance?.()?.resize?.();
-    window.addEventListener("resize", handleResize);
-    // один вызов при монтировании
-    handleResize();
-    return () => window.removeEventListener("resize", handleResize);
+    const handleResize = () => {
+      chartRef.current?.getEchartsInstance()?.resize();
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const option = {
+    title: {
+      text: title,
+      left: 'center',
+      top: 20,
+      textStyle: {
+        fontFamily: 'Raleway, sans-serif',
+        fontSize: 18,
+        fontWeight: 600,
+        color: '#2C3E38'
+      }
+    },
+    tooltip: {
+      trigger: 'axis',
+      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+      borderColor: '#E5E7EB',
+      borderWidth: 1,
+      textStyle: {
+        color: '#2C3E38',
+        fontFamily: 'Raleway, sans-serif'
+      }
+    },
+    legend: {
+      top: 60,
+      left: 'center',
+      textStyle: {
+        fontFamily: 'Raleway, sans-serif',
+        fontSize: 13,
+        color: '#2C3E38'
+      }
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      top: 100,
+      containLabel: true
+    },
+    xAxis: {
+      type: 'category',
+      data: labels,
+      boundaryGap: false,
+      axisLine: {
+        lineStyle: {
+          color: '#D1D5DB'
+        }
+      },
+      axisLabel: {
+        color: '#6B7280',
+        fontFamily: 'Raleway, sans-serif'
+      }
+    },
+    yAxis: {
+      type: 'value',
+      axisLine: {
+        lineStyle: {
+          color: '#D1D5DB'
+        }
+      },
+      axisLabel: {
+        color: '#6B7280',
+        fontFamily: 'Raleway, sans-serif'
+      },
+      splitLine: {
+        lineStyle: {
+          color: '#F3F4F6'
+        }
+      }
+    },
+    series: datasets.map((dataset) => ({
+      name: dataset.name,
+      type: 'line',
+      data: dataset.data,
+      smooth: true,
+      lineStyle: {
+        width: 2.5
+      },
+      itemStyle: {
+        borderWidth: 2
+      },
+      emphasis: {
+        focus: 'series',
+        lineStyle: {
+          width: 3
+        }
+      }
+    }))
+  };
+
   return (
-    <div className={styles.chart}>
-      <ReactECharts
-        ref={chartRef}
-        className={styles.echarts}
-        option={lineOption}
-        style={{ width: "100%", height: "100%" }}
-        notMerge={true}
-        lazyUpdate={true}
+    <div className={styles.lineChart}>
+      <ReactECharts 
+        ref={chartRef} 
+        option={option} 
+        style={{ height: '100%', width: '100%', minHeight: '400px' }} 
       />
     </div>
   );

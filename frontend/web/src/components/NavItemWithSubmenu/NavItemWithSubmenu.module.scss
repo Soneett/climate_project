@@ -60,3 +60,8 @@
     transform: rotate(180deg);
   }
 }
+
+
+.root.active .trigger {
+  background-color: rgba(255, 255, 255, 0.15);
+}

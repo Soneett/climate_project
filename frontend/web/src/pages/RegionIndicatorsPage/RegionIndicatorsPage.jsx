@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "../../components/NavBar/NavBar";
 import SecondarySubBar from "../../components/SecondarySubBar/SecondarySubBar";
+import RelationsSubBar from "../../components/RelationsSubBar/RelationsSubBar";
 import ContentBlock from "../../components/ContentBlock/ContentBlock";
+import LineChart from "../../components/Charts/LineChart/LineChart";
+import PieChart from "../../components/Charts/PieChart/PieChart";
 import NavigationButton from "../../components/NavigationButton/NavigationButton";
 import PageNavigationMenu from "../../components/PageNavigationMenu/PageNavigationMenu";
 import { CONTENT_BLOCKS } from "../../constants/contentBlocks";
+import { RELATIONS_CONTENT } from "../../constants/relationsConfig";
 import styles from "./RegionIndicatorsPage.module.scss";
 
 const TOP_MENUS = [
@@ -36,6 +40,8 @@ const TOP_MENUS = [
 export default function RegionIndicatorsPage() {
   const [activeTopMenuId, setActiveTopMenuId] = useState(null);
   const [activeSubItemId, setActiveSubItemId] = useState(null);
+  const [selectedSubject, setSelectedSubject] = useState(null);
+  const [selectedObject, setSelectedObject] = useState(null);
 
   const activeMenu = TOP_MENUS.find(m => m.id === activeTopMenuId);
 
@@ -58,6 +64,19 @@ export default function RegionIndicatorsPage() {
     } else {
       setActiveSubItemId(null);
     }
+    // Reset relations selection when changing menu
+    setSelectedSubject(null);
+    setSelectedObject(null);
+    // Scroll to top instantly
+    window.scrollTo({ top: 0, behavior: "instant" });
+  };
+
+  // Handle relations selection
+  const handleRelationsSelection = (subjectId, objectId) => {
+    setSelectedSubject(subjectId);
+    setSelectedObject(objectId);
+    // Scroll to top instantly
+    window.scrollTo({ top: 0, behavior: "instant" });
   };
 
   // Get current section ID (submenu item or top menu item)
@@ -97,11 +116,9 @@ export default function RegionIndicatorsPage() {
     if (!section) return;
     
     if (section.parentId) {
-      // It's a submenu item
       setActiveTopMenuId(section.parentId);
       setActiveSubItemId(section.id);
     } else {
-      // It's a top menu item
       setActiveTopMenuId(section.id);
       setActiveSubItemId(null);
     }
@@ -110,7 +127,15 @@ export default function RegionIndicatorsPage() {
   };
 
   const currentSectionId = getCurrentSectionId();
-  const contentBlocks = currentSectionId ? (CONTENT_BLOCKS[currentSectionId] || []) : [];
+  
+  // Get content blocks based on current view
+  let contentBlocks = [];
+  if (activeTopMenuId === "relations" && selectedSubject && selectedObject) {
+    const relationKey = `${selectedSubject}-${selectedObject}`;
+    contentBlocks = RELATIONS_CONTENT[relationKey] || [];
+  } else if (currentSectionId) {
+    contentBlocks = CONTENT_BLOCKS[currentSectionId] || [];
+  }
 
   const showLeftButton = activeTopMenuId !== "regional" && prev;
   const showRightButton = activeTopMenuId !== "relations" && next;
@@ -124,12 +149,19 @@ export default function RegionIndicatorsPage() {
         onTopMenuChange={handleTopMenuChange}
       />
 
-      {activeMenu && activeMenu.submenu && activeMenu.submenu.length > 0 && (
-        <SecondarySubBar
-          items={activeMenu.submenu}
-          activeId={activeSubItemId}
-          onSelect={setActiveSubItemId}
-        />
+      {activeTopMenuId === "relations" ? (
+        <RelationsSubBar onSelectionChange={handleRelationsSelection} />
+      ) : (
+        activeMenu && activeMenu.submenu && activeMenu.submenu.length > 0 && (
+          <SecondarySubBar
+            items={activeMenu.submenu}
+            activeId={activeSubItemId}
+            onSelect={(id) => {
+              setActiveSubItemId(id);
+              window.scrollTo({ top: 0, behavior: "instant" });
+            }}
+          />
+        )
       )}
 
       <main className={styles.main}>
@@ -140,13 +172,24 @@ export default function RegionIndicatorsPage() {
                 key={block.id}
                 id={block.id}
                 title={block.title}
-                chartType="bar"
-              />
+              >
+                {block.chartType === 'pie' && block.pieData ? (
+                  <PieChart {...block.pieData} />
+                ) : block.chartData ? (
+                  <LineChart
+                    title={block.title}
+                    labels={block.chartData.labels}
+                    datasets={block.chartData.datasets}
+                  />
+                ) : null}
+              </ContentBlock>
             ))}
           </div>
         ) : (
           <section className={styles.placeholder}>
-            <p>Скоро появится возможность выбора взаимосвязей между показателями ;)</p>
+            <p>
+                "Выберите показатель субъект и показатель объект для просмотра взаимосвязей"
+            </p>
           </section>
         )}
       </main>
