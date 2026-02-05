@@ -1,7 +1,11 @@
-@use './tokens' as *;
+@use './variables' as *;
+@use './mixins' as *;
 
-// Import normalize
-@import './normalize.css';
+// Import fonts
+@import './fonts';
+
+// Import base styles (normalize + resets)
+@import './base';
 
 // ============================================================================
 // Global CSS Variables

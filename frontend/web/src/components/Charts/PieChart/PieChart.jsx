@@ -1,70 +1,30 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
+import PropTypes from 'prop-types';
 import ReactECharts from 'echarts-for-react';
+import { useChartResize } from '../../../hooks/useChartResize';
+import {
+  getTitleConfig,
+  TOOLTIP_CONFIG,
+  TEXT_STYLES,
+  TIMELINE_CONFIG
+} from '../chartConfig';
 import styles from './PieChart.module.scss';
 
 const PieChart = ({ title, timelineLabels = [], legendLeftItems = [], legendRightItems = [], timelineData = [] }) => {
   const chartRef = useRef(null);
-
-  useEffect(() => {
-    const handleResize = () => {
-      chartRef.current?.getEchartsInstance()?.resize();
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  useChartResize(chartRef);
 
   const option = {
     baseOption: {
       timeline: {
-        axisType: 'category',
-        data: timelineLabels,
-        autoPlay: false,
-        playInterval: 2000,
-        left: 'center',
-        bottom: 0,
-        width: '70%',
-        label: { 
-          formatter: '{value}',
-          color: '#2C3E38',
-          fontFamily: 'Raleway, sans-serif'
-        },
-        lineStyle: {
-          color: '#9FB69F'
-        },
-        itemStyle: {
-          color: '#9FB69F',
-          borderColor: '#9FB69F'
-        },
-        checkpointStyle: {
-          color: '#366164',
-          borderColor: '#366164'
-        },
-        controlStyle: {
-          color: '#9FB69F',
-          borderColor: '#9FB69F'
-        }
+        ...TIMELINE_CONFIG,
+        data: timelineLabels
       },
-      title: { 
-        text: title, 
-        left: 'center', 
-        top: 20,
-        textStyle: {
-          fontFamily: 'Raleway, sans-serif',
-          fontSize: 18,
-          fontWeight: 600,
-          color: '#2C3E38'
-        }
-      },
+      title: getTitleConfig(title),
       tooltip: { 
+        ...TOOLTIP_CONFIG,
         trigger: 'item', 
-        formatter: '{b}: {c} ({d}%)',
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        borderColor: '#E5E7EB',
-        borderWidth: 1,
-        textStyle: {
-          color: '#2C3E38',
-          fontFamily: 'Raleway, sans-serif'
-        }
+        formatter: '{b}: {c} ({d}%)'
       },
       legend: [
         { 
@@ -72,22 +32,14 @@ const PieChart = ({ title, timelineLabels = [], legendLeftItems = [], legendRigh
           left: '5%', 
           top: 60, 
           data: legendLeftItems,
-          textStyle: {
-            fontFamily: 'Raleway, sans-serif',
-            fontSize: 12,
-            color: '#2C3E38'
-          }
+          textStyle: TEXT_STYLES.legendSmall
         },
         { 
           orient: 'vertical', 
           right: '5%', 
           top: 60, 
           data: legendRightItems,
-          textStyle: {
-            fontFamily: 'Raleway, sans-serif',
-            fontSize: 12,
-            color: '#2C3E38'
-          }
+          textStyle: TEXT_STYLES.legendSmall
         }
       ],
       series: [{
@@ -102,11 +54,7 @@ const PieChart = ({ title, timelineLabels = [], legendLeftItems = [], legendRigh
             shadowColor: 'rgba(0,0,0,0.5)' 
           } 
         },
-        label: {
-          fontFamily: 'Raleway, sans-serif',
-          fontSize: 12,
-          color: '#2C3E38'
-        }
+        label: TEXT_STYLES.legendSmall
       }]
     },
     options: timelineData
@@ -121,6 +69,14 @@ const PieChart = ({ title, timelineLabels = [], legendLeftItems = [], legendRigh
       />
     </div>
   );
+};
+
+PieChart.propTypes = {
+  title: PropTypes.string.isRequired,
+  timelineLabels: PropTypes.arrayOf(PropTypes.string),
+  legendLeftItems: PropTypes.arrayOf(PropTypes.string),
+  legendRightItems: PropTypes.arrayOf(PropTypes.string),
+  timelineData: PropTypes.arrayOf(PropTypes.object)
 };
 
 export default PieChart;

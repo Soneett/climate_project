@@ -1,86 +1,45 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
+import PropTypes from 'prop-types';
 import ReactECharts from 'echarts-for-react';
+import { useChartResize } from '../../../hooks/useChartResize';
+import {
+  getTitleConfig,
+  TOOLTIP_CONFIG,
+  TEXT_STYLES,
+  GRID_CONFIG,
+  AXIS_LINE_STYLE,
+  SPLIT_LINE_STYLE
+} from '../chartConfig';
 import styles from './LineChart.module.scss';
 
 const LineChart = ({ title, labels = [], datasets = [] }) => {
   const chartRef = useRef(null);
-
-  useEffect(() => {
-    const handleResize = () => {
-      chartRef.current?.getEchartsInstance()?.resize();
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  useChartResize(chartRef);
 
   const option = {
-    title: {
-      text: title,
-      left: 'center',
-      top: 20,
-      textStyle: {
-        fontFamily: 'Raleway, sans-serif',
-        fontSize: 18,
-        fontWeight: 600,
-        color: '#2C3E38'
-      }
-    },
+    title: getTitleConfig(title),
     tooltip: {
-      trigger: 'axis',
-      backgroundColor: 'rgba(255, 255, 255, 0.95)',
-      borderColor: '#E5E7EB',
-      borderWidth: 1,
-      textStyle: {
-        color: '#2C3E38',
-        fontFamily: 'Raleway, sans-serif'
-      }
+      ...TOOLTIP_CONFIG,
+      trigger: 'axis'
     },
     legend: {
       top: 60,
       left: 'center',
-      textStyle: {
-        fontFamily: 'Raleway, sans-serif',
-        fontSize: 13,
-        color: '#2C3E38'
-      }
+      textStyle: TEXT_STYLES.legend
     },
-    grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
-      top: 100,
-      containLabel: true
-    },
+    grid: GRID_CONFIG,
     xAxis: {
       type: 'category',
       data: labels,
       boundaryGap: false,
-      axisLine: {
-        lineStyle: {
-          color: '#D1D5DB'
-        }
-      },
-      axisLabel: {
-        color: '#6B7280',
-        fontFamily: 'Raleway, sans-serif'
-      }
+      axisLine: AXIS_LINE_STYLE,
+      axisLabel: TEXT_STYLES.axis
     },
     yAxis: {
       type: 'value',
-      axisLine: {
-        lineStyle: {
-          color: '#D1D5DB'
-        }
-      },
-      axisLabel: {
-        color: '#6B7280',
-        fontFamily: 'Raleway, sans-serif'
-      },
-      splitLine: {
-        lineStyle: {
-          color: '#F3F4F6'
-        }
-      }
+      axisLine: AXIS_LINE_STYLE,
+      axisLabel: TEXT_STYLES.axis,
+      splitLine: SPLIT_LINE_STYLE
     },
     series: datasets.map((dataset) => ({
       name: dataset.name,
@@ -111,6 +70,17 @@ const LineChart = ({ title, labels = [], datasets = [] }) => {
       />
     </div>
   );
+};
+
+LineChart.propTypes = {
+  title: PropTypes.string.isRequired,
+  labels: PropTypes.arrayOf(PropTypes.string),
+  datasets: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      data: PropTypes.arrayOf(PropTypes.number).isRequired
+    })
+  )
 };
 
 export default LineChart;

@@ -1,8 +1,14 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import IndicatorButton from "../IndicatorButton/IndicatorButton";
 import { SUBJECT_INDICATORS, OBJECT_INDICATORS } from "../../constants/relationsConfig";
 import styles from "./RelationsSubBar.module.scss";
 
+/**
+ * RelationsSubBar component
+ * Displays two columns of indicators for selecting subject-object relationships
+ * @param {Function} onSelectionChange - Callback when selection changes, receives (subjectId, objectId)
+ */
 const RelationsSubBar = ({ onSelectionChange = () => {} }) => {
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [selectedObject, setSelectedObject] = useState(null);
@@ -108,6 +114,10 @@ const RelationsSubBar = ({ onSelectionChange = () => {} }) => {
       </div>
     </div>
   );
+};
+
+RelationsSubBar.propTypes = {
+  onSelectionChange: PropTypes.func
 };
 
 export default RelationsSubBar;

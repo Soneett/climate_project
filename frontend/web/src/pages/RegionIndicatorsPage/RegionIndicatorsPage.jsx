@@ -3,41 +3,20 @@ import NavBar from "../../components/NavBar/NavBar";
 import SecondarySubBar from "../../components/SecondarySubBar/SecondarySubBar";
 import RelationsSubBar from "../../components/RelationsSubBar/RelationsSubBar";
 import ContentBlock from "../../components/ContentBlock/ContentBlock";
-import LineChart from "../../components/Charts/LineChart/LineChart";
-import PieChart from "../../components/Charts/PieChart/PieChart";
+import ChartRenderer from "../../components/Charts/ChartRenderer";
 import NavigationButton from "../../components/NavigationButton/NavigationButton";
 import PageNavigationMenu from "../../components/PageNavigationMenu/PageNavigationMenu";
-import { CONTENT_BLOCKS } from "../../constants/contentBlocks";
-import { RELATIONS_CONTENT } from "../../constants/relationsConfig";
+import { useContentData } from "../../hooks/useContentData";
+import { TOP_MENUS } from "../../constants/navigationMenus";
 import styles from "./RegionIndicatorsPage.module.scss";
 
-const TOP_MENUS = [
-  { id: "regional", label: "Региональные\nданные", submenu: [] },
-  { id: "social", label: "Социальные\nаспекты", submenu: [
-      { id: "s1", label: "Демография" },
-      { id: "s2", label: "Уровень жизни" },
-      { id: "s3", label: "Здравоохранение" },
-      { id: "s4", label: "Образование" },
-      { id: "s5", label: "Экономика" },
-      { id: "s6", label: "Инфраструктура" },
-    ] },
-  { id: "climate", label: "Климат", submenu: [
-      { id: "c1", label: "Температура" },
-      { id: "c2", label: "Осадки" },
-      { id: "c3", label: "Ветер" },
-      { id: "c4", label: "Природные катаклизмы" },
-      { id: "c5", label: "Экология" },
-    ] },
-  { id: "governance", label: "Управление и\nполитика", submenu: [
-      { id: "g1", label: "Бюджет" },
-      { id: "g2", label: "Региональные программы развития" },
-      { id: "g3", label: "Федеральные программы" },
-      { id: "g4", label: "Программы адаптации к климатическим изменениям" },
-    ] },
-  { id: "relations", label: "Взаимосвязи", submenu: [] },
-];
-
 export default function RegionIndicatorsPage() {
+  const { 
+    contentBlocks: CONTENT_BLOCKS, 
+    relationsContentBlocks: RELATIONS_CONTENT,
+    loading 
+  } = useContentData();
+
   const [activeTopMenuId, setActiveTopMenuId] = useState(null);
   const [activeSubItemId, setActiveSubItemId] = useState(null);
   const [selectedSubject, setSelectedSubject] = useState(null);
@@ -99,7 +78,7 @@ export default function RegionIndicatorsPage() {
           allSections.push({ id: sub.id, label: sub.label, parentId: menu.id });
         });
       } else {
-        allSections.push({ id: menu.id, label: menu.label.replace("\n", " "), parentId: null });
+        allSections.push({ id: menu.id, label: menu.label.replace(/\n/g, " "), parentId: null });
       }
     });
 
@@ -140,6 +119,14 @@ export default function RegionIndicatorsPage() {
   const showLeftButton = activeTopMenuId !== "regional" && prev;
   const showRightButton = activeTopMenuId !== "relations" && next;
 
+  if (loading) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.loading}>Загрузка данных...</div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.page}>
       <NavBar
@@ -173,15 +160,7 @@ export default function RegionIndicatorsPage() {
                 id={block.id}
                 title={block.title}
               >
-                {block.chartType === 'pie' && block.pieData ? (
-                  <PieChart {...block.pieData} />
-                ) : block.chartData ? (
-                  <LineChart
-                    title={block.title}
-                    labels={block.chartData.labels}
-                    datasets={block.chartData.datasets}
-                  />
-                ) : null}
+                <ChartRenderer block={block} />
               </ContentBlock>
             ))}
           </div>

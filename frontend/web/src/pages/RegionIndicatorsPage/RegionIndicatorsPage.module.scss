@@ -1,4 +1,4 @@
-@use '../../styles/tokens' as *;
+@use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
 .page {
@@ -65,4 +65,13 @@
     margin: $spacing-8 auto;
     padding: 0 $spacing-6;
   }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: $font-size-xl;
+  color: $color-text-secondary;
 }

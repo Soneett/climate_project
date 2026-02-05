@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import styles from "./NavigationButton.module.scss";
 
 const NavigationButton = ({ direction = "left", label, onClick, disabled = false }) => {
@@ -26,4 +27,11 @@ const NavigationButton = ({ direction = "left", label, onClick, disabled = false
   );
 };
 
-export default NavigationButton;
+NavigationButton.propTypes = {
+  direction: PropTypes.oneOf(["left", "right"]),
+  label: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  disabled: PropTypes.bool
+};
+
+export default React.memo(NavigationButton);

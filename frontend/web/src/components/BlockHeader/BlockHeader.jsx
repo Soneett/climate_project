@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import styles from "./BlockHeader.module.scss";
 
 const BlockHeader = ({ title }) => {
@@ -9,4 +10,8 @@ const BlockHeader = ({ title }) => {
   );
 };
 
-export default BlockHeader;
+BlockHeader.propTypes = {
+  title: PropTypes.string.isRequired
+};
+
+export default React.memo(BlockHeader);
