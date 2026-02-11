@@ -1,36 +1,47 @@
 import json
 from pathlib import Path
+from sqlalchemy.orm import Session
 
-from database import SessionLocal
+from tables.regions import RegionsTable
+from tables.data_sources import DataSourcesTable
 from parsers.population_age_sex import parse_population_rows
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 DATA_DIR = BASE_DIR / "data" / "population"
 
-REGION_ID = 1
-SOURCE_ID = 1
+def load_population(session: Session):
 
-def main():
-    session = SessionLocal()
-    try:
-        for json_file in DATA_DIR.glob("*.json"):
-            with open(json_file, encoding="utf-8") as f:
-                payload = json.load(f)
+    regions_map = {
+        r.name: r.id
+        for r in session.query(RegionsTable).all()
+    }
 
-            for block in payload.values():
-                rows = block.get("rows", [])
-                if not rows:
-                    continue
+    sources_map = {
+        s.name: s.id
+        for s in session.query(DataSourcesTable).all()
+    }
 
-                parse_population_rows(
-                    rows,
-                    session,
-                    region_id=REGION_ID,
-                    source_id=SOURCE_ID,
-                )
-    finally:
-        session.close()
+    for json_file in DATA_DIR.glob("*.json"):
+        with open(json_file, encoding="utf-8") as f:
+            payload = json.load(f)
 
+        metadata = payload["metadata"]
 
-if __name__ == "__main__":
-    main()
+        region_id = regions_map[metadata["region_name"]]
+        source_id = sources_map[metadata["source_name"]]
+
+        rows = (
+            payload
+            .get("population", {})
+            .get("rows", [])
+        )
+
+        if not rows:
+            continue
+
+        parse_population_rows(
+            rows,
+            session,
+            region_id=region_id,
+            source_id=source_id,
+        )

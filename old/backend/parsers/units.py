@@ -15,4 +15,3 @@ def parse_units(data: list[dict], session):
         else:
             session.add(UnitsTable(code=code, name=name))
 
-    session.commit()

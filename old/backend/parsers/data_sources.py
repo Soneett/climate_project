@@ -6,7 +6,7 @@ def parse_data_sources(data: list[dict], session):
         for ds in session.query(DataSourcesTable).all()
     }
 
-    for item in data:
+    for item in data["data_sources"]:
         name = item["name"]
 
         if name in existing:

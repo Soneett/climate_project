@@ -19,7 +19,7 @@
       "date_collected": null
     },
     {
-      "name": "Возрастно-половой состав населения на 01.01.2024",
+      "name": "Возрастно-половой состав населения",
       "url": "https://22.rosstat.gov.ru/storage/mediabank/Возрастно-половой%20состав%20населения%20Республики%20Алтай%20на%201%20января%202024%20года%20(окончательные%20итоги).xlsx",
       "organization": "Росстат",
       "date_collected": null
@@ -49,7 +49,7 @@
       "date_collected": null
     },
     {
-      "name": "Валовой региональный продукт 1998–2023",
+      "name": "Валовой региональный продукт",
       "url": "https://22.rosstat.gov.ru/storage/mediabank/ВРП_1998-2023(32).xlsx",
       "organization": "Росстат",
       "date_collected": null
