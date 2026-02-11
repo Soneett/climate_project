@@ -1,0 +1,10 @@
+from .regions import router as regions_router
+from .units import router as units_router
+from .indicator_subtypes import router as indicator_subtypes_router
+from .indicators import router as indicators_router
+from .data_sources import router as data_sources_router
+from .indicator_values import router as indicator_values_router
+from .population_age_sex import router as population_age_sex_router
+from .regional_programs import router as regional_programs_router
+from .program_regions import router as program_regions_router
+from .events import router as events_router

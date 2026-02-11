@@ -1,0 +1,70 @@
+{
+  "data_sources": [
+    {
+      "name": "Демографические показатели: рождаемость, смертность, естественный прирост",
+      "url": "https://22.rosstat.gov.ru/storage/mediabank/Рождаемость,%20смертность%20и%20естественный%20прирост%20населения%20в%20Республике%20Алтай(2).xlsx",
+      "organization": "Росстат",
+      "date_collected": null
+    },
+    {
+      "name": "Коэффициенты смертности по основным классам причин смерти",
+      "url": "https://22.rosstat.gov.ru/storage/mediabank/Коэффициенты%20смертности%20по%20основным%20классам%20причин%20смерти%20по%20Республике%20Алтай(3).xlsx",
+      "organization": "Росстат",
+      "date_collected": null
+    },
+    {
+      "name": "Общие итоги миграции населения",
+      "url": "https://22.rosstat.gov.ru/storage/mediabank/Общие%20итоги%20миграции%20населения%20РА(2).xlsx",
+      "organization": "Росстат",
+      "date_collected": null
+    },
+    {
+      "name": "Возрастно-половой состав населения на 01.01.2024",
+      "url": "https://22.rosstat.gov.ru/storage/mediabank/Возрастно-половой%20состав%20населения%20Республики%20Алтай%20на%201%20января%202024%20года%20(окончательные%20итоги).xlsx",
+      "organization": "Росстат",
+      "date_collected": null
+    },
+    {
+      "name": "Состав и структура денежных доходов и расходов населения",
+      "url": "https://22.rosstat.gov.ru/storage/mediabank/Состав%20и%20структура%20денежных%20доходов%20и%20расходов%20населения%20Республики%20Алтай(2).xlsx",
+      "organization": "Росстат",
+      "date_collected": null
+    },
+    {
+      "name": "Население с денежными доходами ниже границы бедности",
+      "url": "https://22.rosstat.gov.ru/storage/mediabank/Численность%20населения%20Республики%20Алтай%20с%20денежными%20доходами%20ниже%20границы%20бедности(2).xlsx",
+      "organization": "Росстат",
+      "date_collected": null
+    },
+    {
+      "name": "Индексы потребительских цен на товары и услуги",
+      "url": "https://22.rosstat.gov.ru/storage/mediabank/Индексы%20потребительских%20цен%20на%20%20товары%20и%20услуги%20по%20Республике%20Алтай(3).pdf",
+      "organization": "Росстат",
+      "date_collected": null
+    },
+    {
+      "name": "Основные показатели здравоохранения",
+      "url": "https://22.rosstat.gov.ru/storage/mediabank/Основные%20показатели%20здравоохранения%20в%20Республике%20Алтай(3).xlsx",
+      "organization": "Росстат",
+      "date_collected": null
+    },
+    {
+      "name": "Валовой региональный продукт 1998–2023",
+      "url": "https://22.rosstat.gov.ru/storage/mediabank/ВРП_1998-2023(32).xlsx",
+      "organization": "Росстат",
+      "date_collected": null
+    },
+    {
+      "name": "Количество организаций по формам собственности",
+      "url": "https://22.rosstat.gov.ru/storage/mediabank/Количество%20организаций%20по%20формам%20собственности.xlsx",
+      "organization": "Росстат",
+      "date_collected": null
+    },
+    {
+      "name": "Ведомственные данные",
+      "url": null,
+      "organization": "МЧС России",
+      "date_collected": null
+    }
+  ]
+}

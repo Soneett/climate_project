@@ -1,0 +1,765 @@
+openapi: 3.0.3
+info:
+  title: Regional Indicators System API
+  version: 1.0.0
+  description: |
+    API для системы региональных показателей и данных.
+    
+    ## Важные особенности системы:
+    - **Удаление записей** реализовано через soft-delete (флаг is_deleted)
+    - **Принудительное удаление (hard delete)** запрещено при наличии связанных записей
+    - **Обязательные поля (nullable: false)** отмечены в описании схем
+    - **Внешние ключи** всегда валидируются на существование связанных записей
+
+paths:
+  # Регионы
+  /api/regions:
+    post:
+      summary: Создать новый регион
+      description: |
+        Создание записи региона. 
+        **Особенности:**
+        - `parent_id = null` указывает на регион верхнего уровня
+        - Удаление региона запрещено при наличии связанных записей (реализован soft-delete)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegionCreate'
+      responses:
+        '201':
+          description: Регион успешно создан
+          
+    get:
+      summary: Получить список регионов
+      description: Возвращает список регионов с поддержкой фильтрации и пагинации
+
+  /api/regions/{id}:
+    put:
+      summary: Обновить регион
+      description: |
+        Обновление информации о регионе.
+        **Ограничения:**
+        - Нельзя установить `parent_id` на несуществующий регион
+        - Нельзя создать циклические зависимости в иерархии
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegionUpdate'
+      responses:
+        '200':
+          description: Регион успешно обновлен
+        '404':
+          description: Регион не найден
+          
+    delete:
+      summary: Удалить регион (soft-delete)
+      description: |
+        **Soft-delete операции:**
+        - Устанавливает флаг `is_deleted = true`
+        - Запрещено при наличии связанных записей в:
+          - indicator_values
+          - population_age_sex
+          - program_regions
+          - events
+        - При попытке удаления с существующими связями вернется ошибка 409 Conflict
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Регион помечен как удаленный
+        '409':
+          description: |
+            Удаление запрещено. Существуют связанные записи:
+            - Показатели (indicator_values)
+            - Данные населения (population_age_sex)
+            - Привязки к программам (program_regions)
+            - События (events)
+
+  # Единицы измерения
+  /api/units:
+    post:
+      summary: Создать единицу измерения
+      description: |
+        Создание новой единицы измерения.
+        **Особенности:**
+        - Удаление запрещено при использовании в показателях (indicators)
+        - Обновление ограничено (только для администраторов)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnitCreate'
+      responses:
+        '201':
+          description: Единица измерения успешно создана
+
+  /api/units/{id}:
+    delete:
+      summary: Удалить единицу измерения (soft-delete)
+      description: |
+        **Ограничения удаления:**
+        - Запрещено при наличии ссылок из таблицы `indicators`
+        - При попытке удаления используется soft-delete
+        - При наличии связей вернется ошибка 409 Conflict
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Единица измерения помечена как удаленная
+        '409':
+          description: |
+            Удаление запрещено. Единица измерения используется в показателях (indicators)
+
+  # Подтипы показателей
+  /api/indicator-subtypes:
+    post:
+      summary: Создать подтип показателя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndicatorSubtypeCreate'
+      responses:
+        '201':
+          description: Подтип показателя успешно создан
+
+  # Показатели
+  /api/indicators:
+    post:
+      summary: Создать показатель
+      description: |
+        Создание нового показателя.
+        **Особенности:**
+        - `unit_id` может быть null для качественных показателей
+        - Отсутствие `unit_id` означает, что показатель не является числовым в строгом смысле
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndicatorCreate'
+      responses:
+        '201':
+          description: Показатель успешно создан
+
+  /api/indicators/{id}:
+    delete:
+      summary: Удалить показатель (soft-delete)
+      description: |
+        **Ограничения удаления:**
+        - Запрещено при наличии значений в `indicator_values`
+        - При наличии исторических данных вернется ошибка 409 Conflict
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Показатель помечен как удаленный
+        '409':
+          description: |
+            Удаление запрещено. Существуют исторические значения показателя (indicator_values)
+
+  # Источники данных
+  /api/data-sources:
+    post:
+      summary: Создать источник данных
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataSourceCreate'
+      responses:
+        '201':
+          description: Источник данных успешно создан
+
+  /api/data-sources/{id}:
+    delete:
+      summary: Удалить источник данных (soft-delete)
+      description: |
+        **Ограничения удаления:**
+        - Запрещено при наличии ссылок из `indicator_values` или `population_age_sex`
+        - Источники данных сохраняются для трассируемости исторических данных
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Источник данных помечен как удаленный
+        '409':
+          description: |
+            Удаление запрещено. Источник данных используется в значениях показателей или данных населения
+
+  # Значения показателей
+  /api/indicator-values:
+    post:
+      summary: Создать значение показателя
+      description: |
+        **Критически важная факт-таблица.**
+        Особенности:
+        - Все внешние ключи обязательны (кроме source_id)
+        - Возможна проверка уникальности комбинации (indicator_id, region_id, year)
+        - При null в любом FK → ошибка валидации
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndicatorValueCreate'
+      responses:
+        '201':
+          description: Значение показателя успешно создано
+        '400':
+          description: |
+            Ошибка валидации. Возможные причины:
+            - Обязательные поля не заполнены
+            - Несуществующий indicator_id
+            - Несуществующий region_id
+            - Нарушение уникальности комбинации (indicator_id, region_id, year)
+
+  # Половозрастная структура населения
+  /api/population:
+    post:
+      summary: Создать запись о населении
+      description: |
+        **Особенности:**
+        - Без возраста (age_code) или пола (sex_code) запись бессмысленна
+        - Требуется для агрегации демографических данных
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PopulationCreate'
+      responses:
+        '201':
+          description: Данные населения успешно созданы
+
+  # Региональные программы
+  /api/programs:
+    post:
+      summary: Создать региональную программу
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProgramCreate'
+      responses:
+        '201':
+          description: Программа успешно создана
+
+  # Связи между регионами и программами
+  /api/program-regions:
+    post:
+      summary: Привязать регион к программе
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProgramRegionCreate'
+      responses:
+        '201':
+          description: Привязка создана
+
+  # События
+  /api/events:
+    post:
+      summary: Создать событие
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventCreate'
+      responses:
+        '201':
+          description: Событие успешно создано
+
+components:
+  schemas:
+    # Регионы
+    RegionCreate:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          type: string
+          nullable: false
+          description: Название региона. Не может быть null - требуется для идентификации
+        code:
+          type: string
+          nullable: true
+          description: Код региона. Может отсутствовать - не все регионы имеют официальный код
+        type:
+          type: string
+          nullable: false
+          description: |
+            Тип региона. Не может быть null - важен для иерархии.
+            Примеры: country, federal_district, region, city
+        parent_id:
+          type: integer
+          nullable: true
+          description: |
+            Родительский регион. Может быть null для регионов верхнего уровня.
+            Пример: Москва → parent_id = Россия
+
+    RegionUpdate:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          description: ID обновляемого региона
+        name:
+          type: string
+          nullable: true
+        code:
+          type: string
+          nullable: true
+        type:
+          type: string
+          nullable: true
+        parent_id:
+          type: integer
+          nullable: true
+
+    # Единицы измерения
+    UnitCreate:
+      type: object
+      required:
+        - code
+        - name
+      properties:
+        code:
+          type: string
+          nullable: false
+          description: Код единицы измерения. Не может быть null - ключевая идентификация
+        name:
+          type: string
+          nullable: false
+          description: Название единицы. Не может быть null - требуется для человекочитаемости
+
+    UnitUpdate:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+
+    # Подтипы показателей
+    IndicatorSubtypeCreate:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          nullable: false
+          description: Название подтипа. Не может быть null - единственный смысл поля
+
+    IndicatorSubtypeUpdate:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          nullable: true
+
+    # Показатели
+    IndicatorCreate:
+      type: object
+      required:
+        - name
+        - type
+        - theme
+      properties:
+        name:
+          type: string
+          nullable: false
+          description: Название показателя. Не может быть null
+        unit_id:
+          type: integer
+          nullable: true
+          description: |
+            Единица измерения. Может быть null - возможны качественные показатели.
+            Отсутствие unit_id означает, что показатель не является числовым в строгом смысле
+        type:
+          type: string
+          nullable: false
+          description: Тип показателя. Не может быть null - глобальная классификация
+        theme:
+          type: string
+          nullable: false
+          description: Тематика показателя. Не может быть null - требуется для группировки
+        subtype_id:
+          type: integer
+          nullable: true
+          description: Подтип показателя. Может быть null - не у всех показателей есть подтип
+
+    IndicatorUpdate:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          nullable: true
+        unit_id:
+          type: integer
+          nullable: true
+        type:
+          type: string
+          nullable: true
+        theme:
+          type: string
+          nullable: true
+        subtype_id:
+          type: integer
+          nullable: true
+
+    # Источники данных
+    DataSourceCreate:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          nullable: false
+          description: Название источника. Не может быть null - минимальная идентификация
+        url:
+          type: string
+          nullable: true
+          description: URL источника. Может отсутствовать
+        organization:
+          type: string
+          nullable: true
+          description: Организация. Иногда совпадает с name, может быть null
+        date_collected:
+          type: string
+          format: date
+          nullable: true
+          description: Дата сбора данных. Может быть null для исторических данных
+
+    DataSourceUpdate:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          nullable: true
+        url:
+          type: string
+          nullable: true
+        organization:
+          type: string
+          nullable: true
+        date_collected:
+          type: string
+          format: date
+          nullable: true
+
+    # Значения показателей
+    IndicatorValueCreate:
+      type: object
+      required:
+        - indicator_id
+        - region_id
+        - year
+        - value
+      properties:
+        indicator_id:
+          type: integer
+          nullable: false
+          description: ID показателя. Не может быть null - FK
+        region_id:
+          type: integer
+          nullable: false
+          description: ID региона. Не может быть null - FK
+        year:
+          type: integer
+          nullable: false
+          description: Год. Не может быть null - без года значение бессмысленно
+        value:
+          type: number
+          nullable: false
+          description: Значение показателя. Не может быть null - основная величина
+        source_id:
+          type: integer
+          nullable: true
+          description: |
+            ID источника данных. Может быть null, но рекомендуется заполнять для трассируемости.
+            В некоторых случаях может быть обязательным
+
+    IndicatorValueUpdate:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        indicator_id:
+          type: integer
+          nullable: true
+        region_id:
+          type: integer
+          nullable: true
+        year:
+          type: integer
+          nullable: true
+        value:
+          type: number
+          nullable: true
+        source_id:
+          type: integer
+          nullable: true
+
+    # Половозрастная структура населения
+    PopulationCreate:
+      type: object
+      required:
+        - region_id
+        - year
+        - age_code
+        - sex_code
+        - value
+      properties:
+        region_id:
+          type: integer
+          nullable: false
+          description: ID региона. Не может быть null - FK
+        year:
+          type: integer
+          nullable: false
+          description: Год. Не может быть null
+        age_code:
+          type: string
+          nullable: false
+          description: Код возраста. Не может быть null - без возраста запись бессмысленна
+        sex_code:
+          type: string
+          nullable: false
+          description: Код пола. Не может быть null - требуется для агрегации
+        value:
+          type: integer
+          nullable: false
+          description: Численность. Не может быть null
+        source_id:
+          type: integer
+          nullable: true
+          description: ID источника данных. Может быть null, но рекомендуется для трассируемости
+
+    PopulationUpdate:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        region_id:
+          type: integer
+          nullable: true
+        year:
+          type: integer
+          nullable: true
+        age_code:
+          type: string
+          nullable: true
+        sex_code:
+          type: string
+          nullable: true
+        value:
+          type: integer
+          nullable: true
+        source_id:
+          type: integer
+          nullable: true
+
+    # Региональные программы
+    ProgramCreate:
+      type: object
+      required:
+        - name
+        - level
+        - start_year
+      properties:
+        name:
+          type: string
+          nullable: false
+          description: Название программы. Не может быть null - идентификация
+        level:
+          type: string
+          nullable: false
+          description: Уровень программы. Не может быть null - фильтрация
+        start_year:
+          type: integer
+          nullable: false
+          description: Год начала. Не может быть null - базовый параметр
+        end_year:
+          type: integer
+          nullable: true
+          description: Год окончания. Может быть null - программа может быть активна
+        description:
+          type: string
+          nullable: true
+          description: Описание. Может быть null - не всегда есть
+        status:
+          type: string
+          nullable: true
+          description: Статус. Технически может быть null, но рекомендуется заполнять для жизненного цикла
+        budget_total:
+          type: number
+          nullable: true
+          description: Общий бюджет. Может быть null - может быть неизвестен
+
+    ProgramUpdate:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          nullable: true
+        level:
+          type: string
+          nullable: true
+        start_year:
+          type: integer
+          nullable: true
+        end_year:
+          type: integer
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        status:
+          type: string
+          nullable: true
+        budget_total:
+          type: number
+          nullable: true
+
+    # Связи программ и регионов
+    ProgramRegionCreate:
+      type: object
+      required:
+        - program_id
+        - region_id
+      properties:
+        program_id:
+          type: integer
+          nullable: false
+          description: ID программы. Не может быть null - FK
+        region_id:
+          type: integer
+          nullable: false
+          description: ID региона. Не может быть null - FK
+
+    # События
+    EventCreate:
+      type: object
+      required:
+        - region_id
+        - date
+        - type
+      properties:
+        region_id:
+          type: integer
+          nullable: false
+          description: ID региона. Не может быть null - FK
+        date:
+          type: string
+          format: date
+          nullable: false
+          description: Дата события. Не может быть null - ключевая ось времени
+        type:
+          type: string
+          nullable: false
+          description: Тип события. Не может быть null - классификация
+        severity:
+          type: integer
+          nullable: true
+          description: Серьезность. Может быть null - может быть не оценена
+        description:
+          type: string
+          nullable: true
+          description: Описание. Может быть null - дополнение
+        economic_loss:
+          type: number
+          nullable: true
+          description: Экономический ущерб. Может быть null - часто неизвестен
+
+    EventUpdate:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        region_id:
+          type: integer
+          nullable: true
+        date:
+          type: string
+          format: date
+          nullable: true
+        type:
+          type: string
+          nullable: true
+        severity:
+          type: integer
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        economic_loss:
+          type: number
+          nullable: true
