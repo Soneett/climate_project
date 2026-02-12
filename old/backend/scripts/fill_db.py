@@ -15,10 +15,11 @@ def main():
         load_regions(session)
         load_units(session)
         load_indicator_subtypes(session)
-        load_indicators(session)
         load_data_sources(session)
-
-        load_indicator_values(session)
+        session.flush()
+        load_indicators(session)
+        session.flush()
+        #load_indicator_values(session)
         load_population_age_sex(session)
 
         session.commit()

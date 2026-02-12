@@ -18,7 +18,7 @@ def parse_indicators(data: list[dict], session):
         for ind in session.query(IndicatorsTable).all()
     }
 
-    for item in data:
+    for item in data["indicators"]:
         name = item["name"]
 
         values = dict(

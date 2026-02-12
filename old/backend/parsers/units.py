@@ -6,7 +6,7 @@ def parse_units(data: list[dict], session):
         for u in session.query(UnitsTable).all()
     }
 
-    for item in data:
+    for item in data["units"]:
         code = item["code"]
         name = item["name"]
 

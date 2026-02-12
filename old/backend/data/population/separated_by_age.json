@@ -2,7 +2,7 @@
     "region_name": "Республика Алтай",
     "source_name": "Возрастно-половой состав населения"
   },
-  "population_by_age": {
+  "population": {
     "rows_count": 101,
     "rows": [
       {

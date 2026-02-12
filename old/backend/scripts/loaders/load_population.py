@@ -9,7 +9,7 @@ from parsers.population_age_sex import parse_population_rows
 BASE_DIR = Path(__file__).resolve().parents[2]
 DATA_DIR = BASE_DIR / "data" / "population"
 
-def load_population(session: Session):
+def load_population_age_sex(session: Session):
 
     regions_map = {
         r.name: r.id

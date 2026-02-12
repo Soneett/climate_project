@@ -1,5 +1,8 @@
-{
-  "population_age_sex": {
+{ "metadata": {
+    "region_name": "Республика Алтай",
+    "source_name": "Возрастно-половой состав населения"
+  },
+  "population": {
     "rows": [
       {
         "year": 2024,
