@@ -1,0 +1,104 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.header {
+  width: 100%;
+  background: $color-primary;
+  box-shadow: $shadow-sm;
+  position:fixed;
+  top: 0;
+  left: 0;
+  z-index: $z-index-fixed;
+  height: $navbar-height;
+}
+
+.inner {
+  @include container;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+
+  @include media-md {
+    gap: $spacing-5;
+  }
+}
+
+.brand {
+  flex: 0 0 auto;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-sm;
+  cursor: pointer;
+  line-height: $line-height-tight;
+  transition: opacity $transition-fast;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  @include media-md {
+    font-size: $font-size-base;
+  }
+
+  @include media-lg {
+    font-size: $font-size-lg;
+  }
+}
+
+.controls {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-2;
+  min-width: 0;
+
+  @include media-md {
+    gap: $spacing-4;
+  }
+}
+
+.item,
+.itemRight {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.itemRight {
+  justify-content: flex-end;
+  cursor: pointer;
+}
+
+.btn {
+  @include button-reset;
+  @include interactive-hover;
+  
+  font-size: $font-size-sm;
+  border-radius: $border-radius-md;
+  padding: $spacing-2 $spacing-3;
+  white-space: nowrap;
+
+  @include media-md {
+    font-size: $font-size-base;
+    padding: $spacing-2 $spacing-4;
+  }
+}
+
+// Mobile responsive
+@media (max-width: #{$breakpoint-md - 1px}) {
+  .inner {
+    padding: 0 $spacing-3;
+    gap: $spacing-2;
+  }
+
+  .brand {
+    font-size: $font-size-xs;
+  }
+
+  .btn {
+    font-size: $font-size-xs;
+    padding: $spacing-1 $spacing-2;
+  }
+}

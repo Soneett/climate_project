@@ -1,0 +1,61 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.hero {
+  width: 100%;
+  height: calc(100vh - $navbar-height);
+  overflow: hidden;
+
+  background-image: url('../../assets/images/altai-photo.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  @include flex-center;
+  
+  position: fixed;
+  top: $navbar-height;
+  color: $color-white;
+
+  @include media-sm {
+    min-height: 600px;
+  }
+
+  @include media-lg {
+    height: calc(100vh - $navbar-height);
+  }
+}
+
+.overlay {
+  text-align: center;
+  padding: $spacing-6;
+  background: $color-overlay-dark;
+  border-radius: $border-radius-lg;
+  max-width: 90%;
+
+  @include media-md {
+    padding: $spacing-8;
+    max-width: 80%;
+  }
+
+  @include media-lg {
+    padding: $spacing-10;
+    max-width: 1000px;
+  }
+}
+
+.title {
+  margin: 0;
+  font-size: $font-size-3xl;
+  line-height: $line-height-tight;
+  font-weight: $font-weight-bold;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+
+  @include media-md {
+    font-size: $font-size-4xl;
+  }
+
+  @include media-lg {
+    font-size: $font-size-5xl;
+  }
+}

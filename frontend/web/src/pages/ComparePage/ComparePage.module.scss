@@ -1,0 +1,56 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding-top: $navbar-height;
+}
+
+.header {
+  background: $color-primary;
+  padding: $spacing-4 0;
+
+  @include media-md {
+    padding: $spacing-6 0;
+  }
+}
+
+.main {
+  @include container;
+  padding: $spacing-6 $spacing-4;
+
+  @include media-md {
+    padding: $spacing-8 $spacing-4;
+  }
+}
+
+.title {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  margin: 0;
+  text-align: center;
+
+  @include media-md {
+    font-size: $font-size-3xl;
+  }
+
+  @include media-lg {
+    font-size: $font-size-4xl;
+  }
+}
+
+.content {
+  display: grid;
+  gap: $spacing-4;
+  grid-template-columns: 1fr;
+  margin-top: $spacing-6;
+
+  @include media-md {
+    gap: $spacing-6;
+  }
+
+  @include media-lg {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

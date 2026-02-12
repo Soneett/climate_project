@@ -1,0 +1,77 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding-top: $navbar-height;
+  padding-bottom: $spacing-16;
+}
+
+.main {
+  @include container;
+  margin: $spacing-6 0;
+  padding: $spacing-4;
+  
+  @include media-md {
+    margin: $spacing-8 auto;
+    padding: $spacing-6;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: $spacing-4 0;
+  
+  @include media-md {
+    padding: $spacing-6 0;
+  }
+}
+
+.placeholder {
+  @include card;
+  text-align: center;
+  color: $color-text-secondary;
+  padding: $spacing-8;
+  
+  @include media-md {
+    padding: $spacing-12;
+  }
+  
+  p {
+    margin: 0;
+    font-size: $font-size-lg;
+    
+    @include media-md {
+      font-size: $font-size-xl;
+    }
+  }
+}
+
+.navigationButtons {
+  @include container;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $spacing-4;
+  margin: $spacing-6 auto;
+  padding: 0 $spacing-4;
+  
+  @include media-md {
+    margin: $spacing-8 auto;
+    padding: 0 $spacing-6;
+  }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: $font-size-xl;
+  color: $color-text-secondary;
+}
