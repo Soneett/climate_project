@@ -38,237 +38,100 @@ export const OBJECT_INDICATORS = [
 
 export const RELATIONS_CONTENT = {
   "temperature-demography": [
-    { 
-      id: "temp-demo-1", 
-      title: "Влияние температуры на рождаемость", 
-      chartType: "line",
-      chartData: {
-        labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
-        datasets: [
-          { name: 'Рождаемость на 1000 чел.', data: [10.1, 9.8, 9.6, 9.0, 8.7, 8.5] },
-          { name: 'Средняя температура, °C', data: [5.2, 5.8, 6.1, 5.5, 5.9, 6.2] }
+    {
+      id: "rel-temp-demo-1",
+      title: "Взаимосвязь температуры и демографии",
+      chartType: "scatterPlot",
+      scatterPlotData: {
+        title: "Взаимосвязь температуры и демографии",
+        categories: ['Рождаемость', 'Смертность', 'Миграция', 'Население'],
+        years: [2020, 2021, 2022, 2023, 2024],
+        data: [
+          { year: 2020, category: 'Рождаемость', annual: 5.0, summer: 12.0, winter: -1.0, tmax: 15.0, tmin: -5.0, value: 1200000 },
+          { year: 2020, category: 'Смертность', annual: 5.0, summer: 12.0, winter: -1.0, tmax: 15.0, tmin: -5.0, value: 800000 },
+          { year: 2020, category: 'Миграция', annual: 5.0, summer: 12.0, winter: -1.0, tmax: 15.0, tmin: -5.0, value: 250000 },
+          { year: 2020, category: 'Население', annual: 5.0, summer: 12.0, winter: -1.0, tmax: 15.0, tmin: -5.0, value: 14000000 },
+          { year: 2021, category: 'Рождаемость', annual: 5.2, summer: 12.3, winter: -0.8, tmax: 15.3, tmin: -4.7, value: 1250000 },
+          { year: 2021, category: 'Смертность', annual: 5.2, summer: 12.3, winter: -0.8, tmax: 15.3, tmin: -4.7, value: 850000 },
+          { year: 2021, category: 'Миграция', annual: 5.2, summer: 12.3, winter: -0.8, tmax: 15.3, tmin: -4.7, value: 300000 },
+          { year: 2021, category: 'Население', annual: 5.2, summer: 12.3, winter: -0.8, tmax: 15.3, tmin: -4.7, value: 14100000 },
+          { year: 2022, category: 'Рождаемость', annual: 5.4, summer: 12.6, winter: -0.5, tmax: 15.6, tmin: -4.3, value: 1180000 },
+          { year: 2022, category: 'Смертность', annual: 5.4, summer: 12.6, winter: -0.5, tmax: 15.6, tmin: -4.3, value: 820000 },
+          { year: 2022, category: 'Миграция', annual: 5.4, summer: 12.6, winter: -0.5, tmax: 15.6, tmin: -4.3, value: 280000 },
+          { year: 2022, category: 'Население', annual: 5.4, summer: 12.6, winter: -0.5, tmax: 15.6, tmin: -4.3, value: 14050000 },
+          { year: 2023, category: 'Рождаемость', annual: 5.6, summer: 12.9, winter: -0.2, tmax: 15.9, tmin: -3.9, value: 1220000 },
+          { year: 2023, category: 'Смертность', annual: 5.6, summer: 12.9, winter: -0.2, tmax: 15.9, tmin: -3.9, value: 780000 },
+          { year: 2023, category: 'Миграция', annual: 5.6, summer: 12.9, winter: -0.2, tmax: 15.9, tmin: -3.9, value: 320000 },
+          { year: 2023, category: 'Население', annual: 5.6, summer: 12.9, winter: -0.2, tmax: 15.9, tmin: -3.9, value: 14200000 },
+          { year: 2024, category: 'Рождаемость', annual: 5.8, summer: 13.2, winter: 0.1, tmax: 16.2, tmin: -3.5, value: 1260000 },
+          { year: 2024, category: 'Смертность', annual: 5.8, summer: 13.2, winter: 0.1, tmax: 16.2, tmin: -3.5, value: 750000 },
+          { year: 2024, category: 'Миграция', annual: 5.8, summer: 13.2, winter: 0.1, tmax: 16.2, tmin: -3.5, value: 350000 },
+          { year: 2024, category: 'Население', annual: 5.8, summer: 13.2, winter: 0.1, tmax: 16.2, tmin: -3.5, value: 14350000 }
         ]
       }
-    },
-    { 
-      id: "temp-demo-2", 
-      title: "Температура и миграция населения", 
-      chartType: "line",
-      chartData: {
-        labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
-        datasets: [
-          { name: 'Миграционный прирост', data: [-3000, -3000, -2400, -1600, -400, 600] },
-          { name: 'Средняя температура, °C', data: [5.2, 5.8, 6.1, 5.5, 5.9, 6.2] }
-        ]
-      }
-    },
+    }
   ],
   "temperature-healthcare": [
-    { 
-      id: "temp-health-1", 
-      title: "Температура и заболеваемость", 
-      chartType: "line",
-      chartData: {
-        labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
-        datasets: [
-          { name: 'Заболеваемость на 1000 чел.', data: [720, 750, 780, 760, 740, 730] },
-          { name: 'Средняя температура, °C', data: [5.2, 5.8, 6.1, 5.5, 5.9, 6.2] }
+    {
+      id: "rel-temp-health-1",
+      title: "Заболеваемость",
+      chartType: "combinedPlotB",
+      combinedPlotBData: {
+        title: "Заболеваемость",
+        causes: ['Вирус A', 'Вирус B', 'Инфекция C', 'Другие'],
+        years: [2020, 2021, 2022, 2023, 2024],
+        data: [
+          { year: 2020, cause: 'Вирус A', annual: 5.25, summer: 12.5, winter: -1.0, tmax: 15.7, tmin: -3.8, cases: 1550 },
+          { year: 2020, cause: 'Вирус B', annual: 5.25, summer: 12.5, winter: -1.0, tmax: 15.7, tmin: -3.8, cases: 1020 },
+          { year: 2020, cause: 'Инфекция C', annual: 5.25, summer: 12.5, winter: -1.0, tmax: 15.7, tmin: -3.8, cases: 540 },
+          { year: 2020, cause: 'Другие', annual: 5.25, summer: 12.5, winter: -1.0, tmax: 15.7, tmin: -3.8, cases: 280 },
+          { year: 2021, cause: 'Вирус A', annual: 5.4, summer: 12.7, winter: -0.9, tmax: 15.9, tmin: -3.7, cases: 1480 },
+          { year: 2021, cause: 'Вирус B', annual: 5.4, summer: 12.7, winter: -0.9, tmax: 15.9, tmin: -3.7, cases: 1080 },
+          { year: 2021, cause: 'Инфекция C', annual: 5.4, summer: 12.7, winter: -0.9, tmax: 15.9, tmin: -3.7, cases: 570 },
+          { year: 2021, cause: 'Другие', annual: 5.4, summer: 12.7, winter: -0.9, tmax: 15.9, tmin: -3.7, cases: 310 },
+          { year: 2022, cause: 'Вирус A', annual: 5.55, summer: 12.9, winter: -0.8, tmax: 16.1, tmin: -3.6, cases: 1520 },
+          { year: 2022, cause: 'Вирус B', annual: 5.55, summer: 12.9, winter: -0.8, tmax: 16.1, tmin: -3.6, cases: 1150 },
+          { year: 2022, cause: 'Инфекция C', annual: 5.55, summer: 12.9, winter: -0.8, tmax: 16.1, tmin: -3.6, cases: 600 },
+          { year: 2022, cause: 'Другие', annual: 5.55, summer: 12.9, winter: -0.8, tmax: 16.1, tmin: -3.6, cases: 340 },
+          { year: 2023, cause: 'Вирус A', annual: 5.7, summer: 13.1, winter: -0.7, tmax: 16.3, tmin: -3.5, cases: 1600 },
+          { year: 2023, cause: 'Вирус B', annual: 5.7, summer: 13.1, winter: -0.7, tmax: 16.3, tmin: -3.5, cases: 1200 },
+          { year: 2023, cause: 'Инфекция C', annual: 5.7, summer: 13.1, winter: -0.7, tmax: 16.3, tmin: -3.5, cases: 630 },
+          { year: 2023, cause: 'Другие', annual: 5.7, summer: 13.1, winter: -0.7, tmax: 16.3, tmin: -3.5, cases: 370 },
+          { year: 2024, cause: 'Вирус A', annual: 5.85, summer: 13.3, winter: -0.6, tmax: 16.5, tmin: -3.4, cases: 1680 },
+          { year: 2024, cause: 'Вирус B', annual: 5.85, summer: 13.3, winter: -0.6, tmax: 16.5, tmin: -3.4, cases: 1250 },
+          { year: 2024, cause: 'Инфекция C', annual: 5.85, summer: 13.3, winter: -0.6, tmax: 16.5, tmin: -3.4, cases: 660 },
+          { year: 2024, cause: 'Другие', annual: 5.85, summer: 13.3, winter: -0.6, tmax: 16.5, tmin: -3.4, cases: 400 }
         ]
       }
-    },
-    { 
-      id: "temp-health-2", 
-      title: "Влияние на сердечно-сосудистые заболевания", 
-      chartType: "line",
-      chartData: {
-        labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
-        datasets: [
-          { name: 'Смертность от ССЗ на 1000 чел.', data: [45, 46, 47, 46, 45, 44] },
-          { name: 'Средняя температура, °C', data: [5.2, 5.8, 6.1, 5.5, 5.9, 6.2] }
-        ]
-      }
-    },
+    }
   ],
   "temperature-livingStandard": [
-    { 
-      id: "temp-living-1", 
-      title: "Расходы на отопление", 
-      chartType: "line",
-      chartData: {
-        labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
-        datasets: [
-          { name: 'Расходы на ЖКХ, %', data: [22, 23, 24, 25, 26, 27] },
-          { name: 'Средняя температура, °C', data: [5.2, 5.8, 6.1, 5.5, 5.9, 6.2] }
+    {
+      id: "rel-temp-living-1",
+      title: "Взаимосвязь температуры и уровня жизни",
+      chartType: "combinedPlotA",
+      combinedPlotAData: {
+        title: "Взаимосвязь температуры и состава доходов",
+        data: [
+          { year: '2020', income: 610, expense: 605, annual: 6.1, summer: 13.4, winter: -0.2, tmax: 16.7, tmin: -4.3 },
+          { year: '2021', income: 650, expense: 630, annual: 6.3, summer: 13.7, winter: 0.0, tmax: 17.0, tmin: -3.9 },
+          { year: '2022', income: 670, expense: 645, annual: 6.6, summer: 14.0, winter: 0.3, tmax: 17.4, tmin: -3.5 },
+          { year: '2023', income: 700, expense: 680, annual: 6.9, summer: 14.4, winter: 0.6, tmax: 17.9, tmin: -3.1 },
+          { year: '2024', income: 730, expense: 710, annual: 7.1, summer: 14.8, winter: 0.9, tmax: 18.3, tmin: -2.7 }
         ]
       }
-    },
+    }
   ],
-  "precipitation-healthcare": [
-    { 
-      id: "prec-health-1", 
-      title: "Осадки и респираторные заболевания", 
-      chartType: "line",
-      chartData: {
-        labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
-        datasets: [
-          { name: 'Заболевания органов дыхания на 1000 чел.', data: [145, 158, 172, 165, 152, 148] },
-          { name: 'Осадки, мм', data: [550, 580, 520, 490, 510, 530] }
-        ]
-      }
-    },
-  ],
-  "precipitation-economy": [
-    { 
-      id: "prec-econ-1", 
-      title: "Влияние осадков на сельское хозяйство", 
-      chartType: "line",
-      chartData: {
-        labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
-        datasets: [
-          { name: 'Урожайность зерновых, ц/га', data: [28, 30, 25, 22, 26, 29] },
-          { name: 'Осадки, мм', data: [550, 580, 520, 490, 510, 530] }
-        ]
-      }
-    },
-  ],
-  "precipitation-infrastructure": [
-    { 
-      id: "prec-infra-1", 
-      title: "Осадки и состояние дорог", 
-      chartType: "line",
-      chartData: {
-        labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
-        datasets: [
-          { name: 'Дороги требующие ремонта, %', data: [35, 38, 42, 40, 38, 36] },
-          { name: 'Осадки, мм', data: [550, 580, 520, 490, 510, 530] }
-        ]
-      }
-    },
-  ],
-  "wind-healthcare": [
-    { 
-      id: "wind-health-1", 
-      title: "Ветер и респираторные заболевания", 
-      chartType: "line",
-      chartData: {
-        labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
-        datasets: [
-          { name: 'Заболевания органов дыхания на 1000 чел.', data: [145, 158, 172, 165, 152, 148] },
-          { name: 'Скорость ветра, м/с', data: [3.2, 3.5, 3.8, 3.4, 3.1, 3.3] }
-        ]
-      }
-    },
-  ],
-  "disasters-demography": [
-    { 
-      id: "dis-demo-1", 
-      title: "Катаклизмы и демография", 
-      chartType: "line",
-      chartData: {
-        labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
-        datasets: [
-          { name: 'Миграционный прирост', data: [-3000, -3000, -2400, -1600, -400, 600] },
-          { name: 'Катаклизмы, случаев', data: [5, 7, 4, 3, 2, 1] }
-        ]
-      }
-    },
-  ],
-  "disasters-healthcare": [
-    { 
-      id: "dis-health-1", 
-      title: "Медицинская нагрузка при катаклизмах", 
-      chartType: "line",
-      chartData: {
-        labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
-        datasets: [
-          { name: 'Обращения в скорую помощь', data: [125000, 138000, 132000, 128000, 122000, 118000] },
-          { name: 'Катаклизмы, случаев', data: [5, 7, 4, 3, 2, 1] }
-        ]
-      }
-    },
-  ],
-  "disasters-livingStandard": [
-    { 
-      id: "dis-living-1", 
-      title: "Влияние на уровень жизни", 
-      chartType: "line",
-      chartData: {
-        labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
-        datasets: [
-          { name: 'Процент населения за чертой бедности', data: [13.2, 13.5, 13.8, 13.1, 12.5, 11.9] },
-          { name: 'Катаклизмы, случаев', data: [5, 7, 4, 3, 2, 1] }
-        ]
-      }
-    },
-  ],
-  "disasters-economy": [
-    { 
-      id: "dis-econ-1", 
-      title: "Экономический ущерб от катаклизмов", 
-      chartType: "line",
-      chartData: {
-        labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
-        datasets: [
-          { name: 'Ущерб, млн руб.', data: [250, 380, 210, 150, 90, 45] },
-          { name: 'Катаклизмы, случаев', data: [5, 7, 4, 3, 2, 1] }
-        ]
-      }
-    },
-  ],
-  "disasters-infrastructure": [
-    { 
-      id: "dis-infra-1", 
-      title: "Повреждения инфраструктуры", 
-      chartType: "line",
-      chartData: {
-        labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
-        datasets: [
-          { name: 'Повреждения инфраструктуры, случаев', data: [45, 68, 42, 32, 18, 12] },
-          { name: 'Катаклизмы, случаев', data: [5, 7, 4, 3, 2, 1] }
-        ]
-      }
-    },
-  ],
-  "ecology-demography": [
-    { 
-      id: "eco-demo-1", 
-      title: "Экология и миграция населения", 
-      chartType: "line",
-      chartData: {
-        labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
-        datasets: [
-          { name: 'Миграционный прирост', data: [-3000, -3000, -2400, -1600, -400, 600] },
-          { name: 'Индекс качества воздуха', data: [72, 68, 75, 78, 82, 85] }
-        ]
-      }
-    },
-  ],
-  "ecology-healthcare": [
-    { 
-      id: "eco-health-1", 
-      title: "Качество воздуха и заболеваемость", 
-      chartType: "line",
-      chartData: {
-        labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
-        datasets: [
-          { name: 'Заболевания органов дыхания на 1000 чел.', data: [145, 158, 172, 165, 152, 148] },
-          { name: 'Индекс качества воздуха', data: [72, 68, 75, 78, 82, 85] }
-        ]
-      }
-    },
-  ],
-  "ecology-livingStandard": [
-    { 
-      id: "eco-living-1", 
-      title: "Экология и качество жизни", 
-      chartType: "line",
-      chartData: {
-        labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
-        datasets: [
-          { name: 'Индекс качества жизни', data: [65, 63, 68, 72, 75, 78] },
-          { name: 'Индекс качества воздуха', data: [72, 68, 75, 78, 82, 85] }
-        ]
-      }
-    },
-  ],
+  "precipitation-healthcare": [],
+  "precipitation-economy": [],
+  "precipitation-infrastructure": [],
+  "wind-healthcare": [],
+  "disasters-demography": [],
+  "disasters-healthcare": [],
+  "disasters-livingStandard": [],
+  "disasters-economy": [],
+  "disasters-infrastructure": [],
+  "ecology-demography": [],
+  "ecology-healthcare": [],
+  "ecology-livingStandard": [],
 };

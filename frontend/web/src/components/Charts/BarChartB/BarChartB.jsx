@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ReactECharts from 'echarts-for-react';
 import { useChartResize } from '../../../hooks/useChartResize';
 import {
-  getTitleConfig,
   TOOLTIP_CONFIG,
   TEXT_STYLES,
   TIMELINE_CONFIG,
@@ -14,13 +13,13 @@ import {
 } from '../chartConfig';
 import styles from './BarChartB.module.scss';
 
-const BarChartB = ({ 
-  title, 
-  timelineLabels = [], 
-  categories = [], // возрастные группы: ['0–4', '5–9', '10–14', ...]
-  legendItems = ['Мужчины', 'Женщины'],
-  timelineData = [] // массив данных для каждого года
-}) => {
+const BarChartB = ({
+                     title,
+                     timelineLabels = [],
+                     categories = [], // возрастные группы: ['0–4', '5–9', '10–14', ...]
+                     legendItems = ['Мужчины', 'Женщины'],
+                     timelineData = [] // массив данных для каждого года
+                   }) => {
   const chartRef = useRef(null);
   useChartResize(chartRef);
 
@@ -30,7 +29,7 @@ const BarChartB = ({
         ...TIMELINE_CONFIG,
         data: timelineLabels
       },
-      title: getTitleConfig(title),
+      title: {},
       tooltip: {
         ...TOOLTIP_CONFIG,
         trigger: 'axis',
@@ -45,19 +44,41 @@ const BarChartB = ({
       },
       legend: {
         data: legendItems,
-        top: 60,
+        top: 20,
         left: 'center',
         textStyle: TEXT_STYLES.legend
       },
       grid: {
         ...GRID_CONFIG,
-        bottom: 80
+        left: '12%',
+        right: '12%',
+        bottom: 80,
+        containLabel: true
       },
       xAxis: [{
         type: 'value',
-        axisLine: AXIS_LINE_STYLE,
+        boundaryGap: ['6%', '6%'],
+        min: function (value) {
+          const rawMin = value.min || 0;
+          const rawMax = value.max || 0;
+          const m = Math.max(Math.abs(rawMin), Math.abs(rawMax));
+          const padded = m === 0 ? 1 : m * 1.15; // запас 15%
+          return -padded;
+        },
+        max: function (value) {
+          const rawMin = value.min || 0;
+          const rawMax = value.max || 0;
+          const m = Math.max(Math.abs(rawMin), Math.abs(rawMax));
+          const padded = m === 0 ? 1 : m * 1.15;
+          return padded;
+        },
+        axisLine: {
+          ...AXIS_LINE_STYLE,
+          onZero: true
+        },
         axisLabel: {
           ...TEXT_STYLES.axis,
+          margin: 8, // чтобы подписи имели отступ от оси/баров
           formatter: value => Math.abs(value)
         },
         splitLine: SPLIT_LINE_STYLE
@@ -66,7 +87,10 @@ const BarChartB = ({
         type: 'category',
         axisTick: { show: false },
         data: categories,
-        axisLine: AXIS_LINE_STYLE,
+        axisLine: {
+          ...AXIS_LINE_STYLE,
+          onZero: true
+        },
         axisLabel: TEXT_STYLES.axis
       }],
       series: [
@@ -74,6 +98,8 @@ const BarChartB = ({
           name: legendItems[0] || 'Мужчины',
           type: 'bar',
           stack: 'Total',
+          barCategoryGap: '30%',
+          barMaxWidth: 20,
           label: {
             show: true,
             position: 'left',
@@ -87,12 +113,26 @@ const BarChartB = ({
           },
           itemStyle: {
             color: '#5B8DEF'
+          },
+          markLine: {
+            silent: true,
+            symbol: 'none',
+            z: 10,
+            lineStyle: {
+              color: '#9CA3AF',
+              width: 2,
+              type: 'solid',
+              opacity: 0.95
+            },
+            data: [{ xAxis: 0 }]
           }
         },
         {
           name: legendItems[1] || 'Женщины',
           type: 'bar',
           stack: 'Total',
+          barCategoryGap: '30%',
+          barMaxWidth: 20,
           label: {
             show: true,
             position: 'right',
@@ -109,15 +149,18 @@ const BarChartB = ({
         }
       ]
     },
-    options: timelineData
+    options: timelineData.map((o, i) => ({
+      ...o,
+      title: { text: timelineLabels[i] || '', left: 'center', top: 10, textStyle: TEXT_STYLES.axis }
+    }))
   };
 
   return (
     <div className={styles.barChartB}>
-      <ReactECharts 
-        ref={chartRef} 
-        option={option} 
-        style={{ height: '100%', width: '100%', minHeight: '600px' }} 
+      <ReactECharts
+        ref={chartRef}
+        option={option}
+        style={{ height: '100%', width: '100%', minHeight: '600px' }}
       />
     </div>
   );

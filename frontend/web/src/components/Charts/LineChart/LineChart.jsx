@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ReactECharts from 'echarts-for-react';
 import { useChartResize } from '../../../hooks/useChartResize';
 import {
-  getTitleConfig,
   TOOLTIP_CONFIG,
   TEXT_STYLES,
   GRID_CONFIG,
@@ -17,13 +16,12 @@ const LineChart = ({ title, labels = [], datasets = [] }) => {
   useChartResize(chartRef);
 
   const option = {
-    title: getTitleConfig(title),
     tooltip: {
       ...TOOLTIP_CONFIG,
       trigger: 'axis'
     },
     legend: {
-      top: 60,
+      top: 20,
       left: 'center',
       textStyle: TEXT_STYLES.legend
     },

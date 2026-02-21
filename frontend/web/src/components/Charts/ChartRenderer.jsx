@@ -6,7 +6,12 @@ import {
   BarChartA,
   BarChartB,
   StackPlot,
-  WindPlot
+  WindPlot,
+  ProgramsPlot,
+  WaffleChart,
+  ScatterPlot,
+  CombinedPlotA,
+  CombinedPlotB
 } from './index';
 
 /**
@@ -18,7 +23,13 @@ const CHART_COMPONENTS = {
   bar: BarChartA,
   barB: BarChartB,
   stackPlot: StackPlot,
-  windPlot: WindPlot
+  windPlot: WindPlot,
+  programsPlot: ProgramsPlot,
+  waffleChart: WaffleChart,
+  waffle: WaffleChart,
+  scatterPlot: ScatterPlot,
+  combinedPlotA: CombinedPlotA,
+  combinedPlotB: CombinedPlotB
 };
 
 /**
@@ -55,6 +66,24 @@ const ChartRenderer = ({ block }) => {
     case 'pie':
       chartProps = { ...chartProps, ...block.pieData };
       break;
+    case 'programsPlot':
+      chartProps = { ...chartProps, ...block.programsPlotData };
+      break;
+    case 'waffleChart':
+      chartProps = { ...chartProps, ...block.waffleChartData };
+      break;
+    case 'waffle':
+      chartProps = { ...chartProps, ...block.waffleData };
+      break;
+    case 'scatterPlot':
+      chartProps = { ...chartProps, ...block.scatterPlotData };
+      break;
+    case 'combinedPlotA':
+      chartProps = { ...chartProps, ...block.combinedPlotAData };
+      break;
+    case 'combinedPlotB':
+      chartProps = { ...chartProps, ...block.combinedPlotBData };
+      break;
     case 'line':
     default:
       if (block.chartData) {
@@ -79,7 +108,13 @@ ChartRenderer.propTypes = {
     windPlotData: PropTypes.object,
     barBData: PropTypes.object,
     barData: PropTypes.object,
-    pieData: PropTypes.object
+    pieData: PropTypes.object,
+    programsPlotData: PropTypes.object,
+    waffleChartData: PropTypes.object,
+    waffleData: PropTypes.object,
+    scatterPlotData: PropTypes.object,
+    combinedPlotAData: PropTypes.object,
+    combinedPlotBData: PropTypes.object
   }).isRequired
 };
 

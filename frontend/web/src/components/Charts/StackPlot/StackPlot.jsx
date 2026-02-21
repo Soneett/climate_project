@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ReactECharts from 'echarts-for-react';
 import { useChartResize } from '../../../hooks/useChartResize';
 import {
-  getTitleConfig,
   TOOLTIP_CONFIG,
   TEXT_STYLES,
   TIMELINE_CONFIG,
@@ -28,7 +27,7 @@ const StackPlot = ({
         ...TIMELINE_CONFIG,
         data: timelineLabels
       },
-      title: getTitleConfig(title),
+      title: {},
       tooltip: {
         ...TOOLTIP_CONFIG,
         trigger: 'axis',
@@ -42,7 +41,7 @@ const StackPlot = ({
       },
       legend: {
         data: legendItems,
-        top: 60,
+        top: 20,
         left: 'center',
         textStyle: TEXT_STYLES.legend
       },
@@ -92,7 +91,10 @@ const StackPlot = ({
         } : { show: false }
       }))
     },
-    options: timelineData
+    options: timelineData.map((o, i) => ({
+      ...o,
+      title: { text: timelineLabels[i] || '', left: 'center', top: 10, textStyle: TEXT_STYLES.axis }
+    }))
   };
 
   return (

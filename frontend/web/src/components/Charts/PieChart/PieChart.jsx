@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ReactECharts from 'echarts-for-react';
 import { useChartResize } from '../../../hooks/useChartResize';
 import {
-  getTitleConfig,
   TOOLTIP_CONFIG,
   TEXT_STYLES,
   TIMELINE_CONFIG
@@ -20,7 +19,6 @@ const PieChart = ({ title, timelineLabels = [], legendLeftItems = [], legendRigh
         ...TIMELINE_CONFIG,
         data: timelineLabels
       },
-      title: getTitleConfig(title),
       tooltip: { 
         ...TOOLTIP_CONFIG,
         trigger: 'item', 
@@ -30,14 +28,14 @@ const PieChart = ({ title, timelineLabels = [], legendLeftItems = [], legendRigh
         { 
           orient: 'vertical', 
           left: '5%', 
-          top: 60, 
+          top: 20, 
           data: legendLeftItems,
           textStyle: TEXT_STYLES.legendSmall
         },
         { 
           orient: 'vertical', 
           right: '5%', 
-          top: 60, 
+          top: 20, 
           data: legendRightItems,
           textStyle: TEXT_STYLES.legendSmall
         }
@@ -57,7 +55,10 @@ const PieChart = ({ title, timelineLabels = [], legendLeftItems = [], legendRigh
         label: TEXT_STYLES.legendSmall
       }]
     },
-    options: timelineData
+    options: timelineData.map((o, i) => ({
+      ...o,
+      title: { text: timelineLabels[i] || '', left: 'center', top: 10, textStyle: TEXT_STYLES.axis }
+    }))
   };
 
   return (
