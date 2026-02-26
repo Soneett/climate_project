@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from models import UnitModel, CreateUnitModel, UpdateUnitModel, QueryParamsModel
@@ -23,18 +23,22 @@ async def get_unit(
 
 @router.get("/get_chunk", response_model=list[UnitModel])
 async def get_units(
-    params: QueryParamsModel = Body(default=None),
+    limit: int | None = Query(None, ge=0),
+    offset: int | None = Query(None, ge=0),
     session: Session = Depends(get_db),
     repo: UnitRepo = Depends(get_repo),
 ):
+    params = QueryParamsModel(limit=limit, offset=offset)
     return repo.get_chunk(session, params)
 
 @router.get("/get_count", response_model=int)
 async def get_units_count(
-    params: QueryParamsModel = Body(default=None),
+    limit: int | None = Query(None, ge=0),
+    offset: int | None = Query(None, ge=0),
     session: Session = Depends(get_db),
     repo: UnitRepo = Depends(get_repo),
 ):
+    params = QueryParamsModel(limit=limit, offset=offset)
     return repo.get_count(session, params)
 
 @router.post("/create", response_model=UnitModel)

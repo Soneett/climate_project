@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Body, Query
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from models import RegionModel, CreateRegionModel, UpdateRegionModel, QueryParamsModel
@@ -23,18 +23,22 @@ async def get_region(
 
 @router.get("/get_chunk", response_model=list[RegionModel])
 async def get_regions(
-    params: QueryParamsModel = Body(default=None),
+    limit: int | None = Query(None, ge=0),
+    offset: int | None = Query(None, ge=0),
     session: Session = Depends(get_db),
     repo: RegionRepo = Depends(get_repo),
 ):
+    params = QueryParamsModel(limit=limit, offset=offset)
     return repo.get_chunk(session, params)
 
 @router.get("/get_count", response_model=int)
 async def get_regions_count(
-    params: QueryParamsModel = Body(default=None),
+    limit: int | None = Query(None, ge=0),
+    offset: int | None = Query(None, ge=0),
     session: Session = Depends(get_db),
     repo: RegionRepo = Depends(get_repo),
 ):
+    params = QueryParamsModel(limit=limit, offset=offset)
     return repo.get_count(session, params)
 
 @router.post("/create", response_model=RegionModel)

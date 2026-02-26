@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from models import RegionalProgramModel, CreateRegionalProgramModel, UpdateRegionalProgramModel, QueryParamsModel
@@ -23,10 +23,12 @@ async def get_program(
 
 @router.get("/get_chunk", response_model=list[RegionalProgramModel])
 async def get_programs(
-    params: QueryParamsModel = Body(default=None),
+    limit: int | None = Query(None, ge=0),
+    offset: int | None = Query(None, ge=0),
     session: Session = Depends(get_db),
     repo: RegionalProgramRepo = Depends(get_repo),
 ):
+    params = QueryParamsModel(limit=limit, offset=offset)
     return repo.get_chunk(session, params)
 
 @router.post("/create", response_model=RegionalProgramModel)

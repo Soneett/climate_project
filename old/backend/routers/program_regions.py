@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from models import ProgramRegionModel, CreateProgramRegionModel, UpdateProgramRegionModel, QueryParamsModel
@@ -15,10 +15,12 @@ def get_repo() -> ProgramRegionRepo:
 
 @router.get("/get_chunk", response_model=list[ProgramRegionModel])
 async def get_program_region_links(
-    params: QueryParamsModel = Body(default=None),
+    limit: int | None = Query(None, ge=0),
+    offset: int | None = Query(None, ge=0),
     session: Session = Depends(get_db),
     repo: ProgramRegionRepo = Depends(get_repo),
 ):
+    params = QueryParamsModel(limit=limit, offset=offset)
     return repo.get_chunk(session, params)
 
 @router.post("/create", response_model=ProgramRegionModel)

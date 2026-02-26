@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from models import IndicatorValueModel, CreateIndicatorValueModel, UpdateIndicatorValueModel, QueryParamsModel
@@ -23,18 +23,22 @@ async def get_indicator_value(
 
 @router.get("/get_chunk", response_model=list[IndicatorValueModel])
 async def get_indicator_values(
-    params: QueryParamsModel = Body(default=None),
+    limit: int | None = Query(None, ge=0),
+    offset: int | None = Query(None, ge=0),
     session: Session = Depends(get_db),
     repo: IndicatorValueRepo = Depends(get_repo),
 ):
+    params = QueryParamsModel(limit=limit, offset=offset)
     return repo.get_chunk(session, params)
 
 @router.get("/get_count", response_model=int)
 async def get_indicator_values_count(
-    params: QueryParamsModel = Body(default=None),
+    limit: int | None = Query(None, ge=0),
+    offset: int | None = Query(None, ge=0),
     session: Session = Depends(get_db),
     repo: IndicatorValueRepo = Depends(get_repo),
 ):
+    params = QueryParamsModel(limit=limit, offset=offset)
     return repo.get_count(session, params)
 
 @router.post("/create", response_model=IndicatorValueModel)
