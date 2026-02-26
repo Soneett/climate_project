@@ -1,7 +1,16 @@
+from collections import defaultdict
+
 from sqlalchemy.orm import Session
 
-from models import ChartDataResponseModel, ChartPointModel, ChartSeriesModel
+from models import (
+    ChartDataResponseModel,
+    ChartPointModel,
+    ChartSeriesModel,
+    PopulationPyramidPointModel,
+    PopulationPyramidResponseModel,
+)
 from repo.analytics import AnalyticsRepo
+
 
 class AnalyticsService:
     def __init__(self, repo: AnalyticsRepo | None = None):
@@ -65,4 +74,61 @@ class AnalyticsService:
             region_id=region.id,
             region_name=region.name,
             series=ordered_series,
+        )
+
+    def get_population_pyramid(
+        self,
+        session: Session,
+        region_id: int,
+        year: int | None,
+    ) -> PopulationPyramidResponseModel:
+        region = self.repo.get_region(session=session, region_id=region_id)
+        if region is None:
+            return PopulationPyramidResponseModel(
+                region_id=region_id,
+                region_name="Неизвестный регион",
+                year=year or 0,
+                points=[],
+            )
+
+        target_year = year
+        if target_year is None:
+            years = self.repo.get_population_years(session=session, region_id=region_id)
+            if not years:
+                return PopulationPyramidResponseModel(
+                    region_id=region.id,
+                    region_name=region.name,
+                    year=0,
+                    points=[],
+                )
+            target_year = years[0]
+
+        rows = self.repo.get_population_rows(
+            session=session,
+            region_id=region_id,
+            year=target_year,
+        )
+        points_map: dict[str, dict[str, float]] = defaultdict(lambda: {"M": 0.0, "F": 0.0, "T": 0.0})
+
+        for row in rows:
+            points_map[row.age_code][row.sex_code] = row.value
+
+        points: list[PopulationPyramidPointModel] = []
+        for age_code in sorted(points_map.keys()):
+            bucket = points_map[age_code]
+            total = bucket["T"] if bucket["T"] else bucket["M"] + bucket["F"]
+            points.append(
+                PopulationPyramidPointModel(
+                    age_code=age_code,
+                    male=bucket["M"],
+                    female=bucket["F"],
+                    total=total,
+                )
+            )
+
+        return PopulationPyramidResponseModel(
+            region_id=region.id,
+            region_name=region.name,
+            year=target_year,
+            points=points,
         )

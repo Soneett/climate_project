@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 
 from tables.indicators import IndicatorsTable
 from tables.indicator_values import IndicatorValuesTable
+from tables.population_age_sex import PopulationAgeSexTable
 from tables.regions import RegionsTable
 
 
@@ -44,5 +45,35 @@ class AnalyticsRepo:
                 IndicatorValuesTable.is_deleted == False,
             )
             .order_by(IndicatorValuesTable.year.asc())
+            .all()
+        )
+
+    def get_population_years(self, session: Session, region_id: int) -> list[int]:
+        rows = (
+            session.query(PopulationAgeSexTable.year)
+            .filter(
+                PopulationAgeSexTable.region_id == region_id,
+                PopulationAgeSexTable.is_deleted == False,
+            )
+            .distinct()
+            .order_by(PopulationAgeSexTable.year.desc())
+            .all()
+        )
+        return [row[0] for row in rows]
+
+    def get_population_rows(
+        self,
+        session: Session,
+        region_id: int,
+        year: int,
+    ) -> list[PopulationAgeSexTable]:
+        return (
+            session.query(PopulationAgeSexTable)
+            .filter(
+                PopulationAgeSexTable.region_id == region_id,
+                PopulationAgeSexTable.year == year,
+                PopulationAgeSexTable.is_deleted == False,
+            )
+            .order_by(PopulationAgeSexTable.age_code.asc())
             .all()
         )

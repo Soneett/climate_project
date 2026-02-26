@@ -12,5 +12,18 @@ class ChartSeriesModel(BaseModel):
 class ChartDataResponseModel(BaseModel):
     region_id: int
     region_name: str
-    source_id: int
     series: list[ChartSeriesModel]
+
+
+class PopulationPyramidPointModel(BaseModel):
+    age_code: str
+    male: float
+    female: float
+    total: float
+
+
+class PopulationPyramidResponseModel(BaseModel):
+    region_id: int
+    region_name: str
+    year: int
+    points: list[PopulationPyramidPointModel]

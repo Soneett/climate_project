@@ -19,7 +19,7 @@ def main():
         session.flush()
         load_indicators(session)
         session.flush()
-        #load_indicator_values(session)
+        load_indicator_values(session)
         load_population_age_sex(session)
 
         session.commit()
