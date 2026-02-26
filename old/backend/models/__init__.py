@@ -10,3 +10,4 @@ from .population_age_sex import CreatePopulationAgeSexModel, PopulationAgeSexMod
 from .regional_programs import CreateRegionalProgramModel, RegionalProgramModel, UpdateRegionalProgramModel
 from .program_regions import CreateProgramRegionModel, ProgramRegionModel, UpdateProgramRegionModel
 from .events import CreateEventModel, EventModel, UpdateEventModel
+from .analytics import ChartPointModel, ChartSeriesModel, ChartDataResponseModel

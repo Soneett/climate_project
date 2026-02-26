@@ -8,3 +8,4 @@ from .population_age_sex import router as population_age_sex_router
 from .regional_programs import router as regional_programs_router
 from .program_regions import router as program_regions_router
 from .events import router as events_router
+from .analytics import router as analytics_router

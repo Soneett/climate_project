@@ -1,4 +1,8 @@
+from pathlib import Path
+
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from database import engine
 from tables.base import Base
@@ -13,7 +17,8 @@ from routers import (
     population_age_sex_router,
     regional_programs_router,
     program_regions_router,
-    events_router
+    events_router,
+    analytics_router,
 )
 
 @asynccontextmanager
@@ -29,6 +34,14 @@ app = FastAPI(
     description="API для работы с климатическими и региональными данными",
     version="1.0.0",
     lifespan=lifespan
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 @app.get("/", response_model=str)
@@ -61,7 +74,8 @@ async def api_info():
             "events": "/events",
             "data_sources": "/data_sources",
             "indicator_subtypes": "/indicator_subtypes",
-            "program_region_links": "/program_regions"
+            "program_region_links": "/program_regions",
+            "analytics": "/analytics",
         },
         "documentation": "/docs",
         "redoc": "/redoc"
