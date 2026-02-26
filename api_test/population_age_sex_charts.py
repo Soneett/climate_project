@@ -48,7 +48,7 @@ def build_chart(payload: dict, output_path: Path):
 
 def main():
     parser = argparse.ArgumentParser(description="Проверка данных population_age_sex через API")
-    parser.add_argument("--api-url", default="http://127.0.0.1:8080", help="Базовый URL backend API")
+    parser.add_argument("--api-url", default="http://127.0.0.1:8081", help="Базовый URL backend API")
     parser.add_argument("--region-id", type=int, required=True, help="ID региона")
     parser.add_argument("--year", type=int, default=None, help="Год")
     parser.add_argument("--output", default="api_test/artifacts/population_pyramid.png", help="Путь к PNG")

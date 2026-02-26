@@ -16,7 +16,7 @@ def parse_population_rows(
         return
 
     existing = {
-        (p.year, p.age, p.sex): p
+        (p.year, p.age_code, p.sex_code): p
         for p in session.query(PopulationAgeSexTable)
         .filter_by(region_id=region_id)
         .all()
