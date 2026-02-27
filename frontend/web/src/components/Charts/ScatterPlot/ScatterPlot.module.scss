@@ -1,0 +1,147 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.scatterPlot {
+  width: 100%;
+  height: 80%;
+  min-height: 550px;
+  background: $color-bg-primary;
+  border-radius: $border-radius-md;
+  padding: $spacing-4;
+  box-shadow: $shadow-sm;
+  display: flex;
+  flex-direction: column;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.yearFilter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.filterLabel {
+  font-family: 'Raleway', sans-serif;
+  font-size: 13px;
+  color: #6B7280;
+  margin-right: 4px;
+}
+
+.yearBtn {
+  font-family: 'Raleway', sans-serif;
+  font-size: 12px;
+  padding: 4px 10px;
+  border: 1px solid #D1D5DB;
+  border-radius: 4px;
+  background: #fff;
+  color: #2C3E38;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: #f0f4f3;
+  }
+}
+
+.yearBtnActive {
+  background: #366164;
+  color: #fff;
+  border-color: #366164;
+}
+
+.tempSelector {
+  position: relative;
+}
+
+.tempBtn {
+  font-family: 'Raleway', sans-serif;
+  font-size: 13px;
+  padding: 5px 12px;
+  border: 1px solid #D1D5DB;
+  border-radius: 4px;
+  background: #fff;
+  color: #2C3E38;
+  cursor: pointer;
+
+  &:hover {
+    background: #f0f4f3;
+  }
+}
+
+.tempMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 10;
+  background: #fff;
+  border: 1px solid #D1D5DB;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  min-width: 200px;
+}
+
+.tempMenuItem {
+  font-family: 'Raleway', sans-serif;
+  font-size: 13px;
+  padding: 7px 14px;
+  cursor: pointer;
+  color: #2C3E38;
+
+  &:hover {
+    background: #f0f4f3;
+  }
+}
+
+.tempMenuItemActive {
+  color: #366164;
+  font-weight: 600;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 13px;
+  color: #2C3E38;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+
+  &:hover {
+    background: #f0f4f3;
+  }
+}
+
+.legendItemHidden {
+  opacity: 0.4;
+}
+
+.legendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
