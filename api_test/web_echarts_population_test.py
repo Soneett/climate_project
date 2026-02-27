@@ -73,7 +73,6 @@ def render_and_capture(option: dict, output_all: Path, output_filtered: Path):
         page.wait_for_timeout(1200)
         page.screenshot(path=str(output_all), full_page=True)
 
-        # Интерактивная фильтрация: скрыть ряд "Женщины"
         page.evaluate("window.chart.dispatchAction({type:'legendUnSelect', name:'Женщины'})")
         page.wait_for_timeout(700)
         page.screenshot(path=str(output_filtered), full_page=True)
@@ -82,7 +81,7 @@ def render_and_capture(option: dict, output_all: Path, output_filtered: Path):
 
 def main():
     parser = argparse.ArgumentParser(description="Проверка отрисовки population_age_sex в браузере (ECharts)")
-    parser.add_argument("--api-url", default="http://127.0.0.1:8080")
+    parser.add_argument("--api-url", default="http://127.0.0.1:8081")
     parser.add_argument("--region-id", type=int, required=True)
     parser.add_argument("--year", type=int, default=None)
     parser.add_argument("--output-all", default="api_test/artifacts/population_echarts_all.png")

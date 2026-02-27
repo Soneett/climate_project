@@ -70,7 +70,7 @@ def render_and_capture(option: dict, output_all: Path, output_filtered: Path):
 
 def main():
     parser = argparse.ArgumentParser(description="Проверка отрисовки chart_data (indicator_values) в браузере (ECharts)")
-    parser.add_argument("--api-url", default="http://127.0.0.1:8080")
+    parser.add_argument("--api-url", default="http://127.0.0.1:8081")
     parser.add_argument("--region-id", type=int, required=True)
     parser.add_argument("--indicator-ids", type=int, nargs="+", required=True)
     parser.add_argument("--output-all", default="api_test/artifacts/indicator_values_line_all.png")
