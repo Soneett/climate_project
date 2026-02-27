@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Test Charts</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f6f8fb; color: #1f2937; }
+    h1 { margin-top: 0; }
+    .card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    .controls { display: grid; grid-template-columns: repeat(4, minmax(150px, 1fr)); gap: 10px; align-items: end; }
+    label { font-size: 12px; color: #475569; display: block; margin-bottom: 4px; }
+    input, button { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 8px; }
+    button { cursor: pointer; background: #1d4ed8; color: white; border: none; }
+    .chart { height: 560px; }
+    .small { font-size: 12px; color: #64748b; }
+  </style>
+</head>
+<body>
+  <h1>Интерактивные графики из backend API</h1>
+
+  <div class="card">
+    <h2>1) Population age/sex (как BarChartB во фронтенде)</h2>
+    <div class="controls">
+      <div>
+        <label>Backend API URL</label>
+        <input id="apiUrl" value="http://127.0.0.1:8080" />
+      </div>
+      <div>
+        <label>Region ID</label>
+        <input id="regionId" type="number" value="1" />
+      </div>
+      <div>
+        <label>Year (пусто = последний)</label>
+        <input id="year" type="number" placeholder="например, 2023" />
+      </div>
+      <div>
+        <button id="loadPopulation">Загрузить population chart</button>
+      </div>
+    </div>
+    <p class="small">Можно интерактивно включать/выключать ряды через легенду, как на фронтенде.</p>
+    <div id="populationChart" class="chart"></div>
+  </div>
+
+  <div class="card">
+    <h2>2) Indicator values / chart_data (как LineChart во фронтенде)</h2>
+    <div class="controls">
+      <div>
+        <label>Region ID</label>
+        <input id="lineRegionId" type="number" value="1" />
+      </div>
+      <div style="grid-column: span 2;">
+        <label>Indicator IDs (через запятую)</label>
+        <input id="indicatorIds" value="1,2,3" />
+      </div>
+      <div>
+        <button id="loadLine">Загрузить indicator chart</button>
+      </div>
+    </div>
+    <p class="small">Легенда интерактивна: кликом можно скрывать/показывать линии.</p>
+    <div id="lineChart" class="chart"></div>
+  </div>
+
+  <script>
+    const populationChart = echarts.init(document.getElementById('populationChart'));
+    const lineChart = echarts.init(document.getElementById('lineChart'));
+
+    function getApiBase() {
+      return document.getElementById('apiUrl').value.replace(/\/$/, '');
+    }
+
+    async function loadPopulation() {
+      const apiBase = getApiBase();
+      const regionId = document.getElementById('regionId').value;
+      const year = document.getElementById('year').value;
+      const url = new URL(`${apiBase}/analytics/population_pyramid`);
+      url.searchParams.set('region_id', regionId);
+      if (year) url.searchParams.set('year', year);
+
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error('Population API error');
+      const payload = await resp.json();
+
+      const categories = payload.points.map((p) => p.age_code);
+      const male = payload.points.map((p) => -Number(p.male));
+      const female = payload.points.map((p) => Number(p.female));
+
+      populationChart.setOption({
+        title: { text: `Половозрастная структура: ${payload.region_name} (${payload.year})`, left: 'center' },
+        tooltip: {
+          trigger: 'axis', axisPointer: { type: 'shadow' },
+          formatter: (params) => params.map((p) => `${p.seriesName}: ${Math.abs(p.value)}`).join('<br/>')
+        },
+        legend: { data: ['Мужчины', 'Женщины'], top: 35 },
+        grid: { left: '4%', right: '4%', bottom: 30, top: 90, containLabel: true },
+        xAxis: {
+          type: 'value',
+          axisLabel: { formatter: (v) => Math.abs(v) }
+        },
+        yAxis: { type: 'category', data: categories },
+        series: [
+          { name: 'Мужчины', type: 'bar', stack: 'Total', data: male, itemStyle: { color: '#5B8DEF' } },
+          { name: 'Женщины', type: 'bar', stack: 'Total', data: female, itemStyle: { color: '#F472B6' } }
+        ]
+      }, true);
+    }
+
+    async function loadLine() {
+      const apiBase = getApiBase();
+      const regionId = document.getElementById('lineRegionId').value;
+      const raw = document.getElementById('indicatorIds').value;
+      const indicatorIds = raw.split(',').map((x) => x.trim()).filter(Boolean);
+
+      const url = new URL(`${apiBase}/analytics/chart_data`);
+      url.searchParams.set('region_id', regionId);
+      indicatorIds.forEach((id) => url.searchParams.append('indicator_ids', id));
+
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error('Chart data API error');
+      const payload = await resp.json();
+
+      const yearsSet = new Set();
+      payload.series.forEach((s) => s.points.forEach((p) => yearsSet.add(Number(p.year))));
+      const years = Array.from(yearsSet).sort((a, b) => a - b);
+
+      const series = payload.series.map((s) => {
+        const map = new Map(s.points.map((p) => [Number(p.year), Number(p.value)]));
+        return {
+          name: s.indicator_name,
+          type: 'line',
+          smooth: true,
+          data: years.map((y) => map.get(y) ?? null)
+        };
+      });
+
+      lineChart.setOption({
+        title: { text: `Индикаторы региона: ${payload.region_name}`, left: 'center' },
+        tooltip: { trigger: 'axis' },
+        legend: { data: series.map((s) => s.name), top: 35 },
+        grid: { left: '3%', right: '4%', bottom: '3%', top: 90, containLabel: true },
+        xAxis: { type: 'category', data: years.map(String) },
+        yAxis: { type: 'value' },
+        series
+      }, true);
+    }
+
+    document.getElementById('loadPopulation').addEventListener('click', () => loadPopulation().catch((e) => alert(e.message)));
+    document.getElementById('loadLine').addEventListener('click', () => loadLine().catch((e) => alert(e.message)));
+
+    window.addEventListener('resize', () => {
+      populationChart.resize();
+      lineChart.resize();
+    });
+
+    loadPopulation().catch(() => {});
+    loadLine().catch(() => {});
+  </script>
+</body>
+</html>
