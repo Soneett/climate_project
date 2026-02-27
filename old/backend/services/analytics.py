@@ -1,4 +1,5 @@
 from collections import defaultdict
+import re
 
 from sqlalchemy.orm import Session
 
@@ -10,6 +11,33 @@ from models import (
     PopulationPyramidResponseModel,
 )
 from repo.analytics import AnalyticsRepo
+
+def _age_sort_key(age_code: str) -> tuple[int, int, str]:
+    normalized = age_code.strip().replace('–', '-').replace('—', '-')
+
+    # Plain integer age: "1", "2"
+    if re.fullmatch(r"\d+", normalized):
+        value = int(normalized)
+        return (0, value, normalized)
+
+    # Ranges: "1-5", "5 - 12", "65+"
+    range_match = re.fullmatch(r"(\d+)\s*-\s*(\d+)", normalized)
+    if range_match:
+        start = int(range_match.group(1))
+        end = int(range_match.group(2))
+        return (1, start * 1000 + end, normalized)
+
+    plus_match = re.fullmatch(r"(\d+)\s*\+", normalized)
+    if plus_match:
+        start = int(plus_match.group(1))
+        return (2, start, normalized)
+
+    # Fallback for non-standard codes
+    first_number = re.search(r"\d+", normalized)
+    if first_number:
+        return (3, int(first_number.group(0)), normalized)
+
+    return (4, 10**9, normalized)
 
 
 class AnalyticsService:
@@ -114,7 +142,7 @@ class AnalyticsService:
             points_map[row.age_code][row.sex_code] = row.value
 
         points: list[PopulationPyramidPointModel] = []
-        for age_code in sorted(points_map.keys()):
+        for age_code in sorted(points_map.keys(), key=_age_sort_key):
             bucket = points_map[age_code]
             total = bucket["T"] if bucket["T"] else bucket["M"] + bucket["F"]
             points.append(

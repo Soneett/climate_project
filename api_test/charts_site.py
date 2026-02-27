@@ -1,23 +1,9 @@
 from __future__ import annotations
 
 import argparse
+from functools import partial
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-
-from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
-from fastapi.staticfiles import StaticFiles
-import uvicorn
-
-
-def create_app(site_dir: Path) -> FastAPI:
-    app = FastAPI(title="API Test Charts Site")
-
-    @app.get("/")
-    async def root() -> RedirectResponse:
-        return RedirectResponse(url="/site/index.html")
-
-    app.mount("/site", StaticFiles(directory=site_dir), name="site")
-    return app
 
 
 def main() -> None:
@@ -26,9 +12,17 @@ def main() -> None:
     parser.add_argument("--port", type=int, default=8090)
     args = parser.parse_args()
 
-    site_dir = Path(__file__).parent / "site"
-    app = create_app(site_dir)
-    uvicorn.run(app, host=args.host, port=args.port)
+    site_root = Path(__file__).parent
+    handler = partial(SimpleHTTPRequestHandler, directory=str(site_root))
+    server = ThreadingHTTPServer((args.host, args.port), handler)
+
+    print(f"Serving api_test at http://{args.host}:{args.port}/site/index.html")
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.server_close()
 
 
 if __name__ == "__main__":

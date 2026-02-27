@@ -6,155 +6,234 @@
   <title>API Test Charts</title>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f6f8fb; color: #1f2937; }
-    h1 { margin-top: 0; }
+    body { font-family: Arial, sans-serif; margin: 0; background: #f6f8fb; color: #1f2937; }
+    header { padding: 16px 20px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.08); position: sticky; top: 0; z-index: 2; }
+    h1 { margin: 0 0 8px; font-size: 24px; }
+    .top { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .top input, .top select { padding: 8px; border: 1px solid #cbd5e1; border-radius: 8px; }
+    .layout { display: grid; grid-template-columns: 260px 1fr; gap: 16px; padding: 16px; }
+    nav { background: #fff; border-radius: 12px; padding: 12px; height: fit-content; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    nav button { display: block; width: 100%; margin-bottom: 8px; padding: 10px; border: none; border-radius: 8px; text-align: left; cursor: pointer; background: #e2e8f0; }
+    nav button.active { background: #1d4ed8; color: #fff; }
     .card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
-    .controls { display: grid; grid-template-columns: repeat(4, minmax(150px, 1fr)); gap: 10px; align-items: end; }
-    label { font-size: 12px; color: #475569; display: block; margin-bottom: 4px; }
-    input, button { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 8px; }
-    button { cursor: pointer; background: #1d4ed8; color: white; border: none; }
-    .chart { height: 560px; }
+    .chart { height: 520px; }
     .small { font-size: 12px; color: #64748b; }
   </style>
 </head>
 <body>
-  <h1>Интерактивные графики из backend API</h1>
-
-  <div class="card">
-    <h2>1) Population age/sex (как BarChartB во фронтенде)</h2>
-    <div class="controls">
-      <div>
-        <label>Backend API URL</label>
-        <input id="apiUrl" value="http://127.0.0.1:8080" />
-      </div>
-      <div>
-        <label>Region ID</label>
-        <input id="regionId" type="number" value="1" />
-      </div>
-      <div>
-        <label>Year (пусто = последний)</label>
-        <input id="year" type="number" placeholder="например, 2023" />
-      </div>
-      <div>
-        <button id="loadPopulation">Загрузить population chart</button>
-      </div>
+  <header>
+    <h1>Интерактивные графики (данные из БД через backend API)</h1>
+    <div class="top">
+      <label>API URL <input id="apiUrl" value="http://127.0.0.1:8080"/></label>
+      <label>Region ID <input id="regionId" type="number" value="1"/></label>
+      <label>Год для пирамиды <input id="populationYear" type="number" placeholder="пусто = последний"/></label>
+      <button id="reloadBtn">Обновить страницу</button>
     </div>
-    <p class="small">Можно интерактивно включать/выключать ряды через легенду, как на фронтенде.</p>
-    <div id="populationChart" class="chart"></div>
-  </div>
+    <div class="small">Пользователь не вводит indicator_id вручную: для каждой страницы набор индикаторов выбирается автоматически по тематике/ключевым словам.</div>
+  </header>
 
-  <div class="card">
-    <h2>2) Indicator values / chart_data (как LineChart во фронтенде)</h2>
-    <div class="controls">
-      <div>
-        <label>Region ID</label>
-        <input id="lineRegionId" type="number" value="1" />
-      </div>
-      <div style="grid-column: span 2;">
-        <label>Indicator IDs (через запятую)</label>
-        <input id="indicatorIds" value="1,2,3" />
-      </div>
-      <div>
-        <button id="loadLine">Загрузить indicator chart</button>
-      </div>
-    </div>
-    <p class="small">Легенда интерактивна: кликом можно скрывать/показывать линии.</p>
-    <div id="lineChart" class="chart"></div>
+  <div class="layout">
+    <nav id="menu"></nav>
+    <main id="content"></main>
   </div>
 
   <script>
-    const populationChart = echarts.init(document.getElementById('populationChart'));
-    const lineChart = echarts.init(document.getElementById('lineChart'));
+    const PAGES = [
+      {
+        id: 'demography',
+        title: 'Демография',
+        subtitle: 'Пирамида + линии + pie по последнему году',
+        groups: [
+          { title: 'Рождаемость/смертность/миграция', match: ['рождаем', 'смерт', 'миграц'], max: 3 },
+          { title: 'Демография (дополнительно)', match: ['населен', 'демограф'], max: 3 }
+        ]
+      },
+      {
+        id: 'health',
+        title: 'Здравоохранение',
+        subtitle: 'Линейные ряды и распределение',
+        groups: [
+          { title: 'Ключевые показатели здравоохранения', match: ['здрав', 'больниц', 'врач', 'поликлин'], max: 4 }
+        ]
+      },
+      {
+        id: 'economy',
+        title: 'Экономика/уровень жизни',
+        subtitle: 'Линии + pie',
+        groups: [
+          { title: 'Экономика и доходы', match: ['бедност', 'доход', 'расход', 'врп', 'эконом'], max: 4 }
+        ]
+      }
+    ];
 
-    function getApiBase() {
+    const menuEl = document.getElementById('menu');
+    const contentEl = document.getElementById('content');
+    let activePageId = PAGES[0].id;
+    let charts = [];
+
+    function apiBase() {
       return document.getElementById('apiUrl').value.replace(/\/$/, '');
     }
 
-    async function loadPopulation() {
-      const apiBase = getApiBase();
-      const regionId = document.getElementById('regionId').value;
-      const year = document.getElementById('year').value;
-      const url = new URL(`${apiBase}/analytics/population_pyramid`);
-      url.searchParams.set('region_id', regionId);
-      if (year) url.searchParams.set('year', year);
+    async function fetchJson(url) {
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`Ошибка API: ${url}`);
+      return r.json();
+    }
 
-      const resp = await fetch(url);
-      if (!resp.ok) throw new Error('Population API error');
-      const payload = await resp.json();
+    async function fetchIndicators() {
+      return fetchJson(`${apiBase()}/indicators/get_chunk?limit=5000&offset=0`);
+    }
 
-      const categories = payload.points.map((p) => p.age_code);
-      const male = payload.points.map((p) => -Number(p.male));
-      const female = payload.points.map((p) => Number(p.female));
+    function pickIndicators(indicators, keywords, maxCount) {
+      const lowerKeywords = keywords.map(k => k.toLowerCase());
+      const matched = indicators.filter((i) => {
+        const text = `${i.name} ${i.theme || ''} ${i.type || ''}`.toLowerCase();
+        return lowerKeywords.some((k) => text.includes(k));
+      });
+      if (matched.length >= maxCount) return matched.slice(0, maxCount);
 
-      populationChart.setOption({
-        title: { text: `Половозрастная структура: ${payload.region_name} (${payload.year})`, left: 'center' },
+      const fallback = indicators.filter(i => !matched.some(m => m.id === i.id)).slice(0, maxCount - matched.length);
+      return [...matched, ...fallback];
+    }
+
+    async function fetchChartData(regionId, indicatorIds) {
+      const url = new URL(`${apiBase()}/analytics/chart_data`);
+      url.searchParams.set('region_id', String(regionId));
+      indicatorIds.forEach((id) => url.searchParams.append('indicator_ids', String(id)));
+      return fetchJson(url.toString());
+    }
+
+    async function fetchPopulation(regionId, yearValue) {
+      const url = new URL(`${apiBase()}/analytics/population_pyramid`);
+      url.searchParams.set('region_id', String(regionId));
+      if (yearValue) url.searchParams.set('year', String(yearValue));
+      return fetchJson(url.toString());
+    }
+
+    function clearCharts() {
+      charts.forEach(c => c.dispose());
+      charts = [];
+    }
+
+    function buildLineOption(payload, title) {
+      const years = [...new Set(payload.series.flatMap(s => s.points.map(p => Number(p.year))))].sort((a,b) => a-b);
+      const series = payload.series.map((s) => {
+        const map = new Map(s.points.map((p) => [Number(p.year), Number(p.value)]));
+        return { name: s.indicator_name, type: 'line', smooth: true, data: years.map(y => map.get(y) ?? null) };
+      });
+      return {
+        title: { text: `${title}: ${payload.region_name}`, left: 'center' },
+        tooltip: { trigger: 'axis' },
+        legend: { data: series.map(s => s.name), top: 35 },
+        grid: { left: '4%', right: '4%', bottom: 30, top: 90, containLabel: true },
+        xAxis: { type: 'category', data: years.map(String) },
+        yAxis: { type: 'value' },
+        series
+      };
+    }
+
+    function buildPieOption(payload, title) {
+      const points = payload.series.map((s) => {
+        const last = [...s.points].sort((a,b) => Number(a.year)-Number(b.year)).at(-1);
+        return { name: s.indicator_name, value: last ? Number(last.value) : 0 };
+      }).filter(p => p.value !== null);
+
+      return {
+        title: { text: `${title} (последние значения): ${payload.region_name}`, left: 'center' },
+        tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
+        legend: { orient: 'vertical', left: 10, top: 60 },
+        series: [{ type: 'pie', radius: '55%', center: ['58%', '58%'], data: points }]
+      };
+    }
+
+    function buildPopulationOption(payload) {
+      const categories = payload.points.map(p => p.age_code);
+      const male = payload.points.map(p => -Number(p.male));
+      const female = payload.points.map(p => Number(p.female));
+      return {
+        title: { text: `Половозрастная пирамида: ${payload.region_name} (${payload.year})`, left: 'center' },
         tooltip: {
           trigger: 'axis', axisPointer: { type: 'shadow' },
           formatter: (params) => params.map((p) => `${p.seriesName}: ${Math.abs(p.value)}`).join('<br/>')
         },
         legend: { data: ['Мужчины', 'Женщины'], top: 35 },
         grid: { left: '4%', right: '4%', bottom: 30, top: 90, containLabel: true },
-        xAxis: {
-          type: 'value',
-          axisLabel: { formatter: (v) => Math.abs(v) }
-        },
+        xAxis: { type: 'value', axisLabel: { formatter: (v) => Math.abs(v) } },
         yAxis: { type: 'category', data: categories },
         series: [
-          { name: 'Мужчины', type: 'bar', stack: 'Total', data: male, itemStyle: { color: '#5B8DEF' } },
-          { name: 'Женщины', type: 'bar', stack: 'Total', data: female, itemStyle: { color: '#F472B6' } }
+          { name: 'Мужчины', type: 'bar', stack: 'total', data: male, itemStyle: { color: '#5B8DEF' } },
+          { name: 'Женщины', type: 'bar', stack: 'total', data: female, itemStyle: { color: '#F472B6' } }
         ]
-      }, true);
+      };
     }
 
-    async function loadLine() {
-      const apiBase = getApiBase();
-      const regionId = document.getElementById('lineRegionId').value;
-      const raw = document.getElementById('indicatorIds').value;
-      const indicatorIds = raw.split(',').map((x) => x.trim()).filter(Boolean);
-
-      const url = new URL(`${apiBase}/analytics/chart_data`);
-      url.searchParams.set('region_id', regionId);
-      indicatorIds.forEach((id) => url.searchParams.append('indicator_ids', id));
-
-      const resp = await fetch(url);
-      if (!resp.ok) throw new Error('Chart data API error');
-      const payload = await resp.json();
-
-      const yearsSet = new Set();
-      payload.series.forEach((s) => s.points.forEach((p) => yearsSet.add(Number(p.year))));
-      const years = Array.from(yearsSet).sort((a, b) => a - b);
-
-      const series = payload.series.map((s) => {
-        const map = new Map(s.points.map((p) => [Number(p.year), Number(p.value)]));
-        return {
-          name: s.indicator_name,
-          type: 'line',
-          smooth: true,
-          data: years.map((y) => map.get(y) ?? null)
-        };
-      });
-
-      lineChart.setOption({
-        title: { text: `Индикаторы региона: ${payload.region_name}`, left: 'center' },
-        tooltip: { trigger: 'axis' },
-        legend: { data: series.map((s) => s.name), top: 35 },
-        grid: { left: '3%', right: '4%', bottom: '3%', top: 90, containLabel: true },
-        xAxis: { type: 'category', data: years.map(String) },
-        yAxis: { type: 'value' },
-        series
-      }, true);
+    function renderMenu() {
+      menuEl.innerHTML = '';
+      for (const page of PAGES) {
+        const btn = document.createElement('button');
+        btn.textContent = page.title;
+        btn.className = page.id === activePageId ? 'active' : '';
+        btn.onclick = () => { activePageId = page.id; renderPage().catch((e) => alert(e.message)); };
+        menuEl.appendChild(btn);
+      }
     }
 
-    document.getElementById('loadPopulation').addEventListener('click', () => loadPopulation().catch((e) => alert(e.message)));
-    document.getElementById('loadLine').addEventListener('click', () => loadLine().catch((e) => alert(e.message)));
+    async function renderPage() {
+      clearCharts();
+      renderMenu();
+      contentEl.innerHTML = '<div class="card">Загрузка...</div>';
 
-    window.addEventListener('resize', () => {
-      populationChart.resize();
-      lineChart.resize();
+      const page = PAGES.find(p => p.id === activePageId);
+      const regionId = Number(document.getElementById('regionId').value || '1');
+      const yearValue = document.getElementById('populationYear').value;
+
+      const indicators = await fetchIndicators();
+
+      contentEl.innerHTML = `<div class="card"><h2>${page.title}</h2><div class="small">${page.subtitle}</div></div>`;
+
+      if (page.id === 'demography') {
+        const population = await fetchPopulation(regionId, yearValue);
+        const popCard = document.createElement('div');
+        popCard.className = 'card';
+        popCard.innerHTML = '<div id="populationChart" class="chart"></div>';
+        contentEl.appendChild(popCard);
+        const chart = echarts.init(document.getElementById('populationChart'));
+        chart.setOption(buildPopulationOption(population), true);
+        charts.push(chart);
+      }
+
+      for (let idx = 0; idx < page.groups.length; idx++) {
+        const group = page.groups[idx];
+        const chosen = pickIndicators(indicators, group.match, group.max);
+        if (!chosen.length) continue;
+
+        const payload = await fetchChartData(regionId, chosen.map(c => c.id));
+
+        const lineCard = document.createElement('div');
+        lineCard.className = 'card';
+        lineCard.innerHTML = `<h3>${group.title} — линейный график</h3><div id="line-${idx}" class="chart"></div>`;
+        contentEl.appendChild(lineCard);
+        const line = echarts.init(document.getElementById(`line-${idx}`));
+        line.setOption(buildLineOption(payload, group.title), true);
+        charts.push(line);
+
+        const pieCard = document.createElement('div');
+        pieCard.className = 'card';
+        pieCard.innerHTML = `<h3>${group.title} — круговая диаграмма</h3><div id="pie-${idx}" class="chart"></div>`;
+        contentEl.appendChild(pieCard);
+        const pie = echarts.init(document.getElementById(`pie-${idx}`));
+        pie.setOption(buildPieOption(payload, group.title), true);
+        charts.push(pie);
+      }
+    }
+
+    document.getElementById('reloadBtn').addEventListener('click', () => renderPage().catch((e) => alert(e.message)));
+    window.addEventListener('resize', () => charts.forEach(c => c.resize()));
+
+    renderPage().catch((e) => {
+      contentEl.innerHTML = `<div class='card'>Ошибка: ${e.message}</div>`;
     });
-
-    loadPopulation().catch(() => {});
-    loadLine().catch(() => {});
   </script>
 </body>
 </html>
