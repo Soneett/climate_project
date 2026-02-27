@@ -1,41 +1,30 @@
-# API tests: отрисовка графиков в браузере
+# API tests: интерактивные графики на локальном сайте
 
-В этой папке находятся тестовые скрипты для проверки данных backend и отрисовки в браузере через ECharts (аналогично фронтенд-графикам, но без изменений фронтенда).
+В `api_test` добавлен локальный mini-site, где графики отображаются в браузере интерактивно (как на фронтенде: ECharts, legend toggle, tooltip, zoom/resize поведения ECharts).
 
-## 1) Population age/sex (демографическая пирамида)
-
-Скрипт получает данные из `/analytics/population_pyramid`, строит ECharts-график и сохраняет 2 скриншота:
-- полный график;
-- график после интерактивной фильтрации (скрытие серии через legendUnSelect).
+## Запуск сайта
 
 ```bash
-python api_test/web_echarts_population_test.py \
-  --api-url http://127.0.0.1:8080 \
-  --region-id 1
+python api_test/charts_site.py --host 127.0.0.1 --port 8090
 ```
 
-Артефакты по умолчанию:
-- `api_test/artifacts/population_echarts_all.png`
-- `api_test/artifacts/population_echarts_filtered.png`
+После запуска откройте:
+- `http://127.0.0.1:8090/site/index.html`
 
-## 2) Indicator values (chart_data)
+## Что отображается
 
-Скрипт получает данные из `/analytics/chart_data` для выбранных индикаторов и региона, строит line chart и сохраняет:
-- полный график;
-- график после интерактивной фильтрации (отключение одной серии через legendUnSelect).
+1. **Population age/sex** (аналог `BarChartB` во фронтенде)
+   - Данные из backend: `GET /analytics/population_pyramid`
+   - Параметры: `region_id`, `year`
+   - Интерактивность: легенда (вкл/выкл серий), tooltip, адаптация на resize.
 
-```bash
-python api_test/web_echarts_indicator_values_test.py \
-  --api-url http://127.0.0.1:8080 \
-  --region-id 1 \
-  --indicator-ids 1 2 3
-```
+2. **Indicator values / chart_data** (аналог `LineChart` во фронтенде)
+   - Данные из backend: `GET /analytics/chart_data`
+   - Параметры: `region_id`, `indicator_ids`
+   - Интерактивность: легенда (вкл/выкл серий), tooltip, адаптация на resize.
 
-Артефакты по умолчанию:
-- `api_test/artifacts/indicator_values_line_all.png`
-- `api_test/artifacts/indicator_values_line_filtered.png`
+## Важно
 
-## Примечания
-
-- Скрипты используют `playwright` + `chromium` для рендера графиков и скриншотов.
-- Фронтенд-код не модифицируется: тесты находятся только в `api_test`.
+- Фронтенд проекта **не изменяется**.
+- Все сделано только в `api_test`.
+- Скриншоты не требуются: графики смотрятся напрямую в браузере на локальном сайте.
