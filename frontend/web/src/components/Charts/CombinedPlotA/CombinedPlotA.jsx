@@ -9,30 +9,36 @@ import {
 } from '../chartConfig';
 import styles from './CombinedPlotA.module.scss';
 
-const TEMP_TYPES = [
-  { key: 'annual', label: 'Среднегодовая' },
+const DEFAULT_Y2_OPTIONS = [
+  { key: 'annual', label: 'Среднегодовая температура' },
   { key: 'summer', label: 'Средняя температура лета' },
   { key: 'winter', label: 'Средняя температура зимы' },
-  { key: 'tmax', label: 'Максимальная' },
-  { key: 'tmin', label: 'Минимальная' }
+  { key: 'tmax', label: 'Максимальная зарегистрированная температура' },
+  { key: 'tmin', label: 'Минимальная зарегистрированная температура' }
 ];
 
-const INCOME_COLOR = '#26af55';
-const EXPENSE_COLOR = '#e54e1b';
+const DEFAULT_Y1_SERIES = [
+  { key: 'income', name: 'Доходы', color: '#26af55' },
+  { key: 'expense', name: 'Расходы', color: '#e54e1b' }
+];
+
 const TEMP_COLOR = '#5470C6';
 
 const CombinedPlotA = ({
   title = 'Взаимосвязь температуры и уровня жизни',
-  data = []
+  data = [],
+  yAxis1Series = DEFAULT_Y1_SERIES,
+  yAxis1Label = 'Финансовые показатели (млн)',
+  yAxis2Options = DEFAULT_Y2_OPTIONS
 }) => {
   const chartRef = useRef(null);
   useChartResize(chartRef);
 
-  const [tempType, setTempType] = useState('annual');
+  const [tempType, setTempType] = useState(() => yAxis2Options[0]?.key || 'annual');
   const [hiddenSeries, setHiddenSeries] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const currentTempLabel = TEMP_TYPES.find(t => t.key === tempType)?.label || tempType;
+  const currentTempLabel = yAxis2Options.find(t => t.key === tempType)?.label || tempType;
 
   const toggleSeries = (name) => {
     setHiddenSeries(prev =>
@@ -41,8 +47,7 @@ const CombinedPlotA = ({
   };
 
   const seriesDefs = [
-    { name: 'Доходы', color: INCOME_COLOR },
-    { name: 'Расходы', color: EXPENSE_COLOR },
+    ...yAxis1Series.map(s => ({ name: s.name, color: s.color })),
     { name: 'Температура', label: currentTempLabel, color: TEMP_COLOR }
   ];
 
@@ -84,11 +89,11 @@ const CombinedPlotA = ({
     yAxis: [
       {
         type: 'value',
-        name: 'Финансовые показатели (млн)',
+        name: yAxis1Label,
         nameLocation: 'middle',
         nameGap: 50,
         position: 'left',
-        axisLine: { show: true, lineStyle: { color: INCOME_COLOR } },
+        axisLine: { show: true, lineStyle: { color: yAxis1Series[0]?.color || '#26af55' } },
         splitLine: { lineStyle: { type: 'dashed' } },
         axisLabel: TEXT_STYLES.axis,
         nameTextStyle: TEXT_STYLES.axis
@@ -106,25 +111,16 @@ const CombinedPlotA = ({
       }
     ],
     series: [
-      {
-        name: 'Доходы',
+      ...yAxis1Series.map((s) => ({
+        name: s.name,
         type: 'bar',
         yAxisIndex: 0,
         barGap: 0,
-        barWidth: '30%',
-        itemStyle: { color: INCOME_COLOR },
-        emphasis: { itemStyle: { borderColor: '#145c32', borderWidth: 1.5 } },
-        data: data.map(d => d.income)
-      },
-      {
-        name: 'Расходы',
-        type: 'bar',
-        yAxisIndex: 0,
-        barWidth: '30%',
-        itemStyle: { color: EXPENSE_COLOR },
-        emphasis: { itemStyle: { borderColor: '#7a1f1f', borderWidth: 1.5 } },
-        data: data.map(d => d.expense)
-      },
+        barWidth: `${Math.floor(30 / Math.max(1, yAxis1Series.length))}%`,
+        itemStyle: { color: s.color },
+        emphasis: { itemStyle: { borderWidth: 1.5 } },
+        data: data.map(d => d[s.key])
+      })),
       {
         name: 'Температура',
         type: 'line',
@@ -152,7 +148,7 @@ const CombinedPlotA = ({
           </button>
           {menuOpen && (
             <ul className={styles.tempMenu}>
-              {TEMP_TYPES.map(t => (
+              {yAxis2Options.map(t => (
                 <li
                   key={t.key}
                   className={`${styles.tempMenuItem} ${tempType === t.key ? styles.tempMenuItemActive : ''}`}
@@ -190,16 +186,19 @@ const CombinedPlotA = ({
 
 CombinedPlotA.propTypes = {
   title: PropTypes.string,
-  data: PropTypes.arrayOf(
+  data: PropTypes.arrayOf(PropTypes.object),
+  yAxis1Series: PropTypes.arrayOf(
     PropTypes.shape({
-      year: PropTypes.string.isRequired,
-      income: PropTypes.number.isRequired,
-      expense: PropTypes.number.isRequired,
-      annual: PropTypes.number,
-      summer: PropTypes.number,
-      winter: PropTypes.number,
-      tmax: PropTypes.number,
-      tmin: PropTypes.number
+      key: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      color: PropTypes.string.isRequired
+    })
+  ),
+  yAxis1Label: PropTypes.string,
+  yAxis2Options: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired
     })
   )
 };

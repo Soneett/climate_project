@@ -10,31 +10,25 @@ import {
 } from '../chartConfig';
 import styles from './ScatterPlot.module.scss';
 
-const TEMP_TYPES = [
-  { key: 'annual', label: 'Среднегодовая' },
-  { key: 'summer', label: 'Средняя температура лета' },
-  { key: 'winter', label: 'Средняя температура зимы' },
-  { key: 'tmax', label: 'Максимальная' },
-  { key: 'tmin', label: 'Минимальная' }
-];
-
 const CATEGORY_COLORS = ['#26af55', '#769a76', '#e54e1b', '#2684d7'];
 
 const ScatterPlot = ({
   title = 'Взаимосвязь температуры и демографии',
   categories = [],
   years = [],
-  data = []
+  data = [],
+  xAxisOptions = [],
+  yAxisLabel = 'Значение'
 }) => {
   const chartRef = useRef(null);
   useChartResize(chartRef);
 
-  const [tempType, setTempType] = useState('annual');
+  const [xType, setXType] = useState(() => xAxisOptions[0]?.key || 'annual');
   const [selectedYear, setSelectedYear] = useState(null);
   const [hiddenCategories, setHiddenCategories] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const currentTempLabel = TEMP_TYPES.find(t => t.key === tempType)?.label || tempType;
+  const currentXLabel = xAxisOptions.find(t => t.key === xType)?.label || xType;
 
   const toggleCategory = (cat) => {
     setHiddenCategories(prev =>
@@ -58,7 +52,7 @@ const ScatterPlot = ({
       data: data
         .filter(d => d.category === cat)
         .map(d => ({
-          value: [d[tempType], d.value, d.year],
+          value: [d[xType], d.value, d.year],
           itemStyle: {
             opacity: selectedYear !== null && d.year !== selectedYear ? 0.35 : 1
           }
@@ -71,12 +65,12 @@ const ScatterPlot = ({
       ...TOOLTIP_CONFIG,
       trigger: 'item',
       formatter: (params) => {
-        const [temp, value, year] = params.data.value;
+        const [xVal, value, year] = params.data.value;
         return `
           <b>${params.seriesName}</b><br/>
           Год: ${year}<br/>
-          Температура (${currentTempLabel}): ${temp} °C<br/>
-          Значение: ${value.toLocaleString('ru-RU')}
+          ${currentXLabel}: ${xVal}<br/>
+          ${yAxisLabel}: ${value.toLocaleString('ru-RU')}
         `;
       }
     },
@@ -95,7 +89,7 @@ const ScatterPlot = ({
     xAxis: {
       type: 'value',
       scale: true,
-      name: `Температура: ${currentTempLabel}, °C`,
+      name: `${currentXLabel}`,
       nameLocation: 'middle',
       nameGap: 25,
       axisLine: AXIS_LINE_STYLE,
@@ -105,7 +99,7 @@ const ScatterPlot = ({
     },
     yAxis: {
       type: 'value',
-      name: 'Количество человек',
+      name: yAxisLabel,
       nameLocation: 'middle',
       nameGap: 60,
       axisLine: AXIS_LINE_STYLE,
@@ -143,15 +137,15 @@ const ScatterPlot = ({
             className={styles.tempBtn}
             onClick={() => setMenuOpen(o => !o)}
           >
-            {currentTempLabel} ▾
+            {currentXLabel} ▾
           </button>
           {menuOpen && (
             <ul className={styles.tempMenu}>
-              {TEMP_TYPES.map(t => (
+              {xAxisOptions.map(t => (
                 <li
                   key={t.key}
-                  className={`${styles.tempMenuItem} ${tempType === t.key ? styles.tempMenuItemActive : ''}`}
-                  onClick={() => { setTempType(t.key); setMenuOpen(false); }}
+                  className={`${styles.tempMenuItem} ${xType === t.key ? styles.tempMenuItemActive : ''}`}
+                  onClick={() => { setXType(t.key); setMenuOpen(false); }}
                 >
                   {t.label}
                 </li>
@@ -164,7 +158,7 @@ const ScatterPlot = ({
       <ReactECharts
         ref={chartRef}
         option={option}
-        style={{ height: '100%', width: '100%', minHeight: '550px' }}
+        style={{ height: '100%', width: '100%', minHeight: '500px' }}
       />
 
       <div className={styles.legend}>
@@ -194,14 +188,16 @@ ScatterPlot.propTypes = {
     PropTypes.shape({
       year: PropTypes.number.isRequired,
       category: PropTypes.string.isRequired,
-      annual: PropTypes.number,
-      summer: PropTypes.number,
-      winter: PropTypes.number,
-      tmax: PropTypes.number,
-      tmin: PropTypes.number,
       value: PropTypes.number.isRequired
     })
-  )
+  ),
+  xAxisOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired
+    })
+  ),
+  yAxisLabel: PropTypes.string
 };
 
 export default ScatterPlot;

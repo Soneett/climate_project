@@ -110,6 +110,72 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
+    {
+      id: "social-demo-death-causes",
+      title: "Причины смерти",
+      chartType: "waffleChart",
+      waffleChartData: {
+        title: "Структура причин смерти",
+        timelineLabels: ['2020', '2021', '2022', '2023', '2024'],
+        timelineData: [
+          {
+            data: [
+              { name: 'Болезни системы кровообращения', value: 46.3, absoluteValue: 938000 },
+              { name: 'Новообразования', value: 16.4, absoluteValue: 332000 },
+              { name: 'Внешние причины', value: 7.8, absoluteValue: 158000 },
+              { name: 'Болезни органов пищеварения', value: 5.6, absoluteValue: 113000 },
+              { name: 'Болезни органов дыхания', value: 4.1, absoluteValue: 83000 },
+              { name: 'Инфекционные заболевания', value: 2.9, absoluteValue: 59000 },
+              { name: 'Прочие причины', value: 16.9, absoluteValue: 342000 }
+            ]
+          },
+          {
+            data: [
+              { name: 'Болезни системы кровообращения', value: 44.8, absoluteValue: 1012000 },
+              { name: 'Новообразования', value: 15.2, absoluteValue: 343000 },
+              { name: 'Внешние причины', value: 7.2, absoluteValue: 163000 },
+              { name: 'Болезни органов пищеварения', value: 5.9, absoluteValue: 133000 },
+              { name: 'Болезни органов дыхания', value: 5.8, absoluteValue: 131000 },
+              { name: 'Инфекционные заболевания', value: 4.3, absoluteValue: 97000 },
+              { name: 'Прочие причины', value: 16.8, absoluteValue: 379000 }
+            ]
+          },
+          {
+            data: [
+              { name: 'Болезни системы кровообращения', value: 45.1, absoluteValue: 892000 },
+              { name: 'Новообразования', value: 16.7, absoluteValue: 330000 },
+              { name: 'Внешние причины', value: 7.5, absoluteValue: 148000 },
+              { name: 'Болезни органов пищеварения', value: 5.8, absoluteValue: 115000 },
+              { name: 'Болезни органов дыхания', value: 4.5, absoluteValue: 89000 },
+              { name: 'Инфекционные заболевания', value: 3.2, absoluteValue: 63000 },
+              { name: 'Прочие причины', value: 17.2, absoluteValue: 340000 }
+            ]
+          },
+          {
+            data: [
+              { name: 'Болезни системы кровообращения', value: 45.5, absoluteValue: 865000 },
+              { name: 'Новообразования', value: 17.1, absoluteValue: 325000 },
+              { name: 'Внешние причины', value: 7.3, absoluteValue: 139000 },
+              { name: 'Болезни органов пищеварения', value: 5.5, absoluteValue: 105000 },
+              { name: 'Болезни органов дыхания', value: 4.2, absoluteValue: 80000 },
+              { name: 'Инфекционные заболевания', value: 3.0, absoluteValue: 57000 },
+              { name: 'Прочие причины', value: 17.4, absoluteValue: 331000 }
+            ]
+          },
+          {
+            data: [
+              { name: 'Болезни системы кровообращения', value: 45.2, absoluteValue: 842000 },
+              { name: 'Новообразования', value: 17.4, absoluteValue: 324000 },
+              { name: 'Внешние причины', value: 7.1, absoluteValue: 132000 },
+              { name: 'Болезни органов пищеварения', value: 5.3, absoluteValue: 99000 },
+              { name: 'Болезни органов дыхания', value: 4.0, absoluteValue: 74000 },
+              { name: 'Инфекционные заболевания', value: 2.8, absoluteValue: 52000 },
+              { name: 'Прочие причины', value: 18.2, absoluteValue: 339000 }
+            ]
+          }
+        ]
+      }
+    },
     { 
       id: "s1-5", 
       title: "Миграция населения", 
@@ -691,6 +757,148 @@ export const CONTENT_BLOCKS = {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
         datasets: [
           { name: 'Млрд кВт⋅ч', data: [25, 26, 27, 28, 29, 30] }
+        ]
+      }
+    },
+    {
+      id: "social-econ-liquidation",
+      title: "Коэффициент ликвидации организаций по видам деятельности",
+      chartType: "waffleChart",
+      waffleChartData: {
+        title: "Коэффициент ликвидации организаций",
+        timelineLabels: ['2020', '2021', '2022', '2023', '2024'],
+        timelineData: [
+          {
+            data: [
+              { name: 'Торговля', value: 19.2, absoluteValue: 45200 },
+              { name: 'Строительство', value: 16.8, absoluteValue: 32100 },
+              { name: 'Обрабатывающие производства', value: 13.5, absoluteValue: 18700 },
+              { name: 'Транспорт и связь', value: 11.2, absoluteValue: 14300 },
+              { name: 'Сельское хозяйство', value: 9.8, absoluteValue: 8900 },
+              { name: 'Финансовая деятельность', value: 8.1, absoluteValue: 6200 },
+              { name: 'Операции с недвижимостью', value: 7.3, absoluteValue: 12400 },
+              { name: 'Прочие виды деятельности', value: 14.1, absoluteValue: 28500 }
+            ]
+          },
+          {
+            data: [
+              { name: 'Торговля', value: 18.5, absoluteValue: 42800 },
+              { name: 'Строительство', value: 15.9, absoluteValue: 29500 },
+              { name: 'Обрабатывающие производства', value: 12.8, absoluteValue: 17200 },
+              { name: 'Транспорт и связь', value: 10.6, absoluteValue: 13100 },
+              { name: 'Сельское хозяйство', value: 9.4, absoluteValue: 8200 },
+              { name: 'Финансовая деятельность', value: 8.5, absoluteValue: 6500 },
+              { name: 'Операции с недвижимостью', value: 7.8, absoluteValue: 12800 },
+              { name: 'Прочие виды деятельности', value: 16.5, absoluteValue: 31200 }
+            ]
+          },
+          {
+            data: [
+              { name: 'Торговля', value: 17.8, absoluteValue: 38900 },
+              { name: 'Строительство', value: 15.2, absoluteValue: 26800 },
+              { name: 'Обрабатывающие производства', value: 12.4, absoluteValue: 15800 },
+              { name: 'Транспорт и связь', value: 10.9, absoluteValue: 12900 },
+              { name: 'Сельское хозяйство', value: 9.1, absoluteValue: 7600 },
+              { name: 'Финансовая деятельность', value: 8.9, absoluteValue: 6800 },
+              { name: 'Операции с недвижимостью', value: 8.2, absoluteValue: 13200 },
+              { name: 'Прочие виды деятельности', value: 17.5, absoluteValue: 33500 }
+            ]
+          },
+          {
+            data: [
+              { name: 'Торговля', value: 18.1, absoluteValue: 41200 },
+              { name: 'Строительство', value: 14.8, absoluteValue: 27100 },
+              { name: 'Обрабатывающие производства', value: 12.1, absoluteValue: 16200 },
+              { name: 'Транспорт и связь', value: 10.4, absoluteValue: 12500 },
+              { name: 'Сельское хозяйство', value: 9.6, absoluteValue: 8100 },
+              { name: 'Финансовая деятельность', value: 8.3, absoluteValue: 6400 },
+              { name: 'Операции с недвижимостью', value: 7.9, absoluteValue: 12600 },
+              { name: 'Прочие виды деятельности', value: 18.8, absoluteValue: 35800 }
+            ]
+          },
+          {
+            data: [
+              { name: 'Торговля', value: 18.5, absoluteValue: 43500 },
+              { name: 'Строительство', value: 15.2, absoluteValue: 28900 },
+              { name: 'Обрабатывающие производства', value: 12.8, absoluteValue: 17500 },
+              { name: 'Транспорт и связь', value: 10.4, absoluteValue: 13200 },
+              { name: 'Сельское хозяйство', value: 9.6, absoluteValue: 8400 },
+              { name: 'Финансовая деятельность', value: 8.3, absoluteValue: 6600 },
+              { name: 'Операции с недвижимостью', value: 7.8, absoluteValue: 12900 },
+              { name: 'Прочие виды деятельности', value: 17.4, absoluteValue: 34200 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      id: "social-econ-birth-rate",
+      title: "Коэффициент рождаемости организаций по видам деятельности",
+      chartType: "waffleChart",
+      waffleChartData: {
+        title: "Коэффициент рождаемости организаций",
+        timelineLabels: ['2020', '2021', '2022', '2023', '2024'],
+        timelineData: [
+          {
+            data: [
+              { name: 'Торговля', value: 21.5, absoluteValue: 58200 },
+              { name: 'Строительство', value: 17.8, absoluteValue: 38500 },
+              { name: 'Операции с недвижимостью', value: 14.2, absoluteValue: 28900 },
+              { name: 'Обрабатывающие производства', value: 10.9, absoluteValue: 16800 },
+              { name: 'Транспорт и связь', value: 9.5, absoluteValue: 13200 },
+              { name: 'Финансовая деятельность', value: 7.8, absoluteValue: 8500 },
+              { name: 'Сельское хозяйство', value: 6.2, absoluteValue: 5800 },
+              { name: 'Прочие виды деятельности', value: 12.1, absoluteValue: 25600 }
+            ]
+          },
+          {
+            data: [
+              { name: 'Торговля', value: 22.3, absoluteValue: 62100 },
+              { name: 'Строительство', value: 18.4, absoluteValue: 41200 },
+              { name: 'Операции с недвижимостью', value: 14.8, absoluteValue: 31500 },
+              { name: 'Обрабатывающие производства', value: 11.2, absoluteValue: 18200 },
+              { name: 'Транспорт и связь', value: 9.8, absoluteValue: 14100 },
+              { name: 'Финансовая деятельность', value: 7.5, absoluteValue: 8200 },
+              { name: 'Сельское хозяйство', value: 6.5, absoluteValue: 6100 },
+              { name: 'Прочие виды деятельности', value: 9.5, absoluteValue: 21800 }
+            ]
+          },
+          {
+            data: [
+              { name: 'Торговля', value: 21.8, absoluteValue: 54800 },
+              { name: 'Строительство', value: 17.2, absoluteValue: 35600 },
+              { name: 'Операции с недвижимостью', value: 15.1, absoluteValue: 32100 },
+              { name: 'Обрабатывающие производства', value: 11.5, absoluteValue: 17900 },
+              { name: 'Транспорт и связь', value: 10.2, absoluteValue: 14800 },
+              { name: 'Финансовая деятельность', value: 7.9, absoluteValue: 8800 },
+              { name: 'Сельское хозяйство', value: 6.8, absoluteValue: 6500 },
+              { name: 'Прочие виды деятельности', value: 9.5, absoluteValue: 20200 }
+            ]
+          },
+          {
+            data: [
+              { name: 'Торговля', value: 22.1, absoluteValue: 59500 },
+              { name: 'Строительство', value: 18.2, absoluteValue: 40100 },
+              { name: 'Операции с недвижимостью', value: 14.5, absoluteValue: 30800 },
+              { name: 'Обрабатывающие производства', value: 11.0, absoluteValue: 17200 },
+              { name: 'Транспорт и связь', value: 9.7, absoluteValue: 13900 },
+              { name: 'Финансовая деятельность', value: 7.6, absoluteValue: 8400 },
+              { name: 'Сельское хозяйство', value: 6.4, absoluteValue: 6000 },
+              { name: 'Прочие виды деятельности', value: 10.5, absoluteValue: 23500 }
+            ]
+          },
+          {
+            data: [
+              { name: 'Торговля', value: 22.3, absoluteValue: 63200 },
+              { name: 'Строительство', value: 18.7, absoluteValue: 43800 },
+              { name: 'Операции с недвижимостью', value: 14.5, absoluteValue: 32500 },
+              { name: 'Обрабатывающие производства', value: 11.2, absoluteValue: 18600 },
+              { name: 'Транспорт и связь', value: 9.8, absoluteValue: 14500 },
+              { name: 'Финансовая деятельность', value: 7.6, absoluteValue: 8900 },
+              { name: 'Сельское хозяйство', value: 6.4, absoluteValue: 6200 },
+              { name: 'Прочие виды деятельности', value: 9.5, absoluteValue: 22100 }
+            ]
+          }
         ]
       }
     },

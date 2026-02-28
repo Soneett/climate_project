@@ -11,7 +11,9 @@ import {
   WaffleChart,
   ScatterPlot,
   CombinedPlotA,
-  CombinedPlotB
+  CombinedPlotB,
+  CombinedPlotC,
+  LineDotChart
 } from './index';
 
 /**
@@ -29,7 +31,9 @@ const CHART_COMPONENTS = {
   waffle: WaffleChart,
   scatterPlot: ScatterPlot,
   combinedPlotA: CombinedPlotA,
-  combinedPlotB: CombinedPlotB
+  combinedPlotB: CombinedPlotB,
+  combinedPlotC: CombinedPlotC,
+  lineDotChart: LineDotChart
 };
 
 /**
@@ -84,6 +88,12 @@ const ChartRenderer = ({ block }) => {
     case 'combinedPlotB':
       chartProps = { ...chartProps, ...block.combinedPlotBData };
       break;
+    case 'combinedPlotC':
+      chartProps = { ...chartProps, ...block.combinedPlotCData };
+      break;
+    case 'lineDotChart':
+      chartProps = { ...chartProps, ...block.lineDotChartData };
+      break;
     case 'line':
     default:
       if (block.chartData) {
@@ -114,7 +124,9 @@ ChartRenderer.propTypes = {
     waffleData: PropTypes.object,
     scatterPlotData: PropTypes.object,
     combinedPlotAData: PropTypes.object,
-    combinedPlotBData: PropTypes.object
+    combinedPlotBData: PropTypes.object,
+    combinedPlotCData: PropTypes.object,
+    lineDotChartData: PropTypes.object
   }).isRequired
 };
 

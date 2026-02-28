@@ -44,7 +44,7 @@ const BarChartB = ({
       },
       legend: {
         data: legendItems,
-        top: 20,
+        top: 35,
         left: 'center',
         textStyle: TEXT_STYLES.legend
       },

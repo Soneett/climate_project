@@ -10,30 +10,24 @@ import {
 } from '../chartConfig';
 import styles from './CombinedPlotB.module.scss';
 
-const TEMP_TYPES = [
-  { key: 'annual', label: 'Среднегодовая' },
-  { key: 'summer', label: 'Средняя температура лета' },
-  { key: 'winter', label: 'Средняя температура зимы' },
-  { key: 'tmax', label: 'Максимальная' },
-  { key: 'tmin', label: 'Минимальная' }
-];
-
 const CAUSE_COLORS = ['#5470C6', '#91CC75', '#EE6666', '#FAC858'];
 
 const CombinedPlotB = ({
-  causes = [],
+  categories = [],
   years = [],
-  data = []
+  data = [],
+  xAxisOptions = [],
+  yAxisLabel = 'Значение'
 }) => {
   const chartRef = useRef(null);
   useChartResize(chartRef);
 
-  const [tempType, setTempType] = useState('annual');
+  const [xType, setXType] = useState(() => xAxisOptions[0]?.key || 'annual');
   const [selectedYear, setSelectedYear] = useState(null);
   const [hiddenCauses, setHiddenCauses] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const currentTempLabel = TEMP_TYPES.find(t => t.key === tempType)?.label || tempType;
+  const currentXLabel = xAxisOptions.find(t => t.key === xType)?.label || xType;
 
   const toggleCause = (cause) => {
     setHiddenCauses(prev =>
@@ -42,7 +36,7 @@ const CombinedPlotB = ({
   };
 
   const buildSeries = () =>
-    causes.map((cause, idx) => ({
+    categories.map((cause, idx) => ({
       name: cause,
       type: 'scatter',
       symbolSize: (val) => {
@@ -53,9 +47,9 @@ const CombinedPlotB = ({
         color: CAUSE_COLORS[idx % CAUSE_COLORS.length]
       },
       data: hiddenCauses.includes(cause) ? [] : data
-        .filter(d => d.cause === cause)
+        .filter(d => d.category === cause)
         .map(d => ({
-          value: [d[tempType], d.cases, d.year],
+          value: [d[xType], d.cases, d.year],
           itemStyle: {
             opacity: selectedYear !== null && d.year !== selectedYear ? 0.3 : 1
           }
@@ -68,12 +62,12 @@ const CombinedPlotB = ({
       ...TOOLTIP_CONFIG,
       trigger: 'item',
       formatter: (params) => {
-        const [temp, cases, year] = params.data.value;
+        const [xVal, cases, year] = params.data.value;
         return `
           <b>${params.seriesName}</b><br/>
           Год: ${year}<br/>
-          Температура (${currentTempLabel}): ${temp} °C<br/>
-          Число заболевших: ${cases.toLocaleString('ru-RU')}
+          ${currentXLabel}: ${xVal}<br/>
+          ${yAxisLabel}: ${cases.toLocaleString('ru-RU')}
         `;
       }
     },
@@ -91,7 +85,7 @@ const CombinedPlotB = ({
     xAxis: {
       type: 'value',
       scale: true,
-      name: `Температура: ${currentTempLabel}, °C`,
+      name: `${currentXLabel}`,
       nameLocation: 'middle',
       nameGap: 30,
       axisLine: AXIS_LINE_STYLE,
@@ -101,7 +95,7 @@ const CombinedPlotB = ({
     },
     yAxis: {
       type: 'value',
-      name: 'Число заболевших',
+      name: yAxisLabel,
       nameLocation: 'middle',
       nameGap: 60,
       axisLine: AXIS_LINE_STYLE,
@@ -139,15 +133,15 @@ const CombinedPlotB = ({
             className={styles.tempBtn}
             onClick={() => setMenuOpen(o => !o)}
           >
-            {currentTempLabel} ▾
+            {currentXLabel} ▾
           </button>
           {menuOpen && (
             <ul className={styles.tempMenu}>
-              {TEMP_TYPES.map(t => (
+              {xAxisOptions.map(t => (
                 <li
                   key={t.key}
-                  className={`${styles.tempMenuItem} ${tempType === t.key ? styles.tempMenuItemActive : ''}`}
-                  onClick={() => { setTempType(t.key); setMenuOpen(false); }}
+                  className={`${styles.tempMenuItem} ${xType === t.key ? styles.tempMenuItemActive : ''}`}
+                  onClick={() => { setXType(t.key); setMenuOpen(false); }}
                 >
                   {t.label}
                 </li>
@@ -164,7 +158,7 @@ const CombinedPlotB = ({
       />
 
       <div className={styles.legend}>
-        {causes.map((cause, idx) => (
+        {categories.map((cause, idx) => (
           <button
             key={cause}
             className={`${styles.legendItem} ${hiddenCauses.includes(cause) ? styles.legendItemHidden : ''}`}
@@ -183,20 +177,22 @@ const CombinedPlotB = ({
 };
 
 CombinedPlotB.propTypes = {
-  causes: PropTypes.arrayOf(PropTypes.string),
+  categories: PropTypes.arrayOf(PropTypes.string),
   years: PropTypes.arrayOf(PropTypes.number),
   data: PropTypes.arrayOf(
     PropTypes.shape({
       year: PropTypes.number.isRequired,
-      cause: PropTypes.string.isRequired,
-      annual: PropTypes.number,
-      summer: PropTypes.number,
-      winter: PropTypes.number,
-      tmax: PropTypes.number,
-      tmin: PropTypes.number,
+      category: PropTypes.string.isRequired,
       cases: PropTypes.number.isRequired
     })
-  )
+  ),
+  xAxisOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired
+    })
+  ),
+  yAxisLabel: PropTypes.string
 };
 
 export default CombinedPlotB;

@@ -34,7 +34,7 @@ const BarChartA = ({ title, timelineLabels = [], dataSource = [], seriesCount = 
         }
       },
       legend: {
-        top: 20,
+        top: 35,
         left: 'center',
         textStyle: TEXT_STYLES.legend
       },
