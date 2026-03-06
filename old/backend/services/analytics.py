@@ -12,6 +12,11 @@ from models import (
 )
 from repo.analytics import AnalyticsRepo
 
+
+def _is_age_interval(age_code: str) -> bool:
+    normalized = age_code.strip().replace('–', '-').replace('—', '-')
+    return bool(re.fullmatch(r"(\d+)\s*-\s*(\d+)", normalized) or re.fullmatch(r"(\d+)\s*\+", normalized))
+
 def _age_sort_key(age_code: str) -> tuple[int, int, str]:
     normalized = age_code.strip().replace('–', '-').replace('—', '-')
 
@@ -139,6 +144,8 @@ class AnalyticsService:
         points_map: dict[str, dict[str, float]] = defaultdict(lambda: {"M": 0.0, "F": 0.0, "T": 0.0})
 
         for row in rows:
+            if not _is_age_interval(row.age_code):
+                continue
             points_map[row.age_code][row.sex_code] = row.value
 
         points: list[PopulationPyramidPointModel] = []

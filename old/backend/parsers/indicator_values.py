@@ -32,7 +32,6 @@ INDICATOR_KEY_MAP: dict[str, dict[str, str | None]] = {
     "death_rate_tuberculosis": {"name": "Смертность — туберкулез", "type": "демография", "theme": "причины смерти"},
 }
 
-
 FILE_SOURCE_MAP = {
     "morbidity": "Заболеваемость по основным классам болезней",
     "road_press_release": "Автомобильные дороги и транспортная инфраструктура",
@@ -63,26 +62,29 @@ FILE_TYPE_THEME_MAP = {
 }
 
 
-def _normalize_name(value: str | None) -> str:
-    return (value or "").replace("-всего", "").strip()
+def _normalize_text(value: str | None) -> str:
+    return (value or "").strip()
 
 
-def _normalize_indicator_name(raw_name: str) -> tuple[str, str | None]:
-    clean_name = raw_name.strip()
-    if "—" not in clean_name:
-        return clean_name, None
+def _normalize_region_name(value: str | None) -> str:
+    return _normalize_text(value).replace("-всего", "")
 
-    base_name, subtype_part = clean_name.split("—", 1)
+
+def _extract_subtype(indicator_name: str) -> str | None:
+    if "—" not in indicator_name:
+        return None
+
+    _, subtype_part = indicator_name.split("—", 1)
     subtype = subtype_part.split(",", 1)[0].strip()
-    return base_name.strip(), subtype or None
+    return subtype or None
 
 
 def _resolve_indicator_payload(row: dict, file_stem: str) -> tuple[str, str | None, str | None, str | None] | None:
     indicator_name = row.get("indicator_name")
     if indicator_name:
-        name, subtype_name = _normalize_indicator_name(str(indicator_name))
+        clean_name = _normalize_text(str(indicator_name))
         indicator_type, indicator_theme = FILE_TYPE_THEME_MAP.get(file_stem, ("авто-добавленный", "импорт indicator_values"))
-        return name, subtype_name, indicator_type, indicator_theme
+        return clean_name, _extract_subtype(clean_name), indicator_type, indicator_theme
 
     indicator_key = row.get("indicator_key")
     if not indicator_key:
@@ -92,36 +94,37 @@ def _resolve_indicator_payload(row: dict, file_stem: str) -> tuple[str, str | No
     if mapped is None:
         return None
 
-    name, subtype_name = _normalize_indicator_name(str(mapped["name"]))
-    return name, subtype_name, mapped.get("type"), mapped.get("theme")
+    clean_name = _normalize_text(str(mapped["name"]))
+    return clean_name, _extract_subtype(clean_name), mapped.get("type"), mapped.get("theme")
 
 
 def parse_indicator_values(data: dict, session: Session, source_file: str | None = None):
     metadata = data.get("metadata", {}) or {}
     file_stem = Path(source_file).stem if source_file else ""
 
-    region_name = _normalize_name(metadata.get("region_name"))
-    source_name = _normalize_name(metadata.get("source_name")) or _normalize_name(FILE_SOURCE_MAP.get(file_stem))
+    region_name = _normalize_region_name(metadata.get("region_name"))
+    source_name = _normalize_text(metadata.get("source_name")) or _normalize_text(FILE_SOURCE_MAP.get(file_stem))
 
     rows = data.get("indicator_values", {}).get("rows", [])
     if not rows:
         return
 
-    regions_map = {_normalize_name(r.name): r.id for r in session.query(RegionsTable).all()}
-    sources_map = {_normalize_name(s.name): s.id for s in session.query(DataSourcesTable).all()}
-    units_map = {_normalize_name(u.code): u.id for u in session.query(UnitsTable).all()}
-    indicators_map = {_normalize_name(i.name): i for i in session.query(IndicatorsTable).all()}
-    subtypes_map = {_normalize_name(s.name): s.id for s in session.query(IndicatorSubtypesTable).all()}
+    regions_map = {_normalize_region_name(r.name): r.id for r in session.query(RegionsTable).all()}
+    sources_map = {_normalize_text(s.name): s.id for s in session.query(DataSourcesTable).all()}
+    units_map = {_normalize_text(u.code): u.id for u in session.query(UnitsTable).all()}
+    indicators_map = {_normalize_text(i.name): i for i in session.query(IndicatorsTable).all()}
+    subtypes_map = {_normalize_text(s.name): s.id for s in session.query(IndicatorSubtypesTable).all()}
 
     if source_name and source_name not in sources_map:
-        source = DataSourcesTable(name=source_name, organization="Не указан")
+        max_id = session.query(DataSourcesTable.id).order_by(DataSourcesTable.id.desc()).first()
+        source = DataSourcesTable(id=(max_id[0] + 1 if max_id else 1), name=source_name, organization="Не указан")
         session.add(source)
         session.flush()
         sources_map[source_name] = source.id
 
     for row in rows:
-        row_region = _normalize_name(row.get("region_name")) or region_name
-        row_source = _normalize_name(row.get("source_name")) or source_name
+        row_region = _normalize_region_name(row.get("region_name")) or region_name
+        row_source = _normalize_text(row.get("source_name")) or source_name
         if not row_region or not row_source:
             continue
 
@@ -131,7 +134,8 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
 
         source_id = sources_map.get(row_source)
         if source_id is None:
-            source = DataSourcesTable(name=row_source, organization="Не указан")
+            max_id = session.query(DataSourcesTable.id).order_by(DataSourcesTable.id.desc()).first()
+            source = DataSourcesTable(id=(max_id[0] + 1 if max_id else 1), name=row_source, organization="Не указан")
             session.add(source)
             session.flush()
             source_id = source.id
@@ -143,29 +147,42 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
 
         indicator_name, subtype_name, indicator_type, indicator_theme = resolved
 
-        unit_code = _normalize_name(row.get("unit_code"))
+        unit_code = _normalize_text(row.get("unit_code"))
         unit_id = None
         if unit_code:
             unit_id = units_map.get(unit_code)
             if unit_id is None:
-                unit = UnitsTable(code=unit_code, name=unit_code)
+                max_id = session.query(UnitsTable.id).order_by(UnitsTable.id.desc()).first()
+                unit = UnitsTable(id=(max_id[0] + 1 if max_id else 1), code=unit_code, name=unit_code)
                 session.add(unit)
                 session.flush()
                 unit_id = unit.id
                 units_map[unit_code] = unit_id
 
-        indicator = indicators_map.get(indicator_name)
+        subtype_id = None
+        if subtype_name:
+            subtype_id = subtypes_map.get(subtype_name)
+            if subtype_id is None:
+                max_id = session.query(IndicatorSubtypesTable.id).order_by(IndicatorSubtypesTable.id.desc()).first()
+                subtype = IndicatorSubtypesTable(id=(max_id[0] + 1 if max_id else 1), name=subtype_name)
+                session.add(subtype)
+                session.flush()
+                subtype_id = subtype.id
+                subtypes_map[subtype_name] = subtype_id
+
+        indicator_key = indicator_name
+        indicator = indicators_map.get(indicator_key)
         if indicator is None:
             indicator = IndicatorsTable(
                 name=indicator_name,
                 type=indicator_type or "авто-добавленный",
                 theme=indicator_theme or "импорт indicator_values",
                 unit_id=unit_id,
-                subtype_id=None,
+                subtype_id=subtype_id,
             )
             session.add(indicator)
             session.flush()
-            indicators_map[indicator_name] = indicator
+            indicators_map[indicator_key] = indicator
         else:
             if indicator.unit_id is None and unit_id is not None:
                 indicator.unit_id = unit_id
@@ -173,18 +190,7 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
                 indicator.type = indicator_type
             if not indicator.theme and indicator_theme:
                 indicator.theme = indicator_theme
-
-        subtype_id = None
-        if subtype_name:
-            subtype_id = subtypes_map.get(subtype_name)
-            if subtype_id is None:
-                subtype = IndicatorSubtypesTable(name=subtype_name)
-                session.add(subtype)
-                session.flush()
-                subtype_id = subtype.id
-                subtypes_map[subtype_name] = subtype_id
-
-            if indicator.subtype_id is None:
+            if indicator.subtype_id is None and subtype_id is not None:
                 indicator.subtype_id = subtype_id
 
         year = row.get("year")

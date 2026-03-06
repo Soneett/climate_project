@@ -51,8 +51,9 @@
           },
           {
             title: 'Причины смерти',
+            chartType: 'pie',
             indicatorNames: [
-              'Смертность',
+              'Смертность — все причины',
               'Смертность — болезни системы кровообращения',
               'Смертность — новообразования',
               'Смертность — внешние причины'
@@ -156,6 +157,24 @@
       };
     }
 
+    function buildPieOption(payload, title, enabledSeries = []) {
+      const filteredSeries = enabledSeries.length
+        ? payload.series.filter((series) => enabledSeries.includes(series.indicator_name))
+        : payload.series;
+
+      const points = filteredSeries.map((series) => {
+        const last = [...series.points].sort((a, b) => Number(a.year) - Number(b.year)).at(-1);
+        return { name: series.indicator_name, value: last ? Number(last.value) : 0 };
+      });
+
+      return {
+        title: { text: `${title} (последние значения): ${payload.region_name}`, left: 'center' },
+        tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
+        legend: { orient: 'vertical', left: 10, top: 60 },
+        series: [{ type: 'pie', radius: '55%', center: ['58%', '58%'], data: points }]
+      };
+    }
+
     function buildPopulationOption(payload) {
       const categories = payload.points.map(p => p.age_code);
       const male = payload.points.map(p => -Number(p.male));
@@ -239,18 +258,28 @@
 
         const payload = await fetchChartData(regionId, chosen.map(c => c.id));
 
-        const lineCard = document.createElement('div');
-        lineCard.className = 'card';
-        lineCard.innerHTML = `<h3>${chartConfig.title}</h3><div id="line-${idx}" class="chart"></div>`;
-        contentEl.appendChild(lineCard);
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<h3>${chartConfig.title}</h3><div id="chart-${idx}" class="chart"></div>`;
+        contentEl.appendChild(card);
 
-        const chart = echarts.init(document.getElementById(`line-${idx}`));
+        const chart = echarts.init(document.getElementById(`chart-${idx}`));
         const allSeriesNames = payload.series.map((item) => item.indicator_name);
-        chart.setOption(buildLineOption(payload, chartConfig.title, allSeriesNames), true);
+        const chartType = chartConfig.chartType || 'line';
+
+        const renderOption = (enabledSeries) => {
+          if (chartType === 'pie') {
+            chart.setOption(buildPieOption(payload, chartConfig.title, enabledSeries), true);
+            return;
+          }
+          chart.setOption(buildLineOption(payload, chartConfig.title, enabledSeries), true);
+        };
+
+        renderOption(allSeriesNames);
         charts.push(chart);
 
-        mountSeriesFilters(lineCard, allSeriesNames, (enabledSeries) => {
-          chart.setOption(buildLineOption(payload, chartConfig.title, enabledSeries), true);
+        mountSeriesFilters(card, allSeriesNames, (enabledSeries) => {
+          renderOption(enabledSeries);
         });
       }
     }
