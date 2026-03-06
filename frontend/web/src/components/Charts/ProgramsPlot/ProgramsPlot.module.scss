@@ -14,10 +14,7 @@
 
 .modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: $color-overlay-dark;
   display: flex;
   align-items: center;
@@ -27,12 +24,8 @@
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .modalContent {
@@ -46,7 +39,7 @@
   box-shadow: $shadow-2xl;
   position: relative;
   animation: slideUp 0.3s ease;
-  
+
   h3 {
     margin: 0 0 $spacing-4 0;
     font-size: $font-size-xl;
@@ -71,7 +64,7 @@
     margin: $spacing-2 0;
     color: $color-text-secondary;
     line-height: $line-height-relaxed;
-    
+
     strong {
       color: $color-text-primary;
       font-weight: $font-weight-semibold;
@@ -97,7 +90,7 @@
   justify-content: center;
   border-radius: $border-radius-sm;
   transition: all $transition-fast;
-  
+
   &:hover {
     background: $color-gray-100;
     color: $color-text-primary;

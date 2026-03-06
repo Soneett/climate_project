@@ -9,6 +9,7 @@ import {
   AXIS_LINE_STYLE,
   SPLIT_LINE_STYLE
 } from '../chartConfig';
+import ChartWrapper from '../ChartWrapper/ChartWrapper';
 import styles from './LineChart.module.scss';
 
 const LineChart = ({ title, labels = [], datasets = [] }) => {
@@ -60,13 +61,13 @@ const LineChart = ({ title, labels = [], datasets = [] }) => {
   };
 
   return (
-    <div className={styles.lineChart}>
+    <ChartWrapper chartRef={chartRef} filename="line-chart" className={styles.lineChart}>
       <ReactECharts 
         ref={chartRef} 
         option={option} 
         style={{ height: '100%', width: '100%', minHeight: '400px' }} 
       />
-    </div>
+    </ChartWrapper>
   );
 };
 

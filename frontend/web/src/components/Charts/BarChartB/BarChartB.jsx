@@ -11,6 +11,7 @@ import {
   SPLIT_LINE_STYLE,
   CHART_COLORS
 } from '../chartConfig';
+import ChartWrapper from '../ChartWrapper/ChartWrapper';
 import styles from './BarChartB.module.scss';
 
 const BarChartB = ({
@@ -156,13 +157,13 @@ const BarChartB = ({
   };
 
   return (
-    <div className={styles.barChartB}>
+    <ChartWrapper chartRef={chartRef} filename="bar-chart-b" className={styles.barChartB}>
       <ReactECharts
         ref={chartRef}
         option={option}
         style={{ height: '100%', width: '100%', minHeight: '600px' }}
       />
-    </div>
+    </ChartWrapper>
   );
 };
 

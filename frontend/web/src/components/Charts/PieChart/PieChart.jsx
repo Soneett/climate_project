@@ -7,6 +7,7 @@ import {
   TEXT_STYLES,
   TIMELINE_CONFIG
 } from '../chartConfig';
+import ChartWrapper from '../ChartWrapper/ChartWrapper';
 import styles from './PieChart.module.scss';
 
 const PieChart = ({ title, timelineLabels = [], legendLeftItems = [], legendRightItems = [], timelineData = [] }) => {
@@ -28,14 +29,14 @@ const PieChart = ({ title, timelineLabels = [], legendLeftItems = [], legendRigh
         { 
           orient: 'vertical', 
           left: '5%', 
-          top: 20, 
+          top: 20,
           data: legendLeftItems,
           textStyle: TEXT_STYLES.legendSmall
         },
         { 
           orient: 'vertical', 
           right: '5%', 
-          top: 20, 
+          top: 30,
           data: legendRightItems,
           textStyle: TEXT_STYLES.legendSmall
         }
@@ -62,13 +63,13 @@ const PieChart = ({ title, timelineLabels = [], legendLeftItems = [], legendRigh
   };
 
   return (
-    <div className={styles.pieChart}>
+    <ChartWrapper chartRef={chartRef} filename="pie-chart" className={styles.pieChart}>
       <ReactECharts 
         ref={chartRef} 
         option={option} 
         style={{ height: '100%', width: '100%', minHeight: '500px' }} 
       />
-    </div>
+    </ChartWrapper>
   );
 };
 

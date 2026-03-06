@@ -11,6 +11,7 @@ import {
   SPLIT_LINE_STYLE,
   CHART_COLORS
 } from '../chartConfig';
+import ChartWrapper from '../ChartWrapper/ChartWrapper';
 import styles from './WindPlot.module.scss';
 
 const WindPlot = ({
@@ -184,13 +185,13 @@ const WindPlot = ({
   };
 
   return (
-    <div className={styles.windPlot}>
+    <ChartWrapper chartRef={chartRef} filename="wind-plot" className={styles.windPlot}>
       <ReactECharts
         ref={chartRef}
         option={option}
         style={{ height: '100%', width: '100%', minHeight: '550px' }}
       />
-    </div>
+    </ChartWrapper>
   );
 };
 

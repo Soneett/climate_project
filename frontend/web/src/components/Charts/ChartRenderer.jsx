@@ -13,7 +13,9 @@ import {
   CombinedPlotA,
   CombinedPlotB,
   CombinedPlotC,
-  LineDotChart
+  LineDotChart,
+  MapChart,
+  ColorMarkerMap
 } from './index';
 
 /**
@@ -33,7 +35,9 @@ const CHART_COMPONENTS = {
   combinedPlotA: CombinedPlotA,
   combinedPlotB: CombinedPlotB,
   combinedPlotC: CombinedPlotC,
-  lineDotChart: LineDotChart
+  lineDotChart: LineDotChart,
+  mapChart: MapChart,
+  colorMarkerMap: ColorMarkerMap
 };
 
 /**
@@ -94,6 +98,12 @@ const ChartRenderer = ({ block }) => {
     case 'lineDotChart':
       chartProps = { ...chartProps, ...block.lineDotChartData };
       break;
+    case 'mapChart':
+      chartProps = { ...chartProps, ...block.mapChartData };
+      break;
+    case 'colorMarkerMap':
+      chartProps = { ...chartProps, ...block.colorMarkerMapData };
+      break;
     case 'line':
     default:
       if (block.chartData) {
@@ -126,7 +136,9 @@ ChartRenderer.propTypes = {
     combinedPlotAData: PropTypes.object,
     combinedPlotBData: PropTypes.object,
     combinedPlotCData: PropTypes.object,
-    lineDotChartData: PropTypes.object
+    lineDotChartData: PropTypes.object,
+    mapChartData: PropTypes.object,
+    colorMarkerMapData: PropTypes.object
   }).isRequired
 };
 

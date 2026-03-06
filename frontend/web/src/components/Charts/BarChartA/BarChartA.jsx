@@ -10,6 +10,7 @@ import {
   AXIS_LINE_STYLE,
   SPLIT_LINE_STYLE
 } from '../chartConfig';
+import ChartWrapper from '../ChartWrapper/ChartWrapper';
 import styles from './BarChartA.module.scss';
 
 const BarChartA = ({ title, timelineLabels = [], dataSource = [], seriesCount = 3 }) => {
@@ -62,13 +63,13 @@ const BarChartA = ({ title, timelineLabels = [], dataSource = [], seriesCount = 
   };
 
   return (
-    <div className={styles.barChart}>
+    <ChartWrapper chartRef={chartRef} filename="bar-chart" className={styles.barChart}>
       <ReactECharts 
         ref={chartRef} 
         option={option} 
         style={{ height: '100%', width: '100%', minHeight: '500px' }} 
       />
-    </div>
+    </ChartWrapper>
   );
 };
 

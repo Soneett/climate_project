@@ -90,6 +90,7 @@ export const TOOLTIP_CONFIG = {
   backgroundColor: CHART_COLORS.background,
   borderColor: CHART_COLORS.borderLight,
   borderWidth: 1,
+  confine: true,
   textStyle: TEXT_STYLES.tooltip
 };
 

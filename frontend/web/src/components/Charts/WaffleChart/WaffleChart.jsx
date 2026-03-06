@@ -2,11 +2,13 @@ import React, { useRef, useState, useCallback, useMemo, useEffect } from 'react'
 import PropTypes from 'prop-types';
 import ReactECharts from 'echarts-for-react';
 import { useChartResize } from '../../../hooks/useChartResize';
+import { useWindowWidth } from '../../../hooks/useWindowWidth';
 import {
   TOOLTIP_CONFIG,
   TEXT_STYLES,
   TIMELINE_CONFIG,
 } from '../chartConfig';
+import ChartWrapper from '../ChartWrapper/ChartWrapper';
 import styles from './WaffleChart.module.scss';
 
 const NICE_COLORS = [
@@ -14,10 +16,15 @@ const NICE_COLORS = [
   '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'
 ];
 
+const getCategoryColor = (index) => NICE_COLORS[index % NICE_COLORS.length];
+
 const WaffleChart = ({ title, timelineLabels = [], timelineData = [] }) => {
   const chartRef = useRef(null);
   const [selectedCategories, setSelectedCategories] = useState({});
   useChartResize(chartRef);
+
+  const windowWidth = useWindowWidth();
+  const isMobile = windowWidth < 768;
 
   const GRID_WIDTH = 16;
   const GRID_HEIGHT = 10;
@@ -26,14 +33,6 @@ const WaffleChart = ({ title, timelineLabels = [], timelineData = [] }) => {
   const allCategories = useMemo(() => {
     return [...new Set(timelineData.flatMap(y => y.data.map(i => i.name)))];
   }, [timelineData]);
-
-  const splitCategories = useMemo(() => {
-    const half = Math.ceil(allCategories.length / 2);
-    return {
-      left: allCategories.slice(0, half),
-      right: allCategories.slice(half)
-    };
-  }, [allCategories]);
 
   useEffect(() => {
     const initial = {};
@@ -90,7 +89,7 @@ const WaffleChart = ({ title, timelineLabels = [], timelineData = [] }) => {
           name: catName,
           type: 'scatter',
           symbol: 'roundRect',
-          symbolSize: 30,
+          symbolSize: isMobile ? 16 : 30,
           data: categoryPoints,
           emphasis: {
             focus: 'series',
@@ -98,7 +97,7 @@ const WaffleChart = ({ title, timelineLabels = [], timelineData = [] }) => {
           },
           blur: { itemStyle: { opacity: 0.15 } },
           itemStyle: {
-            color: NICE_COLORS[catIdx % NICE_COLORS.length],
+            color: getCategoryColor(catIdx),
             borderColor: '#fff',
             borderWidth: 2,
             borderRadius: 4
@@ -115,33 +114,16 @@ const WaffleChart = ({ title, timelineLabels = [], timelineData = [] }) => {
           top: 20,
           textStyle: { ...TEXT_STYLES.axis }
         },
-        legend: [
-          {
-            data: splitCategories.left,
-            orient: 'vertical',
-            left: '7%',
-            top: 'center',
-            selected: selectedCategories,
-            textStyle: TEXT_STYLES.legend
-          },
-          {
-            data: splitCategories.right,
-            orient: 'vertical',
-            right: '7%',
-            top: 'center',
-            selected: selectedCategories,
-            textStyle: TEXT_STYLES.legend
-          }
-        ],
+        legend: { show: false },
         series
       };
     });
-  }, [timelineData, timelineLabels, selectedCategories, allCategories, splitCategories, calculateCellDistribution, GRID_WIDTH]);
+  }, [timelineData, timelineLabels, selectedCategories, allCategories, calculateCellDistribution, GRID_WIDTH, isMobile]);
 
   const option = {
     backgroundColor: '#ffffff',
     baseOption: {
-      timeline: { ...TIMELINE_CONFIG, data: timelineLabels, bottom: 0 },
+      timeline: { ...TIMELINE_CONFIG, data: timelineLabels, bottom: -15 },
       tooltip: {
         ...TOOLTIP_CONFIG,
         trigger: 'item',
@@ -162,8 +144,8 @@ const WaffleChart = ({ title, timelineLabels = [], timelineData = [] }) => {
       grid: {
         top: 'center',
         left: 'center',
-        width: 550,
-        height: 350,
+        width: isMobile ? 260 : 550,
+        height: isMobile ? 160 : 350,
         containLabel: false
       },
       xAxis: {
@@ -186,16 +168,40 @@ const WaffleChart = ({ title, timelineLabels = [], timelineData = [] }) => {
   };
 
   return (
-    <div className={styles.waffleChartWrapper} style={{ width: '100%', height: '550px', background: '#fff' }}>
-      <ReactECharts
-        ref={chartRef}
-        option={option}
-        style={{ height: '100%', width: '100%' }}
-        onEvents={{
-          legendselectchanged: (params) => setSelectedCategories(params.selected)
-        }}
-      />
-    </div>
+    <ChartWrapper chartRef={chartRef} filename="waffle-chart" className={styles.waffleChartWrapper} >
+      <div className={styles.container}>
+        <div className={styles.chartWrapper}>
+          <ReactECharts
+            ref={chartRef}
+            option={option}
+            style={{ height: '100%', width: '100%' }}
+            onEvents={{
+              legendselectchanged: (params) => setSelectedCategories(params.selected)
+            }}
+          />
+        </div>
+        <div className={styles.legend}>
+          {allCategories.map((cat, idx) => {
+            const isSelected = selectedCategories[cat] !== false;
+            return (
+              <div
+                key={cat}
+                className={`${styles.legendItem} ${!isSelected ? styles.legendItemInactive : ''}`}
+                onClick={() =>
+                  setSelectedCategories(prev => ({ ...prev, [cat]: !isSelected }))
+                }
+              >
+                <span
+                  className={styles.legendIcon}
+                  style={{ backgroundColor: getCategoryColor(idx) }}
+                />
+                <span className={styles.legendLabel}>{cat}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </ChartWrapper>
   );
 };
 

@@ -1,6 +1,10 @@
 @use '../../../styles/variables' as *;
 @use '../../../styles/mixins' as *;
 
+:root {
+  --download-slot: 96px;
+}
+
 .combinedPlotB {
   width: 100%;
   height: 100%;
@@ -11,21 +15,50 @@
   box-shadow: $shadow-sm;
   display: flex;
   flex-direction: column;
+
+  @include mobile {
+    min-height: 380px;
+    padding: $spacing-2;
+    overflow-x: auto;
+  }
 }
 
+/* Controls: reserve space for download button and make years scrollable */
 .controls {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   margin-bottom: 8px;
+  padding-right: var(--download-slot);
+  position: relative;
+  z-index: 1;
+
+  @include mobile {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
 }
 
+/* Year filter: scrollable row of year buttons */
 .yearFilter {
   display: flex;
   align-items: center;
   gap: 6px;
-  flex-wrap: wrap;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+
+  @include mobile {
+    width: 100%;
+    padding-bottom: 6px;
+    margin: 0;
+  }
 }
 
 .filterLabel {
@@ -35,7 +68,10 @@
   margin-right: 4px;
 }
 
+/* Year buttons */
 .yearBtn {
+  flex: 0 0 auto;
+  margin-right: 8px;
   font-family: 'Raleway', sans-serif;
   font-size: 12px;
   padding: 4px 10px;
@@ -46,19 +82,28 @@
   cursor: pointer;
   transition: background 0.15s;
 
-  &:hover {
-    background: #f0f4f3;
-  }
+  &:hover { background: #f0f4f3; }
 }
-
 .yearBtnActive {
   background: #366164;
   color: #fff;
   border-color: #366164;
 }
 
+/* Metric selector (tempSelector) */
 .tempSelector {
   position: relative;
+  flex: 0 0 auto;
+  margin-left: 12px;
+  z-index: 2;
+
+  @include mobile {
+    width: 100%;
+    order: 2;
+    display: flex;
+    justify-content: flex-start;
+    margin-left: 0;
+  }
 }
 
 .tempBtn {
@@ -70,10 +115,11 @@
   background: #fff;
   color: #2C3E38;
   cursor: pointer;
+  min-width: 0;
 
-  &:hover {
-    background: #f0f4f3;
-  }
+  &:hover { background: #f0f4f3; }
+
+  @include mobile { min-width: 120px; }
 }
 
 .tempMenu {
@@ -84,13 +130,12 @@
   background: #fff;
   border: 1px solid #D1D5DB;
   border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   list-style: none;
   margin: 0;
   padding: 4px 0;
   min-width: 200px;
 }
-
 .tempMenuItem {
   font-family: 'Raleway', sans-serif;
   font-size: 13px;
@@ -98,16 +143,11 @@
   cursor: pointer;
   color: #2C3E38;
 
-  &:hover {
-    background: #f0f4f3;
-  }
+  &:hover { background: #f0f4f3; }
 }
+.tempMenuItemActive { color: #366164; font-weight: 600; }
 
-.tempMenuItemActive {
-  color: #366164;
-  font-weight: 600;
-}
-
+/* Legend */
 .legend {
   display: flex;
   flex-wrap: wrap;
@@ -115,7 +155,6 @@
   justify-content: center;
   margin-top: 8px;
 }
-
 .legendItem {
   display: flex;
   align-items: center;
@@ -129,15 +168,9 @@
   padding: 2px 6px;
   border-radius: 4px;
 
-  &:hover {
-    background: #f0f4f3;
-  }
+  &:hover { background: #f0f4f3; }
 }
-
-.legendItemHidden {
-  opacity: 0.4;
-}
-
+.legendItemHidden { opacity: 0.4; }
 .legendDot {
   width: 10px;
   height: 10px;

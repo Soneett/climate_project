@@ -11,6 +11,12 @@
   box-shadow: $shadow-sm;
   display: flex;
   flex-direction: column;
+
+  @include mobile {
+    min-height: 380px;
+    padding: $spacing-2;
+    overflow-x: auto;
+  }
 }
 
 .controls {

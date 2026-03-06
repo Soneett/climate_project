@@ -2,11 +2,13 @@ import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactECharts from 'echarts-for-react';
 import { useChartResize } from '../../../hooks/useChartResize';
+import { useWindowWidth } from '../../../hooks/useWindowWidth';
 import {
   TOOLTIP_CONFIG,
   TEXT_STYLES,
   AXIS_LINE_STYLE
 } from '../chartConfig';
+import ChartWrapper from '../ChartWrapper/ChartWrapper';
 import styles from './CombinedPlotA.module.scss';
 
 const DEFAULT_Y2_OPTIONS = [
@@ -25,7 +27,6 @@ const DEFAULT_Y1_SERIES = [
 const TEMP_COLOR = '#5470C6';
 
 const CombinedPlotA = ({
-  title = 'Взаимосвязь температуры и уровня жизни',
   data = [],
   yAxis1Series = DEFAULT_Y1_SERIES,
   yAxis1Label = 'Финансовые показатели (млн)',
@@ -33,6 +34,9 @@ const CombinedPlotA = ({
 }) => {
   const chartRef = useRef(null);
   useChartResize(chartRef);
+
+  const windowWidth = useWindowWidth();
+  const isMobile = windowWidth < 576;
 
   const [tempType, setTempType] = useState(() => yAxis2Options[0]?.key || 'annual');
   const [hiddenSeries, setHiddenSeries] = useState([]);
@@ -71,8 +75,8 @@ const CombinedPlotA = ({
       selected: Object.fromEntries(seriesDefs.map(s => [s.name, !hiddenSeries.includes(s.name)]))
     },
     grid: {
-      left: 80,
-      right: 80,
+      left: '5%',
+      right: '5%',
       top: 80,
       bottom: 100
     },
@@ -84,7 +88,7 @@ const CombinedPlotA = ({
       type: 'category',
       data: data.map(d => d.year),
       axisLine: AXIS_LINE_STYLE,
-      axisLabel: TEXT_STYLES.axis
+      axisLabel: { ...TEXT_STYLES.axis, fontSize: isMobile ? 10 : 12, rotate: isMobile ? 45 : 0 }
     },
     yAxis: [
       {
@@ -137,7 +141,7 @@ const CombinedPlotA = ({
   };
 
   return (
-    <div className={styles.combinedPlotA}>
+    <ChartWrapper chartRef={chartRef} filename="combined-plot-a" className={styles.combinedPlotA}>
       <div className={styles.controls}>
         <div className={styles.tempSelector}>
           <button
@@ -180,7 +184,7 @@ const CombinedPlotA = ({
           </button>
         ))}
       </div>
-    </div>
+    </ChartWrapper>
   );
 };
 

@@ -10,6 +10,7 @@ import {
   SPLIT_LINE_STYLE,
   CHART_COLORS
 } from '../chartConfig';
+import ChartWrapper from '../ChartWrapper/ChartWrapper';
 import styles from './StackPlot.module.scss';
 
 const StackPlot = ({ 
@@ -45,20 +46,11 @@ const StackPlot = ({
         left: 'center',
         textStyle: TEXT_STYLES.legend
       },
-      toolbox: {
-        feature: {
-          saveAsImage: {
-            title: 'Сохранить'
-          }
-        },
-        right: 20,
-        top: 20
-      },
       grid: {
         left: '3%',
         right: '4%',
         bottom: 80,
-        top: 120,
+        top: 135,
         containLabel: true
       },
       xAxis: [{
@@ -98,13 +90,13 @@ const StackPlot = ({
   };
 
   return (
-    <div className={styles.stackPlot}>
+    <ChartWrapper chartRef={chartRef} filename="stack-plot" className={styles.stackPlot}>
       <ReactECharts 
         ref={chartRef} 
         option={option} 
         style={{ height: '100%', width: '100%', minHeight: '500px' }} 
       />
-    </div>
+    </ChartWrapper>
   );
 };
 

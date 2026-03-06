@@ -5,6 +5,7 @@
   display: flex;
   align-items: center;
   min-width: 0;
+  position: relative;
 }
 
 .trigger {
@@ -18,6 +19,8 @@
   user-select: none;
   background-color: transparent;
   border: none;
+  flex-shrink: 1;
+  min-width: 0;
 
   &:hover,
   .open & {
@@ -41,6 +44,11 @@
   font-size: $font-size-sm;
   line-height: $line-height-tight;
   gap: $spacing-1;
+  overflow-wrap: normal;
+  word-break: keep-all;
+  white-space: normal;
+  hyphens: none;
+  max-width: 100%;
 
   @include media-md {
     font-size: $font-size-base;
@@ -49,18 +57,51 @@
 
 .line {
   display: block;
+  word-break: keep-all;
+  white-space: normal;
 }
 
-.caret {
-  font-size: $font-size-xs;
-  opacity: 0.85;
-  transition: transform $transition-fast;
+.submenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: $z-index-dropdown;
+  min-width: 200px;
+  background: $color-bg-primary;
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-lg;
+  list-style: none;
+  margin: $spacing-1 0 0 0;
+  padding: $spacing-2 0;
 
-  .open & {
-    transform: rotate(180deg);
+  @include mobile {
+    position: fixed;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    max-width: 100%;
+    border-radius: 0 0 $border-radius-md $border-radius-md;
   }
 }
 
+.submenuItem {
+  padding: $spacing-3 $spacing-4;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: $color-bg-secondary;
+  }
+
+  @include mobile {
+    font-size: $font-size-xs;
+    padding: $spacing-2 $spacing-3;
+    white-space: normal;
+  }
+}
 
 .root.active .trigger {
   background-color: rgba(255, 255, 255, 0.15);

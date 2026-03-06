@@ -1,4 +1,8 @@
 // Каждый элемент левого столбца имеет массив доступных элементов правого столбца
+
+import { DISASTER_ROADS_DATA, INDICATOR_OPTIONS } from '../data/disasterRoadsData';
+export { DISASTER_ROADS_DATA };
+
 export const SUBJECT_INDICATORS = [
   { 
     id: "temperature", 
@@ -335,7 +339,19 @@ export const RELATIONS_CONTENT = {
       }
     }
   ],
-  "disasters-infrastructure": [],
+  "disasters-infrastructure": [
+    {
+      id: "disaster-roads-map",
+      title: "Взаимосвязь природных катаклизмов и автодорог",
+      chartType: "colorMarkerMap",
+      colorMarkerMapData: {
+        geojsonPath: "/altai.geojson",
+        indicatorOptions: INDICATOR_OPTIONS,
+        dataByYear: DISASTER_ROADS_DATA,
+        regionTitle: 'Республика Алтай',
+      },
+    },
+  ],
   "ecology-demography": [
     {
       id: "eco-demo-linedot",

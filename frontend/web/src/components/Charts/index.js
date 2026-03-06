@@ -12,3 +12,5 @@ export { default as CombinedPlotA } from './CombinedPlotA/CombinedPlotA';
 export { default as CombinedPlotB } from './CombinedPlotB/CombinedPlotB';
 export { default as CombinedPlotC } from './CombinedPlotC/CombinedPlotC';
 export { default as LineDotChart } from './LineDotChart/LineDotChart';
+export { default as MapChart } from './MapChart/MapChart';
+export { default as ColorMarkerMap } from './ColorMarkerMap/ColorMarkerMap';

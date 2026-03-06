@@ -12,9 +12,12 @@
   font-weight: $font-weight-medium;
   cursor: pointer;
   transition: all $transition-base;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: keep-all;
   text-align: center;
   line-height: $line-height-normal;
+  flex-shrink: 1;
+  min-width: 0;
   
   &:focus {
     outline: 2px solid $color-focus-ring;
@@ -52,13 +55,13 @@
 }
 
 .medium {
-  min-width: 180px;
-  height: 65px;
-  font-size: $font-size-lg;
+  min-width: clamp(120px, 15vw, 180px);
+  height: clamp(45px, 6vw, 65px);
+  font-size: clamp(12px, 1.2vw, 18px);
 }
 
 .small {
-  min-width: 150px;
-  height: 50px;
-  font-size: $font-size-base;
+  min-width: clamp(100px, 12vw, 150px);
+  height: clamp(36px, 5vw, 50px);
+  font-size: clamp(11px, 1vw, 16px);
 }

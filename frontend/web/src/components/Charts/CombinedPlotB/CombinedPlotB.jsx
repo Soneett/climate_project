@@ -8,6 +8,7 @@ import {
   AXIS_LINE_STYLE,
   SPLIT_LINE_STYLE
 } from '../chartConfig';
+import ChartWrapper from '../ChartWrapper/ChartWrapper';
 import styles from './CombinedPlotB.module.scss';
 
 const CAUSE_COLORS = ['#5470C6', '#91CC75', '#EE6666', '#FAC858'];
@@ -107,7 +108,7 @@ const CombinedPlotB = ({
   };
 
   return (
-    <div className={styles.combinedPlotB}>
+    <ChartWrapper chartRef={chartRef} filename="combined-plot-b" className={styles.combinedPlotB}>
       <div className={styles.controls}>
         <div className={styles.yearFilter}>
           <span className={styles.filterLabel}>Год:</span>
@@ -172,7 +173,7 @@ const CombinedPlotB = ({
           </button>
         ))}
       </div>
-    </div>
+    </ChartWrapper>
   );
 };
 

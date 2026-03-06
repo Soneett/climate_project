@@ -8,12 +8,12 @@ import {
   AXIS_LINE_STYLE,
   SPLIT_LINE_STYLE
 } from '../chartConfig';
+import ChartWrapper from '../ChartWrapper/ChartWrapper';
 import styles from './ScatterPlot.module.scss';
 
 const CATEGORY_COLORS = ['#26af55', '#769a76', '#e54e1b', '#2684d7'];
 
 const ScatterPlot = ({
-  title = 'Взаимосвязь температуры и демографии',
   categories = [],
   years = [],
   data = [],
@@ -80,8 +80,8 @@ const ScatterPlot = ({
       selected: Object.fromEntries(categories.map(cat => [cat, !hiddenCategories.includes(cat)]))
     },
     grid: {
-      left: 60,
-      right: 60,
+      left: '5%',
+      right: '5%',
       bottom: 20,
       top: 25,
       containLabel: true
@@ -101,7 +101,7 @@ const ScatterPlot = ({
       type: 'value',
       name: yAxisLabel,
       nameLocation: 'middle',
-      nameGap: 60,
+      nameGap: 70,
       axisLine: AXIS_LINE_STYLE,
       splitLine: SPLIT_LINE_STYLE,
       axisLabel: TEXT_STYLES.axis,
@@ -111,7 +111,7 @@ const ScatterPlot = ({
   };
 
   return (
-    <div className={styles.scatterPlot}>
+    <ChartWrapper chartRef={chartRef} filename="scatter-plot" className={styles.scatterPlot}>
       <div className={styles.controls}>
         <div className={styles.yearFilter}>
           <span className={styles.filterLabel}>Год:</span>
@@ -176,7 +176,7 @@ const ScatterPlot = ({
           </button>
         ))}
       </div>
-    </div>
+    </ChartWrapper>
   );
 };
 

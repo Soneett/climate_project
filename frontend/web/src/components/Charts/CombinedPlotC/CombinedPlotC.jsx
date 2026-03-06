@@ -8,6 +8,7 @@ import {
   AXIS_LINE_STYLE,
   SPLIT_LINE_STYLE
 } from '../chartConfig';
+import ChartWrapper from '../ChartWrapper/ChartWrapper';
 import styles from './CombinedPlotC.module.scss';
 
 const DAMAGE_COLORS = ['#ff7e8a', '#ff5757', '#fa2929', '#ff0400', '#F44336', '#E53935', '#D32F2F'];
@@ -18,7 +19,6 @@ const DEFAULT_MODES = [
 ];
 
 const CombinedPlotC = ({
-  title = 'Доля ущерба от катаклизмов в ВРП',
   data = [],
   yAxisLabel = 'Доля ущерба в ВРП (%)',
   legendLabel = 'Доля ущерба в ВРП',
@@ -138,7 +138,7 @@ const CombinedPlotC = ({
   };
 
   return (
-    <div className={styles.combinedPlotC}>
+    <ChartWrapper chartRef={chartRef} filename="combined-plot-c" className={styles.combinedPlotC}>
       <div className={styles.controls}>
         {modes.map(m => (
           <button
@@ -163,7 +163,7 @@ const CombinedPlotC = ({
           {currentLegend}
         </span>
       </div>
-    </div>
+    </ChartWrapper>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ReactECharts from 'echarts-for-react';
 import { useChartResize } from '../../../hooks/useChartResize';
@@ -8,20 +8,20 @@ import {
   AXIS_LINE_STYLE,
   SPLIT_LINE_STYLE
 } from '../chartConfig';
+import ChartWrapper from '../ChartWrapper/ChartWrapper';
 import styles from './LineDotChart.module.scss';
 
 const LINE_COLORS = ['#5470C6', '#91CC75', '#FAC858', '#EE6666'];
 const VISUAL_MAP_COLORS = ['#EE6666', '#FAC858', '#91CC75', '#3BA272'];
 
 const LineDotChart = ({
-  title = '',
-  years = [],
-  primaryCategories = [],
-  secondaryOptions = [],
-  data = [],
-  yAxisLabel = 'Значение',
-  xAxisLabel = ''
-}) => {
+                        years = [],
+                        primaryCategories = [],
+                        secondaryOptions = [],
+                        data = [],
+                        yAxisLabel = 'Значение',
+                        xAxisLabel = ''
+                      }) => {
   const chartRef = useRef(null);
   useChartResize(chartRef);
 
@@ -35,53 +35,59 @@ const LineDotChart = ({
     );
   };
 
-  const currentSecondaryLabel = secondaryOptions.find(o => o.key === secondaryKey)?.label ?? secondaryKey;
+  const currentSecondaryLabel =
+    secondaryOptions.find(o => o.key === secondaryKey)?.label ?? secondaryKey;
 
-  const allSecondaryValues = secondaryKey
-    ? data.map(d => d[secondaryKey]).filter(v => v != null)
-    : [];
-  const minSecondary = allSecondaryValues.length > 0 ? Math.min(...allSecondaryValues) : 0;
-  const maxSecondary = allSecondaryValues.length > 0 ? Math.max(...allSecondaryValues) : 100;
+  const allSecondaryValues = useMemo(
+    () => (secondaryKey ? data.map(d => d[secondaryKey]).filter(v => v != null) : []),
+    [data, secondaryKey]
+  );
+
+  const minSecondary = allSecondaryValues.length ? Math.min(...allSecondaryValues) : 0;
+  const maxSecondary = allSecondaryValues.length ? Math.max(...allSecondaryValues) : 100;
 
   const getYAxisRange = () => {
     const visibleData = data.filter(d => !hiddenCategories.includes(d.category));
-    if (visibleData.length === 0) return { min: 0, max: 100 };
+    if (!visibleData.length) return { min: 0, max: 100 };
+
     const values = visibleData.map(d => d.value).filter(v => v != null);
-    if (values.length === 0) return { min: 0, max: 100 };
+    if (!values.length) return { min: 0, max: 100 };
+
     const min = Math.min(...values);
     const max = Math.max(...values);
-    const padding = (max - min) * 0.1;
+    const padding = (max - min) * 0.1 || Math.max(1, max * 0.05);
+
     return {
       min: Math.floor(min - padding),
       max: Math.ceil(max + padding)
     };
   };
 
-  const buildSeries = () =>
-    primaryCategories.map((cat, idx) => ({
-      name: cat,
-      type: 'line',
-      smooth: false,
-      symbol: 'circle',
-      symbolSize: hiddenCategories.includes(cat) ? 0 : 12,
-      lineStyle: {
-        color: LINE_COLORS[idx % LINE_COLORS.length],
-        width: 2,
-        opacity: hiddenCategories.includes(cat) ? 0 : 1
-      },
-      emphasis: { focus: 'series' },
-      silent: hiddenCategories.includes(cat),
-      data: years.map(year => {
+  const series = primaryCategories.map((cat, idx) => ({
+    name: cat,
+    type: 'line',
+    smooth: false,
+    symbol: 'circle',
+    symbolSize: 8,
+    lineStyle: {
+      color: LINE_COLORS[idx % LINE_COLORS.length],
+      width: 2,
+      opacity: hiddenCategories.includes(cat) ? 0 : 1
+    },
+    emphasis: { focus: 'series' },
+    silent: hiddenCategories.includes(cat),
+    data: years
+      .map(year => {
         const entry = data.find(d => d.year === year && d.category === cat);
         if (!entry) return null;
+
         return {
-          value: [year, entry.value, entry[secondaryKey] != null ? entry[secondaryKey] : null],
-          itemStyle: {
-            opacity: hiddenCategories.includes(cat) ? 0 : 1
-          }
+          value: [year, entry.value, entry[secondaryKey] ?? null],
+          itemStyle: { opacity: hiddenCategories.includes(cat) ? 0 : 1 }
         };
-      }).filter(Boolean)
-    }));
+      })
+      .filter(Boolean)
+  }));
 
   const option = {
     backgroundColor: '#ffffff',
@@ -96,26 +102,27 @@ const LineDotChart = ({
           `${currentSecondaryLabel}: ${secondaryVal != null ? secondaryVal : '—'}`;
       }
     },
-    legend: {
-      show: false
-    },
+    legend: { show: false },
     grid: {
-      left: 80,
-      right: 100,
+      left: '5%',
+      right: 70,
       top: 20,
-      bottom: 100
+      bottom: 86,
+      containLabel: true
     },
     dataZoom: [
-      { type: 'slider', xAxisIndex: 0, start: 0, end: 100, bottom: 40, handleSize: '120%' },
+      { type: 'slider', xAxisIndex: 0, start: 0, end: 100, bottom: 46, handleSize: '120%' },
       { type: 'inside', xAxisIndex: 0, start: 0, end: 100 }
     ],
     visualMap: {
       show: true,
-      left: 'right',
-      top: 'center',
       dimension: 2,
       min: minSecondary,
       max: maxSecondary,
+      orient: 'vertical',
+      left: 'right',
+      top: 'center',
+      height: 220,
       inRange: {
         color: VISUAL_MAP_COLORS,
         symbolSize: [8, 12]
@@ -126,7 +133,11 @@ const LineDotChart = ({
       },
       text: [currentSecondaryLabel, ''],
       calculable: true,
-      textStyle: TEXT_STYLES.axis
+      textStyle: {
+        ...TEXT_STYLES.axis,
+        overflow: 'break',
+        width: 120
+      }
     },
     xAxis: {
       type: 'category',
@@ -151,26 +162,31 @@ const LineDotChart = ({
       axisLabel: TEXT_STYLES.axis,
       nameTextStyle: TEXT_STYLES.axis
     },
-    series: buildSeries()
+    series
   };
 
   return (
-    <div className={styles.lineDotChart}>
+    <ChartWrapper chartRef={chartRef} filename="line-dot-chart" className={styles.lineDotChart}>
       <div className={styles.controls}>
         <div className={styles.selector}>
           <button
             className={styles.selectorBtn}
             onClick={() => setMenuOpen(o => !o)}
+            aria-haspopup="menu"
+            aria-expanded={menuOpen}
+            type="button"
           >
             {currentSecondaryLabel} ▾
           </button>
+
           {menuOpen && (
-            <ul className={styles.selectorMenu}>
+            <ul className={styles.selectorMenu} role="menu">
               {secondaryOptions.map(o => (
                 <li
                   key={o.key}
                   className={`${styles.selectorMenuItem} ${secondaryKey === o.key ? styles.selectorMenuItemActive : ''}`}
                   onClick={() => { setSecondaryKey(o.key); setMenuOpen(false); }}
+                  role="menuitem"
                 >
                   {o.label}
                 </li>
@@ -183,7 +199,9 @@ const LineDotChart = ({
       <ReactECharts
         ref={chartRef}
         option={option}
-        style={{ height: '100%', width: '100%', minHeight: '480px' }}
+        notMerge
+        lazyUpdate={false}
+        style={{ height: '100%', width: '100%', minHeight: '420px' }}
       />
 
       <div className={styles.legend}>
@@ -192,6 +210,7 @@ const LineDotChart = ({
             key={cat}
             className={`${styles.legendItem} ${hiddenCategories.includes(cat) ? styles.legendItemHidden : ''}`}
             onClick={() => toggleCategory(cat)}
+            type="button"
           >
             <span
               className={styles.legendDot}
@@ -201,7 +220,7 @@ const LineDotChart = ({
           </button>
         ))}
       </div>
-    </div>
+    </ChartWrapper>
   );
 };
 

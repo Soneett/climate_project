@@ -34,10 +34,10 @@ const NavBar = ({
             className={styles.controls} aria-label="Показатели - навигация">
             {topMenus.map((indicatorsSection) => (
               <div key={indicatorsSection.id} className={`${styles.item} ${indicatorsSection.submenu?.length ? 'has-submenu' : ''}`}>
-                <NavItemWithSubmenu
+          <NavItemWithSubmenu
                   id={indicatorsSection.id}
                   label={indicatorsSection.label}
-                  submenu={indicatorsSection.submenu}
+                  submenu={[]}
                   isActive={activeTopMenuId === indicatorsSection.id}
                   onActivate={(open) => onTopMenuChange(open ? indicatorsSection.id : null)}
                 />
@@ -59,7 +59,7 @@ const NavBar = ({
           onKeyDown={(e) => {
             if (e.key === "Enter") navigate("/");
           }}
-          aria-label="Перейти на главную"
+          aria-label=" Перейти на главную"
         >
           Лаборатория урбанистических исследований ВШЭ
         </div>

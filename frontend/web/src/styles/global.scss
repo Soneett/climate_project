@@ -2,10 +2,10 @@
 @use './mixins' as *;
 
 // Import fonts
-@import './fonts';
+@use './fonts';
 
 // Import base styles (normalize + resets)
-@import './base';
+@use './base';
 
 // ============================================================================
 // Global CSS Variables
@@ -60,4 +60,30 @@ button {
 // ============================================================================
 html:has(:target) {
   scroll-behavior: smooth;
+}
+
+// ============================================================================
+// Responsive — Mobile & Tablet
+// ============================================================================
+
+// Charts: allow horizontal scroll on mobile to prevent overflow
+@include mobile {
+  html {
+    font-size: 14px;
+  }
+
+  // Charts should fit narrow screens with a minimum usable height
+  [class*="Chart"],
+  [class*="Plot"],
+  [class*="chart"],
+  [class*="plot"] {
+    min-height: 280px;
+    overflow-x: auto;
+  }
+}
+
+@include tablet {
+  html {
+    font-size: 15px;
+  }
 }

@@ -1,7 +1,3 @@
-/**
- * Navigation menu configurations
- */
-
 export const TOP_MENUS = [
   { id: "regional", label: "Региональные\nданные", submenu: [] },
   { 
