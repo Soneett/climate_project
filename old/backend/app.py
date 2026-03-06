@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from database import engine
+from database_views import create_reporting_views
 from tables.base import Base
 
 from routers import (
@@ -25,7 +26,8 @@ from routers import (
 async def lifespan(app: FastAPI):
     print("Creating database tables...")
     Base.metadata.create_all(bind=engine)
-    print("Database tables created!")
+    create_reporting_views(engine)
+    print("Database tables and views created!")
     yield
     print("Shutting down...")
 

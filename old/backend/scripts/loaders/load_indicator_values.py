@@ -13,4 +13,4 @@ def load_indicator_values(session: Session):
         with open(json_file, encoding="utf-8") as f:
             payload = json.load(f)
 
-        parse_indicator_values(payload, session)
+        parse_indicator_values(payload, session, source_file=json_file.name)
