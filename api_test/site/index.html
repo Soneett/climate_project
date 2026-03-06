@@ -26,10 +26,10 @@
     <div class="top">
       <label>API URL <input id="apiUrl" value="http://127.0.0.1:8080"/></label>
       <label>Region ID <input id="regionId" type="number" value="1"/></label>
-      <label>Год для пирамиды <input id="populationYear" type="number" placeholder="пусто = последний"/></label>
+      <label>Год для пирамиды <input id="populationYear" type="number" placeholder=""/></label>
       <button id="reloadBtn">Обновить страницу</button>
     </div>
-    <div class="small">Пользователь не вводит indicator_id вручную: для каждой страницы набор индикаторов выбирается автоматически по тематике/ключевым словам.</div>
+    
   </header>
 
   <div class="layout">
@@ -42,26 +42,9 @@
       {
         id: 'demography',
         title: 'Демография',
-        subtitle: 'Пирамида + линии + pie по последнему году',
+        subtitle: 'Пирамида',
         groups: [
-          { title: 'Рождаемость/смертность/миграция', match: ['рождаем', 'смерт', 'миграц'], max: 3 },
-          { title: 'Демография (дополнительно)', match: ['населен', 'демограф'], max: 3 }
-        ]
-      },
-      {
-        id: 'health',
-        title: 'Здравоохранение',
-        subtitle: 'Линейные ряды и распределение',
-        groups: [
-          { title: 'Ключевые показатели здравоохранения', match: ['здрав', 'больниц', 'врач', 'поликлин'], max: 4 }
-        ]
-      },
-      {
-        id: 'economy',
-        title: 'Экономика/уровень жизни',
-        subtitle: 'Линии + pie',
-        groups: [
-          { title: 'Экономика и доходы', match: ['бедност', 'доход', 'расход', 'врп', 'эконом'], max: 4 }
+          { title: 'Рождаемость/смертность/миграция', match: ['рождаем', 'смерт', 'миграц'], max: 3 }
         ]
       }
     ];
