@@ -24,9 +24,7 @@ def create_reporting_views(engine: Engine) -> None:
             iv.value,
             iv.source_id,
             ds.name AS source_name,
-            ds.organization AS source_organization,
-            iv.created_at,
-            iv.updated_at
+            ds.organization AS source_organization
         FROM indicator_values iv
         JOIN indicators i ON i.id = iv.indicator_id
         JOIN regions r ON r.id = iv.region_id
@@ -50,9 +48,7 @@ def create_reporting_views(engine: Engine) -> None:
             pas.value,
             pas.source_id,
             ds.name AS source_name,
-            ds.organization AS source_organization,
-            pas.created_at,
-            pas.updated_at
+            ds.organization AS source_organization
         FROM population_age_sex pas
         JOIN regions r ON r.id = pas.region_id
         LEFT JOIN data_sources ds ON ds.id = pas.source_id

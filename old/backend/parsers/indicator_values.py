@@ -27,7 +27,7 @@ INDICATOR_KEY_MAP: dict[str, dict[str, str | None]] = {
     "death_rate_suicides": {"name": "Смертность — самоубийства", "type": "демография", "theme": "причины смерти"},
     "death_rate_homicides": {"name": "Смертность — убийства", "type": "демография", "theme": "причины смерти"},
     "death_rate_respiratory_diseases": {"name": "Смертность — болезни органов дыхания", "type": "демография", "theme": "причины смерти"},
-    "death_rate_digestive_diseases": {"name": "Смертность — болезни органов пищеварения", "type": "демография", "theme": "причины смерти"},
+    "death_rate_digestive_diseases": {"name": "Смертность — болезни органов пищевареяни", "type": "демография", "theme": "причины смерти"},
     "death_rate_infectious_parasitic": {"name": "Смертность — инфекционные и паразитарные болезни", "type": "демография", "theme": "причины смерти"},
     "death_rate_tuberculosis": {"name": "Смертность — туберкулез", "type": "демография", "theme": "причины смерти"},
 }
@@ -175,8 +175,8 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
         if indicator is None:
             indicator = IndicatorsTable(
                 name=indicator_name,
-                type=indicator_type or "авто-добавленный",
-                theme=indicator_theme or "импорт indicator_values",
+                type=indicator_type,
+                theme=indicator_theme,
                 unit_id=unit_id,
                 subtype_id=subtype_id,
             )
