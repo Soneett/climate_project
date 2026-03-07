@@ -17,19 +17,19 @@ INDICATOR_KEY_MAP: dict[str, dict[str, str | None]] = {
     "deaths_abs": {"name": "Смертность", "type": "демография", "theme": "рождаемость, смертность, естественный прирост"},
     "infant_deaths_abs": {"name": "Смертность — до 1 года", "type": "демография", "theme": "рождаемость, смертность, естественный прирост"},
     "natural_abs": {"name": "Естественный прирост", "type": "демография", "theme": "рождаемость, смертность, естественный прирост"},
-    "death_rate_all_causes": {"name": "Смертность — все причины", "type": "демография", "theme": "причины смерти"},
-    "death_rate_circulatory_diseases": {"name": "Смертность — болезни системы кровообращения", "type": "демография", "theme": "причины смерти"},
-    "death_rate_neoplasms": {"name": "Смертность — новообразования", "type": "демография", "theme": "причины смерти"},
-    "death_rate_external_causes": {"name": "Смертность — внешние причины", "type": "демография", "theme": "причины смерти"},
-    "death_rate_transport_injuries_all": {"name": "Смертность — транспортные травмы", "type": "демография", "theme": "причины смерти"},
-    "death_rate_road_accidents": {"name": "Смертность — ДТП", "type": "демография", "theme": "причины смерти"},
-    "death_rate_alcohol_poisoning": {"name": "Смертность — отравления алкоголем", "type": "демография", "theme": "причины смерти"},
-    "death_rate_suicides": {"name": "Смертность — самоубийства", "type": "демография", "theme": "причины смерти"},
-    "death_rate_homicides": {"name": "Смертность — убийства", "type": "демография", "theme": "причины смерти"},
-    "death_rate_respiratory_diseases": {"name": "Смертность — болезни органов дыхания", "type": "демография", "theme": "причины смерти"},
-    "death_rate_digestive_diseases": {"name": "Смертность — болезни органов пищеварения", "type": "демография", "theme": "причины смерти"},
-    "death_rate_infectious_parasitic": {"name": "Смертность — инфекционные и паразитарные болезни", "type": "демография", "theme": "причины смерти"},
-    "death_rate_tuberculosis": {"name": "Смертность — туберкулез", "type": "демография", "theme": "причины смерти"},
+    "death_rate_all_causes": {"name": "Причины смертности — все причины", "type": "демография", "theme": "причины смерти"},
+    "death_rate_circulatory_diseases": {"name": "Причины смертности — болезни системы кровообращения", "type": "демография", "theme": "причины смерти"},
+    "death_rate_neoplasms": {"name": "Причины смертности — новообразования", "type": "демография", "theme": "причины смерти"},
+    "death_rate_external_causes": {"name": "Причины смертности — внешние причины", "type": "демография", "theme": "причины смерти"},
+    "death_rate_transport_injuries_all": {"name": "Причины смертности — транспортные травмы", "type": "демография", "theme": "причины смерти"},
+    "death_rate_road_accidents": {"name": "Причины смертности — ДТП", "type": "демография", "theme": "причины смерти"},
+    "death_rate_alcohol_poisoning": {"name": "Причины смертности — отравления алкоголем", "type": "демография", "theme": "причины смерти"},
+    "death_rate_suicides": {"name": "Причины смертности — самоубийства", "type": "демография", "theme": "причины смерти"},
+    "death_rate_homicides": {"name": "Причины смертности — убийства", "type": "демография", "theme": "причины смерти"},
+    "death_rate_respiratory_diseases": {"name": "Причины смертности — болезни органов дыхания", "type": "демография", "theme": "причины смерти"},
+    "death_rate_digestive_diseases": {"name": "Причины смертности — болезни органов пищеварения", "type": "демография", "theme": "причины смерти"},
+    "death_rate_infectious_parasitic": {"name": "Причины смертности — инфекционные и паразитарные болезни", "type": "демография", "theme": "причины смерти"},
+    "death_rate_tuberculosis": {"name": "Причины смертности — туберкулез", "type": "демография", "theme": "причины смерти"},
 }
 
 FILE_SOURCE_MAP = {
@@ -70,21 +70,22 @@ def _normalize_region_name(value: str | None) -> str:
     return _normalize_text(value).replace("-всего", "")
 
 
-def _extract_subtype(indicator_name: str) -> str | None:
-    if "—" not in indicator_name:
-        return None
+def _split_indicator(raw_name: str) -> tuple[str, str | None]:
+    clean_name = _normalize_text(raw_name)
+    if "—" not in clean_name:
+        return clean_name, None
 
-    _, subtype_part = indicator_name.split("—", 1)
+    base_name, subtype_part = clean_name.split("—", 1)
     subtype = subtype_part.split(",", 1)[0].strip()
-    return subtype or None
+    return base_name.strip(), subtype or None
 
 
 def _resolve_indicator_payload(row: dict, file_stem: str) -> tuple[str, str | None, str | None, str | None] | None:
     indicator_name = row.get("indicator_name")
     if indicator_name:
-        clean_name = _normalize_text(str(indicator_name))
+        base_name, subtype_name = _split_indicator(str(indicator_name))
         indicator_type, indicator_theme = FILE_TYPE_THEME_MAP.get(file_stem, ("авто-добавленный", "импорт indicator_values"))
-        return clean_name, _extract_subtype(clean_name), indicator_type, indicator_theme
+        return base_name, subtype_name, indicator_type, indicator_theme
 
     indicator_key = row.get("indicator_key")
     if not indicator_key:
@@ -94,8 +95,13 @@ def _resolve_indicator_payload(row: dict, file_stem: str) -> tuple[str, str | No
     if mapped is None:
         return None
 
-    clean_name = _normalize_text(str(mapped["name"]))
-    return clean_name, _extract_subtype(clean_name), mapped.get("type"), mapped.get("theme")
+    base_name, subtype_name = _split_indicator(str(mapped["name"]))
+    return base_name, subtype_name, mapped.get("type"), mapped.get("theme")
+
+
+def _next_id(session: Session, table) -> int:
+    max_id = session.query(table.id).order_by(table.id.desc()).first()
+    return (max_id[0] + 1) if max_id else 1
 
 
 def parse_indicator_values(data: dict, session: Session, source_file: str | None = None):
@@ -112,12 +118,15 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
     regions_map = {_normalize_region_name(r.name): r.id for r in session.query(RegionsTable).all()}
     sources_map = {_normalize_text(s.name): s.id for s in session.query(DataSourcesTable).all()}
     units_map = {_normalize_text(u.code): u.id for u in session.query(UnitsTable).all()}
-    indicators_map = {_normalize_text(i.name): i for i in session.query(IndicatorsTable).all()}
     subtypes_map = {_normalize_text(s.name): s.id for s in session.query(IndicatorSubtypesTable).all()}
 
+    indicators_map: dict[tuple[str, int | None], IndicatorsTable] = {
+        (_normalize_text(i.name), i.subtype_id): i
+        for i in session.query(IndicatorsTable).all()
+    }
+
     if source_name and source_name not in sources_map:
-        max_id = session.query(DataSourcesTable.id).order_by(DataSourcesTable.id.desc()).first()
-        source = DataSourcesTable(id=(max_id[0] + 1 if max_id else 1), name=source_name, organization="Не указан")
+        source = DataSourcesTable(id=_next_id(session, DataSourcesTable), name=source_name, organization="Не указан")
         session.add(source)
         session.flush()
         sources_map[source_name] = source.id
@@ -134,8 +143,7 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
 
         source_id = sources_map.get(row_source)
         if source_id is None:
-            max_id = session.query(DataSourcesTable.id).order_by(DataSourcesTable.id.desc()).first()
-            source = DataSourcesTable(id=(max_id[0] + 1 if max_id else 1), name=row_source, organization="Не указан")
+            source = DataSourcesTable(id=_next_id(session, DataSourcesTable), name=row_source, organization="Не указан")
             session.add(source)
             session.flush()
             source_id = source.id
@@ -152,8 +160,7 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
         if unit_code:
             unit_id = units_map.get(unit_code)
             if unit_id is None:
-                max_id = session.query(UnitsTable.id).order_by(UnitsTable.id.desc()).first()
-                unit = UnitsTable(id=(max_id[0] + 1 if max_id else 1), code=unit_code, name=unit_code)
+                unit = UnitsTable(id=_next_id(session, UnitsTable), code=unit_code, name=unit_code)
                 session.add(unit)
                 session.flush()
                 unit_id = unit.id
@@ -163,14 +170,13 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
         if subtype_name:
             subtype_id = subtypes_map.get(subtype_name)
             if subtype_id is None:
-                max_id = session.query(IndicatorSubtypesTable.id).order_by(IndicatorSubtypesTable.id.desc()).first()
-                subtype = IndicatorSubtypesTable(id=(max_id[0] + 1 if max_id else 1), name=subtype_name)
+                subtype = IndicatorSubtypesTable(id=_next_id(session, IndicatorSubtypesTable), name=subtype_name)
                 session.add(subtype)
                 session.flush()
                 subtype_id = subtype.id
                 subtypes_map[subtype_name] = subtype_id
 
-        indicator_key = indicator_name
+        indicator_key = (indicator_name, subtype_id)
         indicator = indicators_map.get(indicator_key)
         if indicator is None:
             indicator = IndicatorsTable(
@@ -190,8 +196,6 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
                 indicator.type = indicator_type
             if not indicator.theme and indicator_theme:
                 indicator.theme = indicator_theme
-            if indicator.subtype_id is None and subtype_id is not None:
-                indicator.subtype_id = subtype_id
 
         year = row.get("year")
         value = row.get("value")
