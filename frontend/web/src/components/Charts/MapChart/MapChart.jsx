@@ -154,7 +154,7 @@ const MapChart = ({ geojsonPath, data = [], regionTitle = 'Республика 
     },
 
     grid: {
-      left: '0%',
+      left: '3%',
       right: isMobile ? '55%' : '5%',
       top: 20,
       bottom: 20,
