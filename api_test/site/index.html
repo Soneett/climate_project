@@ -11,12 +11,12 @@
     h1 { margin: 0 0 8px; font-size: 24px; }
     .top { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     .top input { padding: 8px; border: 1px solid #cbd5e1; border-radius: 8px; }
-    .layout { display: grid; grid-template-columns: 260px 1fr; gap: 16px; padding: 16px; }
+    .layout { display: grid; grid-template-columns: 320px 1fr; gap: 16px; padding: 16px; }
     nav { background: #fff; border-radius: 12px; padding: 12px; height: fit-content; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
     nav button { display: block; width: 100%; margin-bottom: 8px; padding: 10px; border: none; border-radius: 8px; text-align: left; cursor: pointer; background: #e2e8f0; }
     nav button.active { background: #1d4ed8; color: #fff; }
     .card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
-    .chart { height: 520px; }
+    .chart { height: 460px; }
     .small { font-size: 12px; color: #64748b; }
     .filters { display:flex; gap:12px; flex-wrap:wrap; margin-top:10px; }
     .filters label { background:#f1f5f9; border-radius:8px; padding:6px 10px; }
@@ -41,10 +41,156 @@
   </div>
 
   <script>
+    const DASHBOARD = [
+      {
+        id: 's1',
+        title: 'Демография',
+        charts: [
+          {
+            title: 'Рождаемость и смертность',
+            chartType: 'line',
+            seriesSpecs: [
+              { indicator: 'Рождаемость' },
+              { indicator: 'Смертность' },
+              { indicator: 'Смертность', subtype: 'до 1 года' },
+              { indicator: 'Естественный прирост' },
+            ],
+          },
+          {
+            title: 'Причины смертности',
+            chartType: 'pie',
+            seriesSpecs: [
+              { indicator: 'Причины смертности', subtype: '*' },
+            ],
+          },
+          {
+            title: 'Миграция населения',
+            chartType: 'line',
+            seriesSpecs: [
+              { indicator: 'Миграционный прирост', subtype: 'Миграция – всего' },
+              { indicator: 'Миграционный прирост', subtype: 'в пределах России' },
+              { indicator: 'Миграционный прирост', subtype: 'Международная' },
+            ],
+          },
+          {
+            title: 'Оценка численности КМН',
+            chartType: 'line',
+            seriesSpecs: [
+              { indicator: 'Оценка численности населения КМН (на 1 января), человек' },
+            ],
+          },
+        ],
+      },
+      {
+        id: 's2',
+        title: 'Уровень жизни',
+        charts: [
+          {
+            title: 'Доходы и расходы (всего)',
+            chartType: 'line',
+            seriesSpecs: [
+              { indicator: 'Денежные доходы', subtype: 'всего' },
+              { indicator: 'Денежные расходы', subtype: 'всего' },
+              { indicator: 'Прирост (уменьшение) сбережений', subtype: 'всего' },
+            ],
+          },
+          {
+            title: 'Расходы на потребление',
+            chartType: 'line',
+            seriesSpecs: [
+              { indicator: 'Расходы на потребление', subtype: 'Все домашние хозяйства' },
+            ],
+          },
+          {
+            title: 'Уровень бедности',
+            chartType: 'line',
+            seriesSpecs: [
+              { indicator: 'Численность населения с денежными доходами ниже границы бедности' },
+              { indicator: 'Доля населения с денежными доходами ниже границы бедности' },
+            ],
+          },
+        ],
+      },
+      {
+        id: 's3',
+        title: 'Здравоохранение',
+        charts: [
+          {
+            title: 'Кадры здравоохранения (всего)',
+            chartType: 'line',
+            seriesSpecs: [
+              { indicator: 'Численность врачей всех специальностей', subtype: 'всего' },
+              { indicator: 'Численность среднего медицинского персонала', subtype: 'всего' },
+            ],
+          },
+          {
+            title: 'Кадры на 10 000 населения',
+            chartType: 'line',
+            seriesSpecs: [
+              { indicator: 'Численность врачей всех специальностей', subtype: 'на 10 000 человек населения1)' },
+              { indicator: 'Численность среднего медицинского персонала', subtype: 'на 10 000 человек населения1)' },
+            ],
+          },
+          {
+            title: 'Мощность и число медорганизаций',
+            chartType: 'line',
+            seriesSpecs: [
+              { indicator: 'Число амбулаторно-поликлинических организаций' },
+              { indicator: 'Число больничных организаций' },
+              { indicator: 'Мощность (число посещений в смену) амбулаторно-поликлинических организаций', subtype: 'всего' },
+            ],
+          },
+          {
+            title: 'Заболеваемость: все болезни',
+            chartType: 'line',
+            seriesSpecs: [
+              { indicator: 'Все болезни', subtype: 'Всего заболеваний' },
+              { indicator: 'Все болезни', subtype: 'На 1 000 человек населения' },
+            ],
+          },
+        ],
+      },
+      {
+        id: 's5',
+        title: 'Экономика',
+        charts: [
+          {
+            title: 'ВРП',
+            chartType: 'line',
+            seriesSpecs: [
+              { indicator: 'Валовой региональный продукт (в текущих основных ценах), млн рублей' },
+              { indicator: 'Валовой региональный продукт (в сопоставимых ценах), в % к предыдущему году' },
+            ],
+          },
+          {
+            title: 'Индекс выпуска товаров и услуг',
+            chartType: 'line',
+            seriesSpecs: [
+              { indicator: 'Индекс выпуска товаров и услуг по базовым видам экономической деятельности по Республике Алтай (к соответствующему периоду предыдущего года, %)' },
+            ],
+          },
+        ],
+      },
+      {
+        id: 's6',
+        title: 'Инфраструктура',
+        charts: [
+          {
+            title: 'Автомобильные дороги',
+            chartType: 'line',
+            seriesSpecs: [
+              { indicator: 'Автомобильные дороги', subtype: 'общая протяженность' },
+              { indicator: 'Автомобильные дороги', subtype: 'общая протяженность с усовершенствованным покрытием' },
+            ],
+          },
+        ],
+      },
+    ];
+
     const menuEl = document.getElementById('menu');
     const contentEl = document.getElementById('content');
     let charts = [];
-    let activePageId = 'all';
+    let activePageId = DASHBOARD[0].id;
 
     function apiBase() {
       return document.getElementById('apiUrl').value.replace(/\/$/, '');
@@ -183,38 +329,29 @@
       container.appendChild(wrap);
     }
 
-    function buildIndicatorGroups(indicators, subtypes) {
-      const subtypeMap = new Map(subtypes.map((item) => [item.id, item.name]));
-      const groups = new Map();
+    function resolveIndicators(indicators, subtypeMap, specs) {
+      const result = [];
+      for (const spec of specs) {
+        const matches = indicators.filter((indicator) => {
+          if (indicator.name !== spec.indicator) return false;
+          const subtypeName = indicator.subtype_id ? subtypeMap.get(indicator.subtype_id) : null;
 
-      for (const indicator of indicators) {
-        const baseName = indicator.name;
-        const subtypeName = indicator.subtype_id ? subtypeMap.get(indicator.subtype_id) : null;
-        const displayName = subtypeName ? `${baseName} — ${subtypeName}` : baseName;
+          if (!spec.subtype) return subtypeName === null;
+          if (spec.subtype === '*') return true;
 
-        if (!groups.has(baseName)) {
-          groups.set(baseName, {
-            baseName,
-            theme: indicator.theme || '',
-            type: indicator.type || '',
-            chartType: baseName === 'Причины смертности' ? 'pie' : 'line',
-            members: [],
-          });
-        }
-
-        groups.get(baseName).members.push({
-          id: indicator.id,
-          displayName,
-          subtypeName,
+          return (subtypeName || '').toLowerCase() === spec.subtype.toLowerCase();
         });
-      }
 
-      return [...groups.values()].sort((a, b) => a.baseName.localeCompare(b.baseName, 'ru'));
+        for (const match of matches) {
+          if (!result.some((item) => item.id === match.id)) result.push(match);
+        }
+      }
+      return result;
     }
 
-    function renderMenu(pages) {
+    function renderMenu() {
       menuEl.innerHTML = '';
-      for (const page of pages) {
+      for (const page of DASHBOARD) {
         const btn = document.createElement('button');
         btn.textContent = page.title;
         btn.className = page.id === activePageId ? 'active' : '';
@@ -228,6 +365,7 @@
 
     async function renderPage() {
       clearCharts();
+      renderMenu();
       contentEl.innerHTML = '<div class="card">Загрузка...</div>';
 
       const regionId = Number(document.getElementById('regionId').value || '1');
@@ -238,53 +376,55 @@
         fetchIndicators(),
         fetchSubtypes(),
       ]);
+      const subtypeMap = new Map(subtypes.map((item) => [item.id, item.name]));
 
-      const groups = buildIndicatorGroups(indicators, subtypes);
-      const pages = [{ id: 'all', title: `Все показатели (${groups.length})` }];
-      renderMenu(pages);
+      const page = DASHBOARD.find((item) => item.id === activePageId) || DASHBOARD[0];
+      contentEl.innerHTML = `<div class="card"><h2>${page.title}</h2><div class="small">Графики построены по той же парадигме, что и в основном фронтенде: несколько показателей на одном графике, с учетом подпоказателей.</div></div>`;
 
-      contentEl.innerHTML = `<div class="card"><h2>Все показатели</h2><div class="small">Графики строятся для всех доступных показателей. Если у показателя есть подпоказатели, они отображаются отдельными сериями.</div></div>`;
+      if (page.id === 's1') {
+        const population = await fetchPopulation(regionId, yearValue);
+        const popCard = document.createElement('div');
+        popCard.className = 'card';
+        popCard.innerHTML = '<h3>Половозрастная структура</h3><div id="populationChart" class="chart"></div>';
+        contentEl.appendChild(popCard);
+        const popChart = echarts.init(document.getElementById('populationChart'));
+        popChart.setOption(buildPopulationOption(population), true);
+        charts.push(popChart);
+      }
 
-      const population = await fetchPopulation(regionId, yearValue);
-      const popCard = document.createElement('div');
-      popCard.className = 'card';
-      popCard.innerHTML = '<h3>Половозрастная структура</h3><div id="populationChart" class="chart"></div>';
-      contentEl.appendChild(popCard);
-      const popChart = echarts.init(document.getElementById('populationChart'));
-      popChart.setOption(buildPopulationOption(population), true);
-      charts.push(popChart);
-
-      for (let idx = 0; idx < groups.length; idx++) {
-        const group = groups[idx];
-        const indicatorIds = group.members.map((member) => member.id);
-        const payload = await fetchChartData(regionId, indicatorIds);
-
-        if (!payload.series.length) {
+      for (let idx = 0; idx < page.charts.length; idx++) {
+        const chartCfg = page.charts[idx];
+        const selected = resolveIndicators(indicators, subtypeMap, chartCfg.seriesSpecs);
+        if (!selected.length) {
+          const missCard = document.createElement('div');
+          missCard.className = 'card';
+          missCard.innerHTML = `<h3>${chartCfg.title}</h3><div class="small">Нет подходящих индикаторов в БД.</div>`;
+          contentEl.appendChild(missCard);
           continue;
         }
 
+        const payload = await fetchChartData(regionId, selected.map((item) => item.id));
+        if (!payload.series.length) continue;
+
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerHTML = `<h3>${group.baseName}</h3><div class="small">${group.type || 'без типа'} / ${group.theme || 'без темы'}</div><div id="chart-${idx}" class="chart"></div>`;
+        card.innerHTML = `<h3>${chartCfg.title}</h3><div id="chart-${idx}" class="chart"></div>`;
         contentEl.appendChild(card);
 
         const chart = echarts.init(document.getElementById(`chart-${idx}`));
         const allSeriesNames = payload.series.map((item) => item.indicator_name);
 
         const renderOption = (enabledSeries) => {
-          if (group.chartType === 'pie') {
-            chart.setOption(buildPieOption(payload, group.baseName, enabledSeries, yearRange), true);
+          if (chartCfg.chartType === 'pie') {
+            chart.setOption(buildPieOption(payload, chartCfg.title, enabledSeries, yearRange), true);
             return;
           }
-          chart.setOption(buildLineOption(payload, group.baseName, enabledSeries, yearRange), true);
+          chart.setOption(buildLineOption(payload, chartCfg.title, enabledSeries, yearRange), true);
         };
 
         renderOption(allSeriesNames);
         charts.push(chart);
-
-        mountSeriesFilters(card, allSeriesNames, (enabledSeries) => {
-          renderOption(enabledSeries);
-        });
+        mountSeriesFilters(card, allSeriesNames, renderOption);
       }
     }
 
