@@ -11,6 +11,7 @@ from models import (
     PopulationPyramidResponseModel,
 )
 from repo.analytics import AnalyticsRepo
+from tables.indicator_subtypes import IndicatorSubtypesTable
 
 
 def _is_age_interval(age_code: str) -> bool:
@@ -89,16 +90,27 @@ class AnalyticsService:
             )
 
         indicators_by_id = {indicator.id: indicator for indicator in indicators}
+        subtype_ids = [indicator.subtype_id for indicator in indicators if indicator.subtype_id is not None]
+        subtype_map = {
+            subtype.id: subtype.name
+            for subtype in session.query(IndicatorSubtypesTable)
+            .filter(IndicatorSubtypesTable.id.in_(subtype_ids), IndicatorSubtypesTable.is_deleted == False)
+            .all()
+        } if subtype_ids else {}
+
         ordered_series: list[ChartSeriesModel] = []
         for indicator_id in indicator_ids:
             indicator = indicators_by_id.get(indicator_id)
             if indicator is None:
                 continue
 
+            subtype_name = subtype_map.get(indicator.subtype_id)
+            series_name = f"{indicator.name} — {subtype_name}" if subtype_name else indicator.name
+
             ordered_series.append(
                 ChartSeriesModel(
                     indicator_id=indicator.id,
-                    indicator_name=indicator.name,
+                    indicator_name=series_name,
                     points=points_by_indicator.get(indicator.id, []),
                 )
             )
