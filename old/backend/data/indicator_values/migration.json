@@ -716,5 +716,10 @@
         "unit_code": "чел"
       }
     ]
+  },
+  "metadata": {
+    "indicator_type": "демография",
+    "indicator_theme": "миграция",
+    "source_name": "Общие итоги миграции населения"
   }
 }

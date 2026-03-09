@@ -5,6 +5,9 @@ from tables.indicator_values import IndicatorValuesTable
 from tables.population_age_sex import PopulationAgeSexTable
 from tables.regions import RegionsTable
 
+MIN_CHART_YEAR = 2020
+MAX_CHART_YEAR = 2025
+
 
 class AnalyticsRepo:
     def get_region(self, session: Session, region_id: int) -> RegionsTable | None:
@@ -43,6 +46,8 @@ class AnalyticsRepo:
                 IndicatorValuesTable.region_id == region_id,
                 IndicatorValuesTable.indicator_id.in_(indicator_ids),
                 IndicatorValuesTable.is_deleted == False,
+                IndicatorValuesTable.year >= MIN_CHART_YEAR,
+                IndicatorValuesTable.year <= MAX_CHART_YEAR,
             )
             .order_by(IndicatorValuesTable.year.asc())
             .all()
@@ -54,6 +59,8 @@ class AnalyticsRepo:
             .filter(
                 PopulationAgeSexTable.region_id == region_id,
                 PopulationAgeSexTable.is_deleted == False,
+                PopulationAgeSexTable.year >= MIN_CHART_YEAR,
+                PopulationAgeSexTable.year <= MAX_CHART_YEAR,
             )
             .distinct()
             .order_by(PopulationAgeSexTable.year.desc())
@@ -73,6 +80,8 @@ class AnalyticsRepo:
                 PopulationAgeSexTable.region_id == region_id,
                 PopulationAgeSexTable.year == year,
                 PopulationAgeSexTable.is_deleted == False,
+                PopulationAgeSexTable.year >= MIN_CHART_YEAR,
+                PopulationAgeSexTable.year <= MAX_CHART_YEAR,
             )
             .order_by(PopulationAgeSexTable.age_code.asc())
             .all()

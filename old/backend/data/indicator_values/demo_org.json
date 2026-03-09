@@ -65,5 +65,10 @@
         "unit_code": "на_1000_орг"
       }
     ]
+  },
+  "metadata": {
+    "indicator_type": "экономика",
+    "indicator_theme": "демография организаций",
+    "source_name": "Демография организаций"
   }
 }

@@ -2,7 +2,9 @@
   "metadata": {
     "region_name": "Республика Алтай",
     "source_name": "Состав и структура денежных доходов и расходов населения",
-    "rows_count": 72
+    "rows_count": 72,
+    "indicator_type": "уровень жизни",
+    "indicator_theme": "доходы и расходы"
   },
   "indicator_values": {
     "rows": [

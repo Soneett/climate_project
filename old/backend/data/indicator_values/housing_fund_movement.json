@@ -282,5 +282,10 @@
         "unit_code": "м2"
       }
     ]
+  },
+  "metadata": {
+    "indicator_type": "инфраструктура",
+    "indicator_theme": "жилищный фонд",
+    "source_name": "Движение жилищного фонда"
   }
 }

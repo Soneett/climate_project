@@ -1,5 +1,5 @@
 {
-   "indicator_values": {
+  "indicator_values": {
     "rows": [
       {
         "region_name": "Республика Алтай",
@@ -702,5 +702,10 @@
         "unit_code": "%"
       }
     ]
+  },
+  "metadata": {
+    "indicator_type": "экономика",
+    "indicator_theme": "потребительские цены",
+    "source_name": "Индексы потребительских цен"
   }
 }

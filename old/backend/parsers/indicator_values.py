@@ -42,6 +42,19 @@ FILE_SOURCE_MAP = {
     "poverty_level": "Население с денежными доходами ниже границы бедности",
     "vrp": "Валовой региональный продукт",
     "healthcare_indicators": "Основные показатели здравоохранения",
+    "agri_price_indices": "Индексы цен производителей сельскохозяйственной продукции",
+    "birth_abs": "Демографические показатели: рождаемость, смертность, естественный прирост",
+    "cpi": "Индексы потребительских цен",
+    "credit_debit_structure": "Кредитно-дебетная структура денежных доходов и расходов населения",
+    "death_causes": "Причины смертности населения",
+    "deaths": "Демографические показатели: рождаемость, смертность, естественный прирост",
+    "demo_org": "Демография организаций",
+    "employment_education": "Занятость населения по уровню образования",
+    "hightech_share_vrp": "Доля высокотехнологичных и наукоемких отраслей в ВРП",
+    "housing_fund_movement": "Движение жилищного фонда",
+    "natural_abs": "Демографические показатели: рождаемость, смертность, естественный прирост",
+    "org_liquidation": "Ликвидация организаций",
+    "org_ownership": "Структура организаций по формам собственности",
 }
 
 FILE_TYPE_THEME_MAP = {
@@ -80,11 +93,21 @@ def _split_indicator(raw_name: str) -> tuple[str, str | None]:
     return base_name.strip(), subtype or None
 
 
-def _resolve_indicator_payload(row: dict, file_stem: str) -> tuple[str, str | None, str | None, str | None] | None:
+def _resolve_indicator_payload(
+    row: dict,
+    file_stem: str,
+    default_indicator_type: str | None = None,
+    default_indicator_theme: str | None = None,
+) -> tuple[str, str | None, str | None, str | None] | None:
     indicator_name = row.get("indicator_name")
     if indicator_name:
         base_name, subtype_name = _split_indicator(str(indicator_name))
-        indicator_type, indicator_theme = FILE_TYPE_THEME_MAP.get(file_stem, ("авто-добавленный", "импорт indicator_values"))
+        indicator_type, indicator_theme = (
+            default_indicator_type,
+            default_indicator_theme,
+        )
+        if not indicator_type or not indicator_theme:
+            indicator_type, indicator_theme = FILE_TYPE_THEME_MAP.get(file_stem, ("авто-добавленный", "импорт indicator_values"))
         return base_name, subtype_name, indicator_type, indicator_theme
 
     indicator_key = row.get("indicator_key")
@@ -110,6 +133,14 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
 
     region_name = _normalize_region_name(metadata.get("region_name"))
     source_name = _normalize_text(metadata.get("source_name")) or _normalize_text(FILE_SOURCE_MAP.get(file_stem))
+    default_indicator_type = _normalize_text(metadata.get("indicator_type"))
+    default_indicator_theme = _normalize_text(metadata.get("indicator_theme"))
+    if not default_indicator_type or not default_indicator_theme:
+        mapped_type, mapped_theme = FILE_TYPE_THEME_MAP.get(file_stem, ("", ""))
+        default_indicator_type = default_indicator_type or mapped_type
+        default_indicator_theme = default_indicator_theme or mapped_theme
+    if not source_name:
+        source_name = f"Источник не указан ({file_stem or 'indicator_values'})"
 
     rows = data.get("indicator_values", {}).get("rows", [])
     if not rows:
@@ -134,8 +165,10 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
     for row in rows:
         row_region = _normalize_region_name(row.get("region_name")) or region_name
         row_source = _normalize_text(row.get("source_name")) or source_name
-        if not row_region or not row_source:
+        if not row_region:
             continue
+        if not row_source:
+            row_source = source_name
 
         region_id = regions_map.get(row_region)
         if not region_id:
@@ -149,7 +182,12 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
             source_id = source.id
             sources_map[row_source] = source_id
 
-        resolved = _resolve_indicator_payload(row=row, file_stem=file_stem)
+        resolved = _resolve_indicator_payload(
+            row=row,
+            file_stem=file_stem,
+            default_indicator_type=default_indicator_type,
+            default_indicator_theme=default_indicator_theme,
+        )
         if not resolved:
             continue
 

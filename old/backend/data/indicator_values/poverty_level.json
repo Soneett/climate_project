@@ -1,4 +1,4 @@
-{ 
+{
   "indicator_values": {
     "rows": [
       {
@@ -226,5 +226,10 @@
         "unit_code": "%"
       }
     ]
+  },
+  "metadata": {
+    "indicator_type": "уровень жизни",
+    "indicator_theme": "бедность",
+    "source_name": "Население с денежными доходами ниже границы бедности"
   }
 }
