@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3001';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 /**
  * Base fetch function for API requests
@@ -14,7 +14,7 @@ const fetchData = async (endpoint) => {
     return await response.json();
   } catch (error) {
     console.error(`API Error (${endpoint}):`, error);
-    return null; // Return null for fallback to constants
+    return null;
   }
 };
 
