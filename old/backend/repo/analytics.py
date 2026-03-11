@@ -22,6 +22,25 @@ class AnalyticsRepo:
             .filter(IndicatorsTable.id.in_(indicator_ids), IndicatorsTable.is_deleted == False)
             .all()
         )
+    
+    def get_indicators_by_names(
+        self,
+        session: Session,
+        names: list[str],
+    ) -> list[IndicatorsTable]:
+
+        if not names:
+            return []
+
+        return (
+            session.query(IndicatorsTable)
+            .filter(
+                IndicatorsTable.name.in_(names),
+                IndicatorsTable.is_deleted == False,
+            )
+            .all()
+        )
+    
 
     def get_indicator_values(
         self,

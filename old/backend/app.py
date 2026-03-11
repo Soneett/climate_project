@@ -22,10 +22,13 @@ from routers import (
     analytics_router,
 )
 
+from scripts.fill_db import main
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("Creating database tables...")
     Base.metadata.create_all(bind=engine)
+    main()  
     create_reporting_views(engine)
     print("Database tables and views created!")
     yield
