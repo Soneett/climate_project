@@ -41,12 +41,51 @@ class AnalyticsService:
     def __init__(self, repo: AnalyticsRepo | None = None):
         self.repo = repo or AnalyticsRepo()
 
+    @staticmethod
+    def _parse_indicators(indicators: str) -> list[str]:
+        return [part.strip() for part in indicators.split(",") if part.strip()]
+
+    def _resolve_indicator_ids(
+        self,
+        session: Session,
+        indicators: str,
+    ) -> list[int]:
+        names = self._parse_indicators(indicators)
+        if not names:
+            return []
+
+        resolved = self.repo.get_indicators_by_names(session=session, names=names)
+        ordered_ids: list[int] = []
+        normalized_names = [name.lower() for name in names]
+        for name in normalized_names:
+            same_name = [
+                indicator
+                for indicator in resolved
+                if indicator.name.strip().lower() == name
+            ]
+
+            if same_name:
+                subindicators = [indicator.id for indicator in same_name if indicator.subtype_id is not None]
+                candidate_ids = subindicators or [indicator.id for indicator in same_name]
+            else:
+                candidate_ids = []
+
+            for candidate_id in candidate_ids:
+                if candidate_id not in ordered_ids:
+                    ordered_ids.append(candidate_id)
+
+        if ordered_ids:
+            return ordered_ids
+
+        return [indicator.id for indicator in resolved]
+
     def get_line_chart_data(
         self,
         session: Session,
         region_id: int,
-        indicator_ids: list[int],
+        indicators: str,
     ) -> LineChartResponseModel:
+        indicator_ids = self._resolve_indicator_ids(session=session, indicators=indicators)
         values = self.repo.get_indicator_values(session=session, region_id=region_id, indicator_ids=indicator_ids)
         indicators = self.repo.get_indicators(session=session, indicator_ids=indicator_ids)
 
@@ -84,11 +123,24 @@ class AnalyticsService:
         self,
         session: Session,
         region_id: int,
-        indicator_ids: list[int],
+        indicators: str,
     ) -> PieChartResponseModel:
+        indicator_ids = self._resolve_indicator_ids(session=session, indicators=indicators)
         values = self.repo.get_indicator_values(session=session, region_id=region_id, indicator_ids=indicator_ids)
         indicators = self.repo.get_indicators(session=session, indicator_ids=indicator_ids)
-        indicator_names = {indicator.id: indicator.name for indicator in indicators}
+
+        subtype_ids = [indicator.subtype_id for indicator in indicators if indicator.subtype_id is not None]
+        subtype_map = {
+            subtype.id: subtype.name
+            for subtype in session.query(IndicatorSubtypesTable)
+            .filter(IndicatorSubtypesTable.id.in_(subtype_ids), IndicatorSubtypesTable.is_deleted == False)
+            .all()
+        } if subtype_ids else {}
+
+        indicator_names = {
+            indicator.id: (subtype_map.get(indicator.subtype_id) or indicator.name)
+            for indicator in indicators
+        }
 
         grouped_by_year: dict[int, dict[int, float]] = defaultdict(dict)
         for row in values:
