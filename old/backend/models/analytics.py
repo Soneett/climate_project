@@ -1,29 +1,38 @@
 from pydantic import BaseModel
 
-class ChartPointModel(BaseModel):
-    year: int
+
+class LineChartDatasetModel(BaseModel):
+    name: str
+    data: list[float]
+
+
+class LineChartResponseModel(BaseModel):
+    labels: list[str]
+    datasets: list[LineChartDatasetModel]
+
+
+class PieTimelineSeriesItemModel(BaseModel):
     value: float
-
-class ChartSeriesModel(BaseModel):
-    indicator_id: int
-    indicator_name: str
-    points: list[ChartPointModel]
-
-class ChartDataResponseModel(BaseModel):
-    region_id: int
-    region_name: str
-    series: list[ChartSeriesModel]
+    name: str
 
 
-class PopulationPyramidPointModel(BaseModel):
-    age_code: str
-    male: float
-    female: float
-    total: float
+class PieTimelinePointModel(BaseModel):
+    title: dict[str, str]
+    series: list[dict[str, list[PieTimelineSeriesItemModel]]]
+
+
+class PieChartResponseModel(BaseModel):
+    timelineLabels: list[str]
+    timelineData: list[PieTimelinePointModel]
+
+
+class PopulationPyramidTimelinePointModel(BaseModel):
+    title: dict[str, str]
+    series: list[dict[str, list[float]]]
 
 
 class PopulationPyramidResponseModel(BaseModel):
-    region_id: int
-    region_name: str
-    year: int
-    points: list[PopulationPyramidPointModel]
+    categories: list[str]
+    legendItems: list[str]
+    timelineLabels: list[str]
+    timelineData: list[PopulationPyramidTimelinePointModel]

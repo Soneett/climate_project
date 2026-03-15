@@ -22,10 +22,13 @@ from routers import (
     analytics_router,
 )
 
+from scripts.fill_db import main
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("Creating database tables...")
     Base.metadata.create_all(bind=engine)
+    main()  
     create_reporting_views(engine)
     print("Database tables and views created!")
     yield
@@ -77,7 +80,11 @@ async def api_info():
             "data_sources": "/data_sources",
             "indicator_subtypes": "/indicator_subtypes",
             "program_region_links": "/program_regions",
-            "analytics": "/analytics",
+            "analytics": {
+                "line_chart": "/analytics/line-chart",
+                "pie_chart": "/analytics/pie-chart",
+                "population_pyramid": "/analytics/population-pyramid"
+            },
         },
         "documentation": "/docs",
         "redoc": "/redoc"

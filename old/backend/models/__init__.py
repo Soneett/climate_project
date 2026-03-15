@@ -11,9 +11,11 @@ from .regional_programs import CreateRegionalProgramModel, RegionalProgramModel,
 from .program_regions import CreateProgramRegionModel, ProgramRegionModel, UpdateProgramRegionModel
 from .events import CreateEventModel, EventModel, UpdateEventModel
 from .analytics import (
-    ChartPointModel,
-    ChartSeriesModel,
-    ChartDataResponseModel,
-    PopulationPyramidPointModel,
+    LineChartDatasetModel,
+    LineChartResponseModel,
+    PieTimelineSeriesItemModel,
+    PieTimelinePointModel,
+    PieChartResponseModel,
+    PopulationPyramidTimelinePointModel,
     PopulationPyramidResponseModel,
 )

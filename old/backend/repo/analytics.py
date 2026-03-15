@@ -3,20 +3,12 @@ from sqlalchemy.orm import Session
 from tables.indicators import IndicatorsTable
 from tables.indicator_values import IndicatorValuesTable
 from tables.population_age_sex import PopulationAgeSexTable
-from tables.regions import RegionsTable
 
 MIN_CHART_YEAR = 2020
 MAX_CHART_YEAR = 2025
 
 
 class AnalyticsRepo:
-    def get_region(self, session: Session, region_id: int) -> RegionsTable | None:
-        return (
-            session.query(RegionsTable)
-            .filter(RegionsTable.id == region_id, RegionsTable.is_deleted == False)
-            .one_or_none()
-        )
-
     def get_indicators(
         self,
         session: Session,
@@ -30,6 +22,25 @@ class AnalyticsRepo:
             .filter(IndicatorsTable.id.in_(indicator_ids), IndicatorsTable.is_deleted == False)
             .all()
         )
+    
+    def get_indicators_by_names(
+        self,
+        session: Session,
+        names: list[str],
+    ) -> list[IndicatorsTable]:
+
+        if not names:
+            return []
+
+        return (
+            session.query(IndicatorsTable)
+            .filter(
+                IndicatorsTable.name.in_(names),
+                IndicatorsTable.is_deleted == False,
+            )
+            .all()
+        )
+    
 
     def get_indicator_values(
         self,
@@ -53,36 +64,19 @@ class AnalyticsRepo:
             .all()
         )
 
-    def get_population_years(self, session: Session, region_id: int) -> list[int]:
-        rows = (
-            session.query(PopulationAgeSexTable.year)
-            .filter(
-                PopulationAgeSexTable.region_id == region_id,
-                PopulationAgeSexTable.is_deleted == False,
-                PopulationAgeSexTable.year >= MIN_CHART_YEAR,
-                PopulationAgeSexTable.year <= MAX_CHART_YEAR,
-            )
-            .distinct()
-            .order_by(PopulationAgeSexTable.year.desc())
-            .all()
-        )
-        return [row[0] for row in rows]
-
     def get_population_rows(
         self,
         session: Session,
         region_id: int,
-        year: int,
     ) -> list[PopulationAgeSexTable]:
         return (
             session.query(PopulationAgeSexTable)
             .filter(
                 PopulationAgeSexTable.region_id == region_id,
-                PopulationAgeSexTable.year == year,
                 PopulationAgeSexTable.is_deleted == False,
                 PopulationAgeSexTable.year >= MIN_CHART_YEAR,
                 PopulationAgeSexTable.year <= MAX_CHART_YEAR,
             )
-            .order_by(PopulationAgeSexTable.age_code.asc())
+            .order_by(PopulationAgeSexTable.year.asc(), PopulationAgeSexTable.age_code.asc())
             .all()
         )
