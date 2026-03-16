@@ -4,10 +4,10 @@ import { CONTENT_BLOCKS } from '../constants/contentBlocks';
 import { SUBJECT_INDICATORS, OBJECT_INDICATORS, RELATIONS_CONTENT } from '../constants/relationsConfig';
 
 export const useContentData = () => {
-  const [contentBlocks, setContentBlocks] = useState(CONTENT_BLOCKS);
-  const [subjectIndicators, setSubjectIndicators] = useState(SUBJECT_INDICATORS);
-  const [objectIndicators, setObjectIndicators] = useState(OBJECT_INDICATORS);
-  const [relationsContentBlocks, setRelationsContentBlocks] = useState(RELATIONS_CONTENT);
+  const [contentBlocks, setContentBlocks] = useState({});
+  const [subjectIndicators, setSubjectIndicators] = useState([]);
+  const [objectIndicators, setObjectIndicators] = useState([]);
+  const [relationsContentBlocks, setRelationsContentBlocks] = useState({});
   const [loading, setLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
@@ -22,11 +22,16 @@ export const useContentData = () => {
         fetchRelationsContentBlocks()
       ]);
 
-      // Use data from server or fallback to constants
-      if (contentData) setContentBlocks(contentData);
-      if (subjectData) setSubjectIndicators(subjectData);
-      if (objectData) setObjectIndicators(objectData);
-      if (relationsData) setRelationsContentBlocks(relationsData);
+      const hasContentData = contentData && Object.keys(contentData).length > 0;
+      const hasSubjectData = Array.isArray(subjectData) && subjectData.length > 0;
+      const hasObjectData = Array.isArray(objectData) && objectData.length > 0;
+      const hasRelationsData = relationsData && Object.keys(relationsData).length > 0;
+
+      // Prefer DB/API data and only fallback when it is missing
+      setContentBlocks(hasContentData ? contentData : CONTENT_BLOCKS);
+      setSubjectIndicators(hasSubjectData ? subjectData : SUBJECT_INDICATORS);
+      setObjectIndicators(hasObjectData ? objectData : OBJECT_INDICATORS);
+      setRelationsContentBlocks(hasRelationsData ? relationsData : RELATIONS_CONTENT);
       
       // If all requests failed, mark as error
       if (!contentData && !subjectData && !objectData && !relationsData) {

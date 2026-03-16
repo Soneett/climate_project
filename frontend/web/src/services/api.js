@@ -20,7 +20,13 @@ export const fetchPieChart = (indicators, regionId) =>
  */
 const fetchData = async (endpoint) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/${endpoint}`);
+    const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json'
+      },
+      cache: 'no-store'
+    });
     if (!response.ok) {
       throw new Error(`Failed to fetch ${endpoint}`);
     }

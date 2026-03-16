@@ -22,6 +22,26 @@ const CHART_COMPONENTS = {
   windPlot: WindPlot
 };
 
+const hasLinePayload = (payload) => {
+  return Boolean(
+    payload
+    && Array.isArray(payload.labels)
+    && Array.isArray(payload.datasets)
+    && payload.labels.length > 0
+    && payload.datasets.length > 0
+  );
+};
+
+const hasPiePayload = (payload) => {
+  return Boolean(
+    payload
+    && Array.isArray(payload.timelineLabels)
+    && Array.isArray(payload.timelineData)
+    && payload.timelineLabels.length > 0
+    && payload.timelineData.length > 0
+  );
+};
+
 /**
  * Factory component for rendering different chart types
  * @param {Object} block - Content block configuration
@@ -44,7 +64,7 @@ const ChartRenderer = ({ block }) => {
 
     if (block.chartType === 'line') {
       fetchLineChart(block.indicators, regionId).then((res) => {
-        if (res) {
+        if (hasLinePayload(res)) {
           setLineData(res);
         }
       });
@@ -52,7 +72,7 @@ const ChartRenderer = ({ block }) => {
 
     if (block.chartType === 'pie') {
       fetchPieChart(block.indicators, regionId).then((res) => {
-        if (res) {
+        if (hasPiePayload(res)) {
           setPieData(res);
         }
       });
