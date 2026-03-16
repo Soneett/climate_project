@@ -10,3 +10,4 @@ from .program_regions import router as program_regions_router
 from .events import router as events_router
 from .analytics import router as analytics_router
 from .data_upload import router as data_upload_router
+from .config_router import router as config_router

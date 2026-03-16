@@ -60,10 +60,18 @@ const ChartRenderer = ({ block }) => {
       return;
     }
 
+    const indicatorsCsv = Array.isArray(block.indicators)
+      ? block.indicators.join(',')
+      : block.indicators;
+
+    if (!indicatorsCsv) {
+      return;
+    }
+
     const regionId = block.regionId ?? block.region_id;
 
     if (block.chartType === 'line') {
-      fetchLineChart(block.indicators, regionId).then((res) => {
+      fetchLineChart(indicatorsCsv, regionId).then((res) => {
         if (hasLinePayload(res)) {
           setLineData(res);
         }
@@ -71,7 +79,7 @@ const ChartRenderer = ({ block }) => {
     }
 
     if (block.chartType === 'pie') {
-      fetchPieChart(block.indicators, regionId).then((res) => {
+      fetchPieChart(indicatorsCsv, regionId).then((res) => {
         if (hasPiePayload(res)) {
           setPieData(res);
         }
@@ -124,7 +132,10 @@ ChartRenderer.propTypes = {
   block: PropTypes.shape({
     chartType: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
-    indicators: PropTypes.string,
+    indicators: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.arrayOf(PropTypes.string)
+    ]),
     regionId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     region_id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     chartData: PropTypes.object,

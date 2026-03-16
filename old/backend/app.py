@@ -21,6 +21,7 @@ from routers import (
     events_router,
     analytics_router,
     data_upload_router,
+    config_router,
 )
 
 from scripts.fill_db import main
@@ -104,6 +105,7 @@ app.include_router(program_regions_router)
 app.include_router(events_router)
 app.include_router(analytics_router)
 app.include_router(data_upload_router)
+app.include_router(config_router)
 
 if __name__ == "__main__": 
     import uvicorn
