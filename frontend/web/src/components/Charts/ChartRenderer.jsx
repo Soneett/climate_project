@@ -8,7 +8,7 @@ import {
   StackPlot,
   WindPlot
 } from './index';
-import { fetchLineChart } from '../../services/api';
+import { fetchLineChart, fetchPieChart } from '../../services/api';
 
 /**
  * Chart type to component mapping
@@ -28,15 +28,32 @@ const CHART_COMPONENTS = {
  * @returns {React.Element|null} - Rendered chart component or null
  */
 const ChartRenderer = ({ block }) => {
-
   const [lineData, setLineData] = useState(block.chartData);
+  const [pieData, setPieData] = useState(block.pieData);
   const { chartType, title } = block;
 
   useEffect(() => {
-    if (block.chartType === "line" && block.indicators) {
-      fetchLineChart(block.indicators).then((res) => {
+    setLineData(block.chartData);
+    setPieData(block.pieData);
+
+    if (!block.indicators) {
+      return;
+    }
+
+    const regionId = block.regionId ?? block.region_id;
+
+    if (block.chartType === 'line') {
+      fetchLineChart(block.indicators, regionId).then((res) => {
         if (res) {
           setLineData(res);
+        }
+      });
+    }
+
+    if (block.chartType === 'pie') {
+      fetchPieChart(block.indicators, regionId).then((res) => {
+        if (res) {
+          setPieData(res);
         }
       });
     }
@@ -66,7 +83,7 @@ const ChartRenderer = ({ block }) => {
       chartProps = { ...chartProps, ...block.barData };
       break;
     case 'pie':
-      chartProps = { ...chartProps, ...block.pieData };
+      chartProps = { ...chartProps, ...(pieData || block.pieData) };
       break;
     case 'line':
     default:
@@ -88,6 +105,8 @@ ChartRenderer.propTypes = {
     chartType: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     indicators: PropTypes.string,
+    regionId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    region_id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     chartData: PropTypes.object,
     stackPlotData: PropTypes.object,
     windPlotData: PropTypes.object,
