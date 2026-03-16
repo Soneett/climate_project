@@ -1,5 +1,7 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
+export const fetchLineChart = (indicators) =>
+  fetchData(`analytics/line-chart?indicators=${encodeURIComponent(indicators)}`);
 /**
  * Base fetch function for API requests
  * @param {string} endpoint - API endpoint to fetch from

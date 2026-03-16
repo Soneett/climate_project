@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   LineChart,
@@ -8,6 +8,7 @@ import {
   StackPlot,
   WindPlot
 } from './index';
+import { fetchLineChart } from '../../services/api';
 
 /**
  * Chart type to component mapping
@@ -27,7 +28,19 @@ const CHART_COMPONENTS = {
  * @returns {React.Element|null} - Rendered chart component or null
  */
 const ChartRenderer = ({ block }) => {
+
+  const [lineData, setLineData] = useState(block.chartData);
   const { chartType, title } = block;
+
+  useEffect(() => {
+    if (block.chartType === "line" && block.indicators) {
+      fetchLineChart(block.indicators).then((res) => {
+        if (res) {
+          setLineData(res);
+        }
+      });
+    }
+  }, [block]);
 
   // Determine which chart component to use
   const ChartComponent = CHART_COMPONENTS[chartType];
@@ -57,15 +70,15 @@ const ChartRenderer = ({ block }) => {
       break;
     case 'line':
     default:
-      if (block.chartData) {
+      if (lineData) {
         chartProps = {
           title,
-          labels: block.chartData.labels,
-          datasets: block.chartData.datasets
+          labels: lineData.labels,
+          datasets: lineData.datasets
         };
       }
       break;
-  }
+      }
 
   return <ChartComponent {...chartProps} />;
 };
@@ -74,6 +87,7 @@ ChartRenderer.propTypes = {
   block: PropTypes.shape({
     chartType: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
+    indicators: PropTypes.string,
     chartData: PropTypes.object,
     stackPlotData: PropTypes.object,
     windPlotData: PropTypes.object,
