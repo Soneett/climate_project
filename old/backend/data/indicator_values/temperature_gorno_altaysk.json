@@ -1,5 +1,6 @@
 {
-  "indicator_values": 
+  "indicator_values": {
+    "rows":[
   {
     "region_name": "Горно-Алтайск",
     "year": 1958,
@@ -1655,5 +1656,11 @@
     "value": -29.3,
     "unit_code": "degC",
     "source_url": "https://www.pogodaiklimat.ru/history/36052.htm"
+  }
+]
+}, "metadata": {
+    "indicator_type": "климат",
+    "indicator_theme": "температура",
+    "source_name": "Состав и структура денежных доходов и расходов населения"
   }
 }
