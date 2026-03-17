@@ -37,10 +37,10 @@ const fetchData = async (endpoint) => {
   }
 };
 
-export const fetchContentBlocks = () => fetchData('api/contentBlocks');
+export const fetchContentBlocks = () => fetchData('contentBlocks');
 
-export const fetchSubjectIndicators = () => fetchData('api/subjectIndicators');
+export const fetchSubjectIndicators = () => fetchData('subjectIndicators');
 
-export const fetchObjectIndicators = () => fetchData('api/objectIndicators');
+export const fetchObjectIndicators = () => fetchData('objectIndicators');
 
-export const fetchRelationsContentBlocks = () => fetchData('api/relationsContentBlocks');
+export const fetchRelationsContentBlocks = () => fetchData('relationsContentBlocks');
