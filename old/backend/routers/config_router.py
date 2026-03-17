@@ -16,7 +16,6 @@ from database import get_db
 
 router = APIRouter(prefix="/api", tags=["Config"])
 
-
 def _load_json_config(session: Session, key: str):
     """Try to read JSON config from DB; return None when config/table is missing."""
     try:

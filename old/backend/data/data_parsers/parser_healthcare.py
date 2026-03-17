@@ -9,7 +9,6 @@ from typing import Any, Dict, List
 
 import pandas as pd
 
-
 # утилиты
 
 def clean_text(x: Any) -> str:
