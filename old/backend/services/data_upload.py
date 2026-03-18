@@ -1,93 +1,69 @@
-from io import BytesIO
+from __future__ import annotations
+
+import inspect
+import os
+import tempfile
+import uuid
+from pathlib import Path
 
 from fastapi import HTTPException, UploadFile
-from openpyxl import load_workbook
 from sqlalchemy.orm import Session
 
-from repo.data_upload import DataUploadRepo
+from services.parsers.registry import get_parser
 
 
 class DataUploadService:
-    def __init__(self, repo: DataUploadRepo | None = None):
-        self.repo = repo or DataUploadRepo()
+    SUPPORTED_EXTENSIONS = {".xls", ".xlsx", ".xlsm", ".xlsb"}
 
-    async def upload_file(self, session: Session, file: UploadFile) -> dict:
+    async def upload_file(self, session: Session, file: UploadFile, indicator_name: str) -> dict:
         filename = file.filename or ""
-        ext = filename.split(".")[-1].lower() if "." in filename else ""
+        extension = Path(filename).suffix.lower()
 
-        if ext not in {"xlsx", "pdf"}:
-            raise HTTPException(status_code=400, detail="Unsupported file format. Use XLSX or PDF.")
-
-        if ext == "pdf":
-            return {
-                "status": "accepted",
-                "fileType": "pdf",
-                "uploaded": 0,
-                "skipped": 0,
-                "message": "PDF upload is accepted.",
-            }
-
-        content = await file.read()
-        workbook = load_workbook(filename=BytesIO(content), data_only=True)
-        sheet = workbook.active
-
-        headers = [str(cell.value).strip().lower() if cell.value is not None else "" for cell in sheet[1]]
-        header_index = {name: idx for idx, name in enumerate(headers)}
-
-        required = {"indicator", "region", "year", "value"}
-        if not required.issubset(set(header_index)):
+        if extension not in self.SUPPORTED_EXTENSIONS:
             raise HTTPException(
                 status_code=400,
-                detail="XLSX must contain headers: indicator, region, year, value.",
+                detail="Unsupported file format. Use .xls, .xlsx, .xlsm or .xlsb.",
             )
 
-        source_col = "source" if "source" in header_index else None
-        source_id_col = "source_id" if "source_id" in header_index else None
+        parser = get_parser(indicator_name)
+        upload_dir = Path(tempfile.gettempdir()) / "uploads"
+        upload_dir.mkdir(parents=True, exist_ok=True)
+        temporary_path = upload_dir / f"{uuid.uuid4()}{extension}"
 
-        rows_to_save: list[dict] = []
-        skipped = 0
-        for row in sheet.iter_rows(min_row=2, values_only=True):
-            indicator_name = row[header_index["indicator"]]
-            region_name = row[header_index["region"]]
-            year = row[header_index["year"]]
-            value = row[header_index["value"]]
+        try:
+            content = await file.read()
+            temporary_path.write_bytes(content)
 
-            if indicator_name is None or region_name is None or year is None or value is None:
-                skipped += 1
-                continue
+            parse_result = self._execute_parser(parser=parser, xlsx_path=temporary_path, session=session)
+            uploaded = int(parse_result.get("uploaded", 0))
+            skipped = int(parse_result.get("skipped", 0))
 
-            indicator_id = self.repo.find_indicator_id(session, str(indicator_name).strip())
-            region_id = self.repo.find_region_id(session, str(region_name).strip())
+            return {
+                "status": "success",
+                "fileType": extension.lstrip("."),
+                "indicator": indicator_name,
+                "uploaded": uploaded,
+                "skipped": skipped,
+            }
+        finally:
+            if temporary_path.exists():
+                os.remove(temporary_path)
 
-            if not indicator_id or not region_id:
-                skipped += 1
-                continue
+    @staticmethod
+    def _execute_parser(parser, xlsx_path: Path, session: Session) -> dict:
+        parse_callable = getattr(parser, "parse", None)
+        if not callable(parse_callable):
+            raise HTTPException(status_code=500, detail="Parser does not implement parse(xlsx_path).")
 
-            source_id = None
-            if source_id_col:
-                raw_source_id = row[header_index[source_id_col]]
-                source_id = int(raw_source_id) if raw_source_id is not None else None
-            elif source_col:
-                source_name = row[header_index[source_col]]
-                source_id = self.repo.find_source_id(session, str(source_name).strip()) if source_name else None
+        signature = inspect.signature(parse_callable)
+        accepts_session = "session" in signature.parameters
 
-            if source_id is None:
-                source_id = 1
+        result = parse_callable(str(xlsx_path), session=session) if accepts_session else parse_callable(str(xlsx_path))
 
-            rows_to_save.append(
-                {
-                    "indicator_id": int(indicator_id),
-                    "region_id": int(region_id),
-                    "year": int(year),
-                    "value": float(value),
-                    "source_id": int(source_id),
-                }
-            )
+        if result is None:
+            return {"uploaded": 0, "skipped": 0}
 
-        uploaded = self.repo.save_indicator_values(session=session, rows=rows_to_save) if rows_to_save else 0
-        return {
-            "status": "success",
-            "fileType": "xlsx",
-            "uploaded": uploaded,
-            "skipped": skipped,
-        }
+        if not isinstance(result, dict):
+            raise HTTPException(status_code=500, detail="Parser must return a dict or None.")
+
+        return result
