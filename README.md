@@ -95,7 +95,7 @@ python scripts/fill_db.py
 - `GET /health`
 - `GET /api-info`
 
-Аналитика (формат сразу под frontend):
+Аналитика:
 - `GET /analytics/line-chart?region_id=<id>&indicator_ids=1&indicator_ids=2`
   - ответ: `{ labels: [...], datasets: [{ name, data }] }`
 - `GET /analytics/pie-chart?region_id=<id>&indicator_ids=1&indicator_ids=2`
