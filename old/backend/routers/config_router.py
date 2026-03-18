@@ -41,7 +41,6 @@ def _load_json_config(session: Session, key: str):
     except Exception:
         return None
 
-
 def _get_config_or_fallback(session: Session, key: str, fallback):
     data = _load_json_config(session, key)
     if data in (None, {}, []):
@@ -62,7 +61,6 @@ def get_subject_indicators(session: Session = Depends(get_db)):
 @router.get("/objectIndicators")
 def get_object_indicators(session: Session = Depends(get_db)):
     return _get_config_or_fallback(session, "objectIndicators", OBJECT_INDICATORS)
-
 
 @router.get("/relationsContentBlocks")
 def get_relations_content(session: Session = Depends(get_db)):

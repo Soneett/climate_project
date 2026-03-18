@@ -156,8 +156,8 @@ def save_json(data: dict, out_path: str) -> None:
 
 
 if __name__ == "__main__":
-    xlsx_path = "/home/daria/altay-db/Копия_Коэффициенты_смертности_по_основным_классам_причин_смерти.xlsx"
-    out_path = "/home/daria/altay-db/mortality_causes_rates_result.json"
+    xlsx_path = "C:/Users/kukoc/Desktop/2215/old/backend/data/data_parsers/death_causes.xlsx"
+    out_path = "C:/Users/kukoc/Desktop/2215/old/backend/data/indicator_values/death_causes.json"
 
     out = process_mortality_causes_rates_local(
         xlsx_path=xlsx_path,
