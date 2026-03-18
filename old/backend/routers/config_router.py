@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from database import get_db
 
-router = APIRouter(prefix="/api", tags=["Config"])
+router = APIRouter(tags=["Config"])
 
 
 _EMPTY_BY_KEY = {
