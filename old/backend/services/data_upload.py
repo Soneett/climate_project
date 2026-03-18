@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import inspect
+import logging
 import os
 import tempfile
 import uuid
@@ -10,6 +11,9 @@ from fastapi import HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
 from services.parsers.registry import get_parser
+
+
+logger = logging.getLogger(__name__)
 
 
 class DataUploadService:
@@ -26,6 +30,10 @@ class DataUploadService:
             )
 
         parser = get_parser(indicator_name)
+        parser_name = parser.__class__.__name__
+
+        logger.info("Selected parser '%s' for indicator '%s'", parser_name, indicator_name)
+
         upload_dir = Path(tempfile.gettempdir()) / "uploads"
         upload_dir.mkdir(parents=True, exist_ok=True)
         temporary_path = upload_dir / f"{uuid.uuid4()}{extension}"
@@ -42,9 +50,28 @@ class DataUploadService:
                 "status": "success",
                 "fileType": extension.lstrip("."),
                 "indicator": indicator_name,
+                "parser": parser_name,
                 "uploaded": uploaded,
                 "skipped": skipped,
             }
+        except HTTPException as exc:
+            logger.exception(
+                "Upload failed for indicator '%s' with parser '%s': %s",
+                indicator_name,
+                parser_name,
+                exc.detail,
+            )
+            raise
+        except Exception as exc:
+            logger.exception(
+                "Unexpected parser error for indicator '%s' with parser '%s'",
+                indicator_name,
+                parser_name,
+            )
+            raise HTTPException(
+                status_code=422,
+                detail=f"Failed to parse uploaded file for indicator '{indicator_name}'.",
+            ) from exc
         finally:
             if temporary_path.exists():
                 os.remove(temporary_path)
