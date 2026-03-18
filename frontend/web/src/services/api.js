@@ -37,10 +37,29 @@ const fetchData = async (endpoint) => {
   }
 };
 
-export const fetchContentBlocks = () => fetchData('contentBlocks');
 
-export const fetchSubjectIndicators = () => fetchData('subjectIndicators');
+import { CONTENT_BLOCKS } from '@/constants/contentBlocks';
 
-export const fetchObjectIndicators = () => fetchData('objectIndicators');
+export const fetchContentBlocks = async () => {
+  const data = await fetchData('contentBlocks');
+  return data && Object.keys(data).length ? data : CONTENT_BLOCKS;
+};
 
-export const fetchRelationsContentBlocks = () => fetchData('relationsContentBlocks');
+import { SUBJECT_INDICATORS } from '@/constants/subjectIndicators';
+import { OBJECT_INDICATORS } from '@/constants/objectIndicators';
+import { RELATIONS } from '@/constants/relations';
+
+export const fetchSubjectIndicators = async () => {
+  const data = await fetchData('subjectIndicators');
+  return data?.length ? data : SUBJECT_INDICATORS;
+};
+
+export const fetchObjectIndicators = async () => {
+  const data = await fetchData('objectIndicators');
+  return data?.length ? data : OBJECT_INDICATORS;
+};
+
+export const fetchRelationsContentBlocks = async () => {
+  const data = await fetchData('relationsContentBlocks');
+  return data && Object.keys(data).length ? data : RELATIONS;
+};
