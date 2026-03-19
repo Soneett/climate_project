@@ -1,0 +1,13 @@
+from .config_fallback import (
+    CONTENT_BLOCKS,
+    SUBJECT_INDICATORS,
+    OBJECT_INDICATORS,
+    RELATIONS_CONTENT,
+)
+
+__all__ = [
+    "CONTENT_BLOCKS",
+    "SUBJECT_INDICATORS",
+    "OBJECT_INDICATORS",
+    "RELATIONS_CONTENT",
+]
