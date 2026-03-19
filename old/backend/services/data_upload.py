@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import inspect
 import os
 import tempfile
 import uuid
@@ -9,7 +8,9 @@ from pathlib import Path
 from fastapi import HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
-from services.parsers.registry import get_parser
+from parsers.indicator_values import parse_indicator_values
+from tables.indicator_values import IndicatorValuesTable
+from services.parsers.registry import get_parser_config
 
 
 class DataUploadService:
@@ -25,7 +26,13 @@ class DataUploadService:
                 detail="Unsupported file format. Use .xls, .xlsx, .xlsm or .xlsb.",
             )
 
-        parser = get_parser(indicator_name)
+        parser_config = get_parser_config(indicator_name)
+        if parser_config is None:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Unknown indicator_name '{indicator_name}'. Configure parser mapping first.",
+            )
+
         upload_dir = Path(tempfile.gettempdir()) / "uploads"
         upload_dir.mkdir(parents=True, exist_ok=True)
         temporary_path = upload_dir / f"{uuid.uuid4()}{extension}"
@@ -34,9 +41,18 @@ class DataUploadService:
             content = await file.read()
             temporary_path.write_bytes(content)
 
-            parse_result = self._execute_parser(parser=parser, xlsx_path=temporary_path, session=session)
-            uploaded = int(parse_result.get("uploaded", 0))
-            skipped = int(parse_result.get("skipped", 0))
+            payload = parser_config.parse_fn(str(temporary_path))
+            rows = payload.get("indicator_values", {}).get("rows", []) if isinstance(payload, dict) else []
+            rows_total = len(rows)
+
+            before_count = session.query(IndicatorValuesTable).count()
+            parse_indicator_values(payload, session=session, source_file=parser_config.source_file)
+            session.flush()
+            after_count = session.query(IndicatorValuesTable).count()
+            session.commit()
+
+            uploaded = max(0, after_count - before_count)
+            skipped = max(0, rows_total - uploaded)
 
             return {
                 "status": "success",
@@ -45,25 +61,12 @@ class DataUploadService:
                 "uploaded": uploaded,
                 "skipped": skipped,
             }
+        except HTTPException:
+            session.rollback()
+            raise
+        except Exception as exc:
+            session.rollback()
+            raise HTTPException(status_code=500, detail=f"Failed to parse and load file: {exc}") from exc
         finally:
             if temporary_path.exists():
                 os.remove(temporary_path)
-
-    @staticmethod
-    def _execute_parser(parser, xlsx_path: Path, session: Session) -> dict:
-        parse_callable = getattr(parser, "parse", None)
-        if not callable(parse_callable):
-            raise HTTPException(status_code=500, detail="Parser does not implement parse(xlsx_path).")
-
-        signature = inspect.signature(parse_callable)
-        accepts_session = "session" in signature.parameters
-
-        result = parse_callable(str(xlsx_path), session=session) if accepts_session else parse_callable(str(xlsx_path))
-
-        if result is None:
-            return {"uploaded": 0, "skipped": 0}
-
-        if not isinstance(result, dict):
-            raise HTTPException(status_code=500, detail="Parser must return a dict or None.")
-
-        return result
