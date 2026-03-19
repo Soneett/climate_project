@@ -1,6 +1,8 @@
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from tables.indicators import IndicatorsTable
+from tables.indicator_subtypes import IndicatorSubtypesTable
 from tables.indicator_values import IndicatorValuesTable
 from tables.population_age_sex import PopulationAgeSexTable
 
@@ -28,14 +30,21 @@ class AnalyticsRepo:
         session: Session,
         names: list[str],
     ) -> list[IndicatorsTable]:
-
         if not names:
+            return []
+
+        normalized_names = [name.strip().lower() for name in names if name.strip()]
+        if not normalized_names:
             return []
 
         return (
             session.query(IndicatorsTable)
+            .outerjoin(IndicatorSubtypesTable, IndicatorsTable.subtype_id == IndicatorSubtypesTable.id)
             .filter(
-                IndicatorsTable.name.in_(names),
+                (
+                    func.lower(IndicatorsTable.name).in_(normalized_names)
+                    | func.lower(IndicatorSubtypesTable.name).in_(normalized_names)
+                ),
                 IndicatorsTable.is_deleted == False,
             )
             .all()

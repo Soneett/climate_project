@@ -5,6 +5,7 @@ export const CONTENT_BLOCKS = {
       id: "regional-1", 
       title: "Карта региона", 
       chartType: "line",
+      indicators: "Рождаемость,Смертность",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
         datasets: [

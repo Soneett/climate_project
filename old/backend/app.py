@@ -20,6 +20,8 @@ from routers import (
     program_regions_router,
     events_router,
     analytics_router,
+    data_upload_router,
+    config_router,
 )
 
 from scripts.fill_db import main
@@ -80,6 +82,7 @@ async def api_info():
             "data_sources": "/data_sources",
             "indicator_subtypes": "/indicator_subtypes",
             "program_region_links": "/program_regions",
+            "data_upload": "/data/upload",
             "analytics": {
                 "line_chart": "/analytics/line-chart",
                 "pie_chart": "/analytics/pie-chart",
@@ -100,7 +103,9 @@ app.include_router(population_age_sex_router)
 app.include_router(regional_programs_router)
 app.include_router(program_regions_router)
 app.include_router(events_router)
-app.include_router(analytics_router)
+app.include_router(analytics_router, prefix="/api")
+app.include_router(data_upload_router)
+app.include_router(config_router)
 
 if __name__ == "__main__": 
     import uvicorn
