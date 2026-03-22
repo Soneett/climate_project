@@ -6,12 +6,6 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from constants.config_fallback import (
-    CONTENT_BLOCKS,
-    SUBJECT_INDICATORS,
-    OBJECT_INDICATORS,
-    RELATIONS_CONTENT,
-)
 from database import get_db
 
 router = APIRouter(prefix="/api", tags=["Config"])
@@ -41,27 +35,27 @@ def _load_json_config(session: Session, key: str):
     except Exception:
         return None
 
-def _get_config_or_fallback(session: Session, key: str, fallback):
+def _get_config_or_empty(session: Session, key: str, empty_value):
     data = _load_json_config(session, key)
     if data in (None, {}, []):
-        return fallback
+        return empty_value
     return data
 
 
 @router.get("/contentBlocks")
 def get_content_blocks(session: Session = Depends(get_db)):
-    return _get_config_or_fallback(session, "contentBlocks", CONTENT_BLOCKS)
+    return _get_config_or_empty(session, "contentBlocks", {})
 
 
 @router.get("/subjectIndicators")
 def get_subject_indicators(session: Session = Depends(get_db)):
-    return _get_config_or_fallback(session, "subjectIndicators", SUBJECT_INDICATORS)
+    return _get_config_or_empty(session, "subjectIndicators", [])
 
 
 @router.get("/objectIndicators")
 def get_object_indicators(session: Session = Depends(get_db)):
-    return _get_config_or_fallback(session, "objectIndicators", OBJECT_INDICATORS)
+    return _get_config_or_empty(session, "objectIndicators", [])
 
 @router.get("/relationsContentBlocks")
 def get_relations_content(session: Session = Depends(get_db)):
-    return _get_config_or_fallback(session, "relationsContentBlocks", RELATIONS_CONTENT)
+    return _get_config_or_empty(session, "relationsContentBlocks", {})

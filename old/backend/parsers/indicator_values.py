@@ -155,6 +155,10 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
         (_normalize_text(i.name), i.subtype_id): i
         for i in session.query(IndicatorsTable).all()
     }
+    existing_values_map: dict[tuple[int, int, int, int], IndicatorValuesTable] = {
+        (v.region_id, v.indicator_id, v.year, v.source_id): v
+        for v in session.query(IndicatorValuesTable).all()
+    }
 
     if source_name and source_name not in sources_map:
         source = DataSourcesTable(id=_next_id(session, DataSourcesTable), name=source_name, organization="Не указан")
@@ -240,12 +244,21 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
         if year is None or value is None:
             continue
 
-        session.add(
-            IndicatorValuesTable(
-                region_id=region_id,
-                indicator_id=indicator.id,
-                year=int(year),
-                value=float(value),
-                source_id=source_id,
-            )
+        row_key = (region_id, indicator.id, int(year), source_id)
+        parsed_value = float(value)
+        existing_value = existing_values_map.get(row_key)
+
+        if existing_value is not None:
+            if existing_value.value != parsed_value:
+                existing_value.value = parsed_value
+            continue
+
+        created_value = IndicatorValuesTable(
+            region_id=region_id,
+            indicator_id=indicator.id,
+            year=int(year),
+            value=parsed_value,
+            source_id=source_id,
         )
+        session.add(created_value)
+        existing_values_map[row_key] = created_value

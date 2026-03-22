@@ -18,70 +18,110 @@ from data.data_parsers.parser_vrp import parse_vrp_xlsx
 
 @dataclass(frozen=True)
 class ParserConfig:
+    key: str
+    label: str
     parse_fn: Callable[[str], dict[str, Any]]
     source_file: str
 
 
 _PARSER_CONFIGS: dict[str, ParserConfig] = {
-    "демографические показатели: рождаемость, смертность, естественный прирост": ParserConfig(
+    "births_deaths_natural": ParserConfig(
+        key="births_deaths_natural",
+        label="Демографические показатели: рождаемость, смертность, естественный прирост",
         parse_fn=process_births_deaths_natural_local,
         source_file="birth_abs.json",
     ),
-    "общие итоги миграции населения": ParserConfig(
+    "migration": ParserConfig(
+        key="migration",
+        label="Общие итоги миграции населения",
         parse_fn=parse_migration_increment_xlsx,
         source_file="migration.json",
     ),
-    "население с денежными доходами ниже границы бедности": ParserConfig(
+    "poverty_level": ParserConfig(
+        key="poverty_level",
+        label="Население с денежными доходами ниже границы бедности",
         parse_fn=parse_poverty_xlsx,
         source_file="poverty_level.json",
     ),
-    "основные показатели здравоохранения": ParserConfig(
+    "healthcare_indicators": ParserConfig(
+        key="healthcare_indicators",
+        label="Основные показатели здравоохранения",
         parse_fn=parse_healthcare_xlsx,
         source_file="healthcare_indicators.json",
     ),
-    "валовой региональный продукт": ParserConfig(
+    "vrp": ParserConfig(
+        key="vrp",
+        label="Валовой региональный продукт",
         parse_fn=parse_vrp_xlsx,
         source_file="vrp.json",
     ),
-    "индекс выпуска товаров и услуг по базовым видам экономической деятельности": ParserConfig(
+    "ivbo": ParserConfig(
+        key="ivbo",
+        label="Индекс выпуска товаров и услуг по базовым видам экономической деятельности",
         parse_fn=parse_ivbo_yearly,
         source_file="IVBO.json",
     ),
-    "расходы на потребление домашних хозяйств": ParserConfig(
+    "consumption_expenses": ParserConfig(
+        key="consumption_expenses",
+        label="Расходы на потребление домашних хозяйств",
         parse_fn=parse_consumption_expenses_xlsx,
         source_file="consumption_expenses.json",
     ),
-    "движение жилищного фонда": ParserConfig(
+    "housing_fund_movement": ParserConfig(
+        key="housing_fund_movement",
+        label="Движение жилищного фонда",
         parse_fn=parse_housing_fund_movement_xls,
         source_file="housing_fund_movement.json",
     ),
-    "количество организаций по формам собственности": ParserConfig(
+    "org_ownership": ParserConfig(
+        key="org_ownership",
+        label="Количество организаций по формам собственности",
         parse_fn=parse_org_ownership_xlsx,
         source_file="org_ownership.json",
     ),
-    "коэффициент ликвидации организаций": ParserConfig(
+    "org_liquidation": ParserConfig(
+        key="org_liquidation",
+        label="Коэффициент ликвидации организаций",
         parse_fn=parse_org_liquidation_ra_yearonly,
         source_file="org_liquidation.json",
     ),
-    "оценка численности коренных малочисленных народов": ParserConfig(
+    "kmn_population": ParserConfig(
+        key="kmn_population",
+        label="Оценка численности коренных малочисленных народов",
         parse_fn=parse_kmn_population_xlsx,
         source_file="kmn_population.json",
-    ),
-    "vrp": ParserConfig(parse_fn=parse_vrp_xlsx, source_file="vrp.json"),
-    "poverty_level": ParserConfig(parse_fn=parse_poverty_xlsx, source_file="poverty_level.json"),
-    "healthcare": ParserConfig(parse_fn=parse_healthcare_xlsx, source_file="healthcare_indicators.json"),
-    "ivbo": ParserConfig(parse_fn=parse_ivbo_yearly, source_file="IVBO.json"),
-    "migration": ParserConfig(parse_fn=parse_migration_increment_xlsx, source_file="migration.json"),
-    "consumption_expenses": ParserConfig(
-        parse_fn=parse_consumption_expenses_xlsx,
-        source_file="consumption_expenses.json",
     ),
 }
 
 
-def _normalize_indicator_name(indicator_name: str) -> str:
-    return indicator_name.strip().lower()
+_ALIASES_TO_KEYS: dict[str, str] = {
+    "демографические показатели: рождаемость, смертность, естественный прирост": "births_deaths_natural",
+    "общие итоги миграции населения": "migration",
+    "население с денежными доходами ниже границы бедности": "poverty_level",
+    "основные показатели здравоохранения": "healthcare_indicators",
+    "валовой региональный продукт": "vrp",
+    "индекс выпуска товаров и услуг по базовым видам экономической деятельности": "ivbo",
+    "расходы на потребление домашних хозяйств": "consumption_expenses",
+    "движение жилищного фонда": "housing_fund_movement",
+    "количество организаций по формам собственности": "org_ownership",
+    "коэффициент ликвидации организаций": "org_liquidation",
+    "оценка численности коренных малочисленных народов": "kmn_population",
+    "healthcare": "healthcare_indicators",
+}
 
 
-def get_parser_config(indicator_name: str) -> ParserConfig | None:
-    return _PARSER_CONFIGS.get(_normalize_indicator_name(indicator_name))
+def _normalize(value: str) -> str:
+    return value.strip().lower()
+
+
+def get_parser_config(indicator_key: str) -> ParserConfig | None:
+    normalized = _normalize(indicator_key)
+    parser_key = _ALIASES_TO_KEYS.get(normalized, normalized)
+    return _PARSER_CONFIGS.get(parser_key)
+
+
+def list_parser_options() -> list[dict[str, str]]:
+    return [
+        {"key": parser.key, "label": parser.label}
+        for parser in _PARSER_CONFIGS.values()
+    ]
