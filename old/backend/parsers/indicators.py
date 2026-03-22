@@ -3,29 +3,32 @@ from tables.units import UnitsTable
 from tables.indicator_subtypes import IndicatorSubtypesTable
 
 def parse_indicators(data: list[dict], session):
+    def _normalize(value: str | None) -> str:
+        return (value or "").strip()
+
     units_map = {
-        u.code: u.id
+        _normalize(u.code): u.id
         for u in session.query(UnitsTable).all()
     }
 
     subtypes_map = {
-        s.name: s.id
+        _normalize(s.name): s.id
         for s in session.query(IndicatorSubtypesTable).all()
     }
 
     existing_indicators = {
-        ind.name: ind
+        _normalize(ind.name): ind
         for ind in session.query(IndicatorsTable).all()
     }
 
     for item in data["indicators"]:
-        name = item["name"]
+        name = _normalize(item["name"])
 
         values = dict(
-            unit_id=units_map.get(item["unit_code"]),
+            unit_id=units_map.get(_normalize(item.get("unit_code"))),
             type=item.get("type"),
             theme=item.get("theme"),
-            subtype_id=subtypes_map.get(item["subtype"]),
+            subtype_id=subtypes_map.get(_normalize(item.get("subtype"))),
         )
 
         if name in existing_indicators:
@@ -39,4 +42,3 @@ def parse_indicators(data: list[dict], session):
                     **values
                 )
             )
-
