@@ -7,7 +7,6 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from constants.config_fallback import (
-    CONTENT_BLOCKS,
     SUBJECT_INDICATORS,
     OBJECT_INDICATORS,
     RELATIONS_CONTENT,
@@ -50,7 +49,12 @@ def _get_config_or_fallback(session: Session, key: str, fallback):
 
 @router.get("/contentBlocks")
 def get_content_blocks(session: Session = Depends(get_db)):
-    return _get_config_or_fallback(session, "contentBlocks", CONTENT_BLOCKS)
+    # Frontend should provide fallback from constants/contentBlocks.js.
+    # Backend returns only DB-driven config for this endpoint.
+    data = _load_json_config(session, "contentBlocks")
+    if data in (None, {}, []):
+        return {}
+    return data
 
 
 @router.get("/subjectIndicators")
