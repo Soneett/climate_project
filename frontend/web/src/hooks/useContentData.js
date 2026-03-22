@@ -27,8 +27,17 @@ export const useContentData = () => {
       const hasObjectData = Array.isArray(objectData) && objectData.length > 0;
       const hasRelationsData = relationsData && Object.keys(relationsData).length > 0;
 
-      // Prefer DB/API data and only fallback when it is missing
-      setContentBlocks(hasContentData ? contentData : CONTENT_BLOCKS);
+      // Prefer API data by section; fallback to constants for missing/empty sections.
+      const mergedContentBlocks = { ...CONTENT_BLOCKS };
+      if (hasContentData) {
+        Object.entries(contentData).forEach(([sectionId, blocks]) => {
+          if (Array.isArray(blocks) && blocks.length > 0) {
+            mergedContentBlocks[sectionId] = blocks;
+          }
+        });
+      }
+
+      setContentBlocks(hasContentData ? mergedContentBlocks : CONTENT_BLOCKS);
       setSubjectIndicators(hasSubjectData ? subjectData : SUBJECT_INDICATORS);
       setObjectIndicators(hasObjectData ? objectData : OBJECT_INDICATORS);
       setRelationsContentBlocks(hasRelationsData ? relationsData : RELATIONS_CONTENT);
