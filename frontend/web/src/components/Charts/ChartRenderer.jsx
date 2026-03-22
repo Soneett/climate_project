@@ -35,10 +35,20 @@ const hasLinePayload = (payload) => {
 const hasPiePayload = (payload) => {
   return Boolean(
     payload
-    && Array.isArray(payload.timelineLabels)
-    && Array.isArray(payload.timelineData)
-    && payload.timelineLabels.length > 0
-    && payload.timelineData.length > 0
+    && (
+      (
+        Array.isArray(payload.timelineLabels)
+        && Array.isArray(payload.timelineData)
+        && payload.timelineLabels.length > 0
+        && payload.timelineData.length > 0
+      )
+      || (
+        Array.isArray(payload.labels)
+        && Array.isArray(payload.datasets)
+        && payload.labels.length > 0
+        && payload.datasets.length > 0
+      )
+    )
   );
 };
 
@@ -48,15 +58,23 @@ const hasPiePayload = (payload) => {
  * @returns {React.Element|null} - Rendered chart component or null
  */
 const ChartRenderer = ({ block }) => {
-  const [lineData, setLineData] = useState(block.chartData);
-  const [pieData, setPieData] = useState(block.pieData);
+  const [lineData, setLineData] = useState(null);
+  const [pieData, setPieData] = useState(null);
   const { chartType, title } = block;
 
   useEffect(() => {
-    setLineData(block.chartData);
-    setPieData(block.pieData);
+    const lineFallback = hasLinePayload(block.chartData) ? block.chartData : null;
+    const pieFallback = hasPiePayload(block.pieData) ? block.pieData : null;
 
-    if (!block.indicators) {
+    if (block.chartType === 'line') {
+      setLineData(lineFallback);
+    }
+
+    if (block.chartType === 'pie') {
+      setPieData(pieFallback);
+    }
+
+    if (!block.indicators || (block.chartType !== 'line' && block.chartType !== 'pie')) {
       return;
     }
 
@@ -74,7 +92,11 @@ const ChartRenderer = ({ block }) => {
       fetchLineChart(indicatorsCsv, regionId).then((res) => {
         if (hasLinePayload(res)) {
           setLineData(res);
+        } else {
+          setLineData(lineFallback);
         }
+      }).catch(() => {
+        setLineData(lineFallback);
       });
     }
 
@@ -82,7 +104,11 @@ const ChartRenderer = ({ block }) => {
       fetchPieChart(indicatorsCsv, regionId).then((res) => {
         if (hasPiePayload(res)) {
           setPieData(res);
+        } else {
+          setPieData(pieFallback);
         }
+      }).catch(() => {
+        setPieData(pieFallback);
       });
     }
   }, [block]);
@@ -111,7 +137,9 @@ const ChartRenderer = ({ block }) => {
       chartProps = { ...chartProps, ...block.barData };
       break;
     case 'pie':
-      chartProps = { ...chartProps, ...(pieData || block.pieData) };
+      if (pieData) {
+        chartProps = { ...chartProps, ...pieData };
+      }
       break;
     case 'line':
     default:
