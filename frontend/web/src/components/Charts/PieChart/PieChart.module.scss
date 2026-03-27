@@ -9,4 +9,9 @@
   border-radius: $border-radius-md;
   padding: $spacing-4;
   box-shadow: $shadow-sm;
+
+  @include mobile {
+    min-height: 320px;
+    padding: $spacing-2;
+  }
 }

@@ -1,0 +1,98 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.programsPlot {
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  background: $color-bg-primary;
+  border-radius: $border-radius-md;
+  padding: $spacing-4;
+  box-shadow: $shadow-sm;
+  position: relative;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: $color-overlay-dark;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: $z-index-modal;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modalContent {
+  background: $color-bg-primary;
+  border-radius: $border-radius-lg;
+  padding: $spacing-6;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: $shadow-2xl;
+  position: relative;
+  animation: slideUp 0.3s ease;
+
+  h3 {
+    margin: 0 0 $spacing-4 0;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modalBody {
+  p {
+    margin: $spacing-2 0;
+    color: $color-text-secondary;
+    line-height: $line-height-relaxed;
+
+    strong {
+      color: $color-text-primary;
+      font-weight: $font-weight-semibold;
+    }
+  }
+}
+
+.closeButton {
+  position: absolute;
+  top: $spacing-4;
+  right: $spacing-4;
+  background: none;
+  border: none;
+  font-size: $font-size-3xl;
+  line-height: 1;
+  color: $color-text-tertiary;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $border-radius-sm;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: $color-gray-100;
+    color: $color-text-primary;
+  }
+}

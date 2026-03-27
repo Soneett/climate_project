@@ -1,0 +1,35 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.chartWrapper {
+  position: relative;
+}
+
+.downloadBtn {
+  position: absolute;
+  top: $spacing-2;
+  right: $spacing-2;
+  z-index: $z-index-relative;
+  padding: $spacing-1 $spacing-2;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  color: $color-bg-primary;
+  background: linear-gradient(180deg, #2d6b63, #266153);
+  border: none;
+  border-radius: $border-radius-sm;
+  cursor: pointer;
+  box-shadow: $shadow-sm;
+  white-space: nowrap;
+  transition: opacity $transition-fast, box-shadow $transition-fast;
+  line-height: $line-height-tight;
+
+  &:hover {
+    opacity: 0.85;
+    box-shadow: $shadow-md;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}

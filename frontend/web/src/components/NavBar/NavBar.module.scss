@@ -25,12 +25,18 @@
 }
 
 .brand {
-  flex: 0 0 auto;
+  flex-shrink: 1;
+  min-width: 100px;
+  max-width: 200px;
   font-weight: $font-weight-semibold;
   font-size: $font-size-sm;
   cursor: pointer;
   line-height: $line-height-tight;
   transition: opacity $transition-fast;
+  overflow-wrap: normal;
+  word-break: keep-all;
+  white-space: normal;
+  hyphens: none;
 
   &:hover {
     opacity: 0.8;
@@ -38,10 +44,12 @@
 
   @include media-md {
     font-size: $font-size-base;
+    max-width: 280px;
   }
 
   @include media-lg {
     font-size: $font-size-lg;
+    max-width: 360px;
   }
 }
 
@@ -52,6 +60,14 @@
   justify-content: space-between;
   gap: $spacing-2;
   min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  flex-wrap: nowrap;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   @include media-md {
     gap: $spacing-4;
@@ -64,6 +80,8 @@
   display: flex;
   align-items: center;
   min-width: 0;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .itemRight {
@@ -78,7 +96,8 @@
   font-size: $font-size-sm;
   border-radius: $border-radius-md;
   padding: $spacing-2 $spacing-3;
-  white-space: nowrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 
   @include media-md {
     font-size: $font-size-base;
@@ -86,15 +105,24 @@
   }
 }
 
-// Mobile responsive
 @media (max-width: #{$breakpoint-md - 1px}) {
   .inner {
     padding: 0 $spacing-3;
     gap: $spacing-2;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex-wrap: nowrap;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   .brand {
     font-size: $font-size-xs;
+    flex-shrink: 1;
+    min-width: 105px;
+    max-width: 120px;
   }
 
   .btn {

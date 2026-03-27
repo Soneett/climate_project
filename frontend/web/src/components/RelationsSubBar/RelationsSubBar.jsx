@@ -37,7 +37,7 @@ const RelationsSubBar = ({ onSelectionChange = () => {} }) => {
   const handleSubjectClick = (subjectId) => {
     const state = getSubjectState(subjectId);
     if (state === 'disabled') return;
-    
+
     if (selectedSubject === subjectId) {
       // Deselect
       setSelectedSubject(null);
@@ -60,7 +60,7 @@ const RelationsSubBar = ({ onSelectionChange = () => {} }) => {
   const handleObjectClick = (objectId) => {
     const state = getObjectState(objectId);
     if (state === 'disabled') return;
-    
+
     if (selectedObject === objectId) {
       // Deselect
       setSelectedObject(null);

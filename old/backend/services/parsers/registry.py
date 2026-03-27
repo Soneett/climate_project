@@ -14,6 +14,16 @@ from data.data_parsers.parser_org_liquidation import parse_org_liquidation_ra_ye
 from data.data_parsers.parser_org_ownership import parse_org_ownership_xlsx
 from data.data_parsers.parser_poverty_level import parse_poverty_xlsx
 from data.data_parsers.parser_vrp import parse_vrp_xlsx
+from data.data_parsers.parser_healthcare import parse_healthcare_xlsx
+from data.data_parsers.parse_gorno_altaysk_temperature_history import parse_pogodaiklimat_temperature_history
+from data.data_parsers.parse_mortality_causes_rates import process_mortality_causes_rates_local
+from data.data_parsers.parser_cpi_pdf import parse_cpi_pdf
+from data.data_parsers.parser_roads_press_release import parse_roads_pdf
+from data.data_parsers.parse_population_age_sex import parse_population_age_sex_file
+from data.data_parsers.parser_credit_debit_structure import parse_credit_debit_structure_pdf
+
+
+
 
 
 @dataclass(frozen=True)
@@ -66,15 +76,6 @@ _PARSER_CONFIGS: dict[str, ParserConfig] = {
     "оценка численности коренных малочисленных народов": ParserConfig(
         parse_fn=parse_kmn_population_xlsx,
         source_file="kmn_population.json",
-    ),
-    "vrp": ParserConfig(parse_fn=parse_vrp_xlsx, source_file="vrp.json"),
-    "poverty_level": ParserConfig(parse_fn=parse_poverty_xlsx, source_file="poverty_level.json"),
-    "healthcare": ParserConfig(parse_fn=parse_healthcare_xlsx, source_file="healthcare_indicators.json"),
-    "ivbo": ParserConfig(parse_fn=parse_ivbo_yearly, source_file="IVBO.json"),
-    "migration": ParserConfig(parse_fn=parse_migration_increment_xlsx, source_file="migration.json"),
-    "consumption_expenses": ParserConfig(
-        parse_fn=parse_consumption_expenses_xlsx,
-        source_file="consumption_expenses.json",
     ),
 }
 

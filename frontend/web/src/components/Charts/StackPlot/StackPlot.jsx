@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ReactECharts from 'echarts-for-react';
 import { useChartResize } from '../../../hooks/useChartResize';
 import {
-  getTitleConfig,
   TOOLTIP_CONFIG,
   TEXT_STYLES,
   TIMELINE_CONFIG,
@@ -11,6 +10,7 @@ import {
   SPLIT_LINE_STYLE,
   CHART_COLORS
 } from '../chartConfig';
+import ChartWrapper from '../ChartWrapper/ChartWrapper';
 import styles from './StackPlot.module.scss';
 
 const StackPlot = ({ 
@@ -28,7 +28,7 @@ const StackPlot = ({
         ...TIMELINE_CONFIG,
         data: timelineLabels
       },
-      title: getTitleConfig(title),
+      title: {},
       tooltip: {
         ...TOOLTIP_CONFIG,
         trigger: 'axis',
@@ -42,24 +42,15 @@ const StackPlot = ({
       },
       legend: {
         data: legendItems,
-        top: 60,
+        top: 35,
         left: 'center',
         textStyle: TEXT_STYLES.legend
-      },
-      toolbox: {
-        feature: {
-          saveAsImage: {
-            title: 'Сохранить'
-          }
-        },
-        right: 20,
-        top: 20
       },
       grid: {
         left: '3%',
         right: '4%',
         bottom: 80,
-        top: 120,
+        top: 135,
         containLabel: true
       },
       xAxis: [{
@@ -92,17 +83,20 @@ const StackPlot = ({
         } : { show: false }
       }))
     },
-    options: timelineData
+    options: timelineData.map((o, i) => ({
+      ...o,
+      title: { text: timelineLabels[i] || '', left: 'center', top: 10, textStyle: TEXT_STYLES.axis }
+    }))
   };
 
   return (
-    <div className={styles.stackPlot}>
+    <ChartWrapper chartRef={chartRef} filename="stack-plot" className={styles.stackPlot}>
       <ReactECharts 
         ref={chartRef} 
         option={option} 
         style={{ height: '100%', width: '100%', minHeight: '500px' }} 
       />
-    </div>
+    </ChartWrapper>
   );
 };
 

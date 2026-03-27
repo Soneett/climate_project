@@ -1,0 +1,204 @@
+@use '../../../styles/variables' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background: $color-bg-primary;
+  border-radius: $border-radius-md;
+  overflow: hidden; // чтобы контролы не выпирали
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  padding: $spacing-2 0;
+  border-bottom: 1px solid $color-border;
+  width: 100%;
+}
+
+.indicatorSelector {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  min-width: 0;
+  flex: 1 1 280px;
+
+  label {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  select {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    padding: 6px 12px;
+    border-radius: $border-radius-sm;
+    border: 1px solid $color-border;
+    font-size: $font-size-sm;
+    font-family: $font-family-base;
+    background: $color-bg-primary;
+    color: $color-text-primary;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+      border-color: $color-primary;
+      box-shadow: 0 0 0 2px rgba(159, 182, 159, 0.3);
+    }
+  }
+}
+
+.disasterFilter {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  flex-wrap: wrap;
+  min-width: 0;
+  flex: 1 1 320px;
+}
+
+.filterLabel {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  white-space: nowrap;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+  cursor: pointer;
+  font-size: $font-size-sm;
+
+  input {
+    cursor: pointer;
+    accent-color: $color-primary;
+  }
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+  padding-top: $spacing-4;
+  border-top: 1px solid $color-border;
+
+  label {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+  }
+}
+
+.slider {
+  width: 100%;
+  cursor: pointer;
+  accent-color: $color-primary;
+}
+
+.yearLabels {
+  display: flex;
+  justify-content: space-between;
+
+  span {
+    cursor: pointer;
+    padding: $spacing-1 $spacing-2;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-xs;
+    color: $color-text-secondary;
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background: $color-bg-secondary;
+    }
+
+    &.active {
+      background: $color-primary;
+      color: $color-white;
+      font-weight: $font-weight-medium;
+    }
+  }
+}
+
+.loadingState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: $color-bg-primary;
+  border-radius: $border-radius-md;
+  padding: $spacing-6;
+  max-width: 440px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+  h3 {
+    margin: 0 0 $spacing-4;
+    font-size: $font-size-lg;
+    color: $color-text-primary;
+  }
+
+  p {
+    margin: $spacing-2 0;
+    font-size: $font-size-sm;
+    color: $color-text-primary;
+    line-height: 1.5;
+  }
+
+  strong {
+    color: $color-text-primary;
+  }
+}
+
+.closeBtn {
+  position: absolute;
+  top: $spacing-3;
+  right: $spacing-3;
+  background: none;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  color: $color-text-secondary;
+  padding: 0 $spacing-1;
+
+  &:hover {
+    color: $color-text-primary;
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .controls {
+    gap: 12px;
+  }
+
+  .indicatorSelector {
+    flex: 1 1 100%;
+  }
+
+  .disasterFilter {
+    flex: 1 1 100%;
+  }
+}

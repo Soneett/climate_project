@@ -14,7 +14,12 @@
 }
 
 .inner {
-  @include container;
+  /* ВАЖНО: тянем ровно на всю ширину .bar без внутренних отступов container */
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+
   display: flex;
   gap: 0;
   overflow-x: auto;
@@ -31,7 +36,7 @@
 }
 
 .cell {
-  flex: 1;
+  flex: 1 1 0;
   min-width: max-content;
   padding: $spacing-2 $spacing-3;
   border-radius: $border-radius-md;

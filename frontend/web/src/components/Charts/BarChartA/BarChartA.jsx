@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ReactECharts from 'echarts-for-react';
 import { useChartResize } from '../../../hooks/useChartResize';
 import {
-  getTitleConfig,
   TOOLTIP_CONFIG,
   TEXT_STYLES,
   TIMELINE_CONFIG,
@@ -11,6 +10,7 @@ import {
   AXIS_LINE_STYLE,
   SPLIT_LINE_STYLE
 } from '../chartConfig';
+import ChartWrapper from '../ChartWrapper/ChartWrapper';
 import styles from './BarChartA.module.scss';
 
 const BarChartA = ({ title, timelineLabels = [], dataSource = [], seriesCount = 3 }) => {
@@ -26,7 +26,7 @@ const BarChartA = ({ title, timelineLabels = [], dataSource = [], seriesCount = 
         ...TIMELINE_CONFIG,
         data: timelineLabels
       },
-      title: getTitleConfig(title),
+      title: {},
       tooltip: {
         ...TOOLTIP_CONFIG,
         trigger: 'axis',
@@ -35,7 +35,7 @@ const BarChartA = ({ title, timelineLabels = [], dataSource = [], seriesCount = 
         }
       },
       legend: {
-        top: 60,
+        top: 35,
         left: 'center',
         textStyle: TEXT_STYLES.legend
       },
@@ -56,17 +56,20 @@ const BarChartA = ({ title, timelineLabels = [], dataSource = [], seriesCount = 
       },
       series: series
     },
-    options: dataSource
+    options: dataSource.map((o, i) => ({
+      ...o,
+      title: { text: timelineLabels[i] || '', left: 'center', top: 10, textStyle: TEXT_STYLES.axis }
+    }))
   };
 
   return (
-    <div className={styles.barChart}>
+    <ChartWrapper chartRef={chartRef} filename="bar-chart" className={styles.barChart}>
       <ReactECharts 
         ref={chartRef} 
         option={option} 
         style={{ height: '100%', width: '100%', minHeight: '500px' }} 
       />
-    </div>
+    </ChartWrapper>
   );
 };
 

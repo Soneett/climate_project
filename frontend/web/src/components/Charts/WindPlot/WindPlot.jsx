@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ReactECharts from 'echarts-for-react';
 import { useChartResize } from '../../../hooks/useChartResize';
 import {
-  getTitleConfig,
   TOOLTIP_CONFIG,
   TEXT_STYLES,
   TIMELINE_CONFIG,
@@ -12,13 +11,14 @@ import {
   SPLIT_LINE_STYLE,
   CHART_COLORS
 } from '../chartConfig';
+import ChartWrapper from '../ChartWrapper/ChartWrapper';
 import styles from './WindPlot.module.scss';
 
-const WindPlot = ({ 
-  title = "Скорость и преобладающее направление ветра",
-  timelineLabels = [], 
-  timelineData = [] // массив объектов { dir, avg, max } для каждого года
-}) => {
+const WindPlot = ({
+                    title = "Скорость и преобладающее направление ветра",
+                    timelineLabels = [],
+                    timelineData = [] // массив объектов { dir, avg, max } для каждого года
+                  }) => {
   const chartRef = useRef(null);
   useChartResize(chartRef);
 
@@ -32,7 +32,7 @@ const WindPlot = ({
       },
       animation: true,
       animationDurationUpdate: 1500,
-      title: getTitleConfig(title),
+      title: {},
       tooltip: {
         ...TOOLTIP_CONFIG,
         trigger: 'item',
@@ -47,18 +47,19 @@ const WindPlot = ({
           return params.name || '';
         }
       },
-      grid: { 
-        left: '10%', 
-        right: '10%', 
-        top: '55%', 
-        height: '25%',
+      // Поставил grid так, чтобы полоса с барами была центровой (под компасом)
+      grid: {
+        left: '10%',
+        right: '10%',
+        top: '60%',   // чуть ниже центра (регулируй при необходимости)
+        height: '12%', // невысокая полоса — чтобы бары выглядели центрированными
         containLabel: true
       },
       xAxis: {
         type: 'value',
         min: 0,
         splitLine: SPLIT_LINE_STYLE,
-        axisLabel: { 
+        axisLabel: {
           formatter: '{value} м/с',
           ...TEXT_STYLES.axis
         },
@@ -82,11 +83,11 @@ const WindPlot = ({
           min: 0,
           max: 360,
           splitNumber: 8,
-          axisLine: { 
-            lineStyle: { 
-              width: 18, 
+          axisLine: {
+            lineStyle: {
+              width: 18,
               color: [[1, CHART_COLORS.compass]]
-            } 
+            }
           },
           axisLabel: {
             distance: -40,
@@ -107,12 +108,12 @@ const WindPlot = ({
               color: '#B7CCAD'
             }
           },
-          pointer: { 
-            length: '65%', 
-            width: 12, 
-            itemStyle: { 
+          pointer: {
+            length: '65%',
+            width: 12,
+            itemStyle: {
               color: CHART_COLORS.primary
-            } 
+            }
           },
           detail: { show: false },
           animation: true,
@@ -120,53 +121,61 @@ const WindPlot = ({
           data: [{ value: timelineData[0]?.dir || 0 }]
         },
         {
+          // Фон-бар (максимальная скорость) — контейнер
           name: 'Макс. скорость',
           type: 'bar',
-          stack: 's',
-          barWidth: 28,
-          itemStyle: { 
-            color: '#E57373'
+          // Одинаковая ширина для фонового и среднего — чтобы avg занимал всю высоту
+          barWidth: 36,
+          itemStyle: {
+            color: '#C62828',
+            opacity: 0.85
           },
-          label: { 
-            show: true, 
+          label: {
+            show: true,
             position: 'insideRight',
             formatter: '{c} м/с',
             distance: 5,
-            color: CHART_COLORS.text,
-            fontWeight: 'bold',
+            color: '#fff',
+            fontWeight: '700',
             fontFamily: TEXT_STYLES.legend.fontFamily
           },
           emphasis: { focus: 'series' },
           animation: true,
           animationDurationUpdate: 1500,
+          barBorderRadius: 6,
+          z: 1,
           data: [timelineData[0]?.max || 0]
         },
         {
           name: 'Средняя скорость',
           type: 'bar',
-          stack: 's',
+          barWidth: 36,
           barGap: '-100%',
-          barWidth: 28,
-          itemStyle: { 
-            color: '#81C784'
+          itemStyle: {
+            color: '#2E7D32',
+            opacity: 0.9
           },
-          label: { 
-            show: true, 
-            position: 'insideRight', 
-            formatter: '{c} м/с', 
+          label: {
+            show: true,
+            position: 'insideRight',
+            formatter: '{c} м/с',
             color: '#fff',
-            fontFamily: TEXT_STYLES.legend.fontFamily
+            fontFamily: TEXT_STYLES.legend.fontFamily,
+            fontWeight: '600'
           },
           emphasis: { focus: 'series' },
           animation: true,
           animationDurationUpdate: 1500,
+          barBorderRadius: 6,
+          z: 2,
           data: [timelineData[0]?.avg || 0]
         }
       ]
     },
     options: timelineData.map((data, index) => ({
-      title: { text: `${title} — ${timelineLabels[index]}` },
-      xAxis: { max: Math.ceil(data.max * 1.2) },
+      title: { text: timelineLabels[index] || '', left: 'center', top: 10, textStyle: TEXT_STYLES.axis },
+      // чтобы max полностью доходил до правого края (avg будет его долей) — ставим max как предел оси
+      xAxis: { max: Math.max(1, data.max) },
       series: [
         { data: [{ value: data.dir }] },
         { data: [data.max] },
@@ -176,13 +185,13 @@ const WindPlot = ({
   };
 
   return (
-    <div className={styles.windPlot}>
-      <ReactECharts 
-        ref={chartRef} 
-        option={option} 
-        style={{ height: '100%', width: '100%', minHeight: '550px' }} 
+    <ChartWrapper chartRef={chartRef} filename="wind-plot" className={styles.windPlot}>
+      <ReactECharts
+        ref={chartRef}
+        option={option}
+        style={{ height: '100%', width: '100%', minHeight: '550px' }}
       />
-    </div>
+    </ChartWrapper>
   );
 };
 

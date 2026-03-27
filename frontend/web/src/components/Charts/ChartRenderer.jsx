@@ -6,7 +6,16 @@ import {
   BarChartA,
   BarChartB,
   StackPlot,
-  WindPlot
+  WindPlot,
+  ProgramsPlot,
+  WaffleChart,
+  ScatterPlot,
+  CombinedPlotA,
+  CombinedPlotB,
+  CombinedPlotC,
+  LineDotChart,
+  MapChart,
+  ColorMarkerMap
 } from './index';
 import { fetchLineChart, fetchPieChart } from '../../services/api';
 
@@ -19,7 +28,17 @@ const CHART_COMPONENTS = {
   bar: BarChartA,
   barB: BarChartB,
   stackPlot: StackPlot,
-  windPlot: WindPlot
+  windPlot: WindPlot,
+  programsPlot: ProgramsPlot,
+  waffleChart: WaffleChart,
+  waffle: WaffleChart,
+  scatterPlot: ScatterPlot,
+  combinedPlotA: CombinedPlotA,
+  combinedPlotB: CombinedPlotB,
+  combinedPlotC: CombinedPlotC,
+  lineDotChart: LineDotChart,
+  mapChart: MapChart,
+  colorMarkerMap: ColorMarkerMap
 };
 
 const hasLinePayload = (payload) => {
@@ -113,6 +132,36 @@ const ChartRenderer = ({ block }) => {
     case 'pie':
       chartProps = { ...chartProps, ...(pieData || block.pieData) };
       break;
+    case 'programsPlot':
+      chartProps = { ...chartProps, ...block.programsPlotData };
+      break;
+    case 'waffleChart':
+      chartProps = { ...chartProps, ...block.waffleChartData };
+      break;
+    case 'waffle':
+      chartProps = { ...chartProps, ...block.waffleData };
+      break;
+    case 'scatterPlot':
+      chartProps = { ...chartProps, ...block.scatterPlotData };
+      break;
+    case 'combinedPlotA':
+      chartProps = { ...chartProps, ...block.combinedPlotAData };
+      break;
+    case 'combinedPlotB':
+      chartProps = { ...chartProps, ...block.combinedPlotBData };
+      break;
+    case 'combinedPlotC':
+      chartProps = { ...chartProps, ...block.combinedPlotCData };
+      break;
+    case 'lineDotChart':
+      chartProps = { ...chartProps, ...block.lineDotChartData };
+      break;
+    case 'mapChart':
+      chartProps = { ...chartProps, ...block.mapChartData };
+      break;
+    case 'colorMarkerMap':
+      chartProps = { ...chartProps, ...block.colorMarkerMapData };
+      break;
     case 'line':
     default:
       if (lineData) {
@@ -143,7 +192,17 @@ ChartRenderer.propTypes = {
     windPlotData: PropTypes.object,
     barBData: PropTypes.object,
     barData: PropTypes.object,
-    pieData: PropTypes.object
+    pieData: PropTypes.object,
+    programsPlotData: PropTypes.object,
+    waffleChartData: PropTypes.object,
+    waffleData: PropTypes.object,
+    scatterPlotData: PropTypes.object,
+    combinedPlotAData: PropTypes.object,
+    combinedPlotBData: PropTypes.object,
+    combinedPlotCData: PropTypes.object,
+    lineDotChartData: PropTypes.object,
+    mapChartData: PropTypes.object,
+    colorMarkerMapData: PropTypes.object
   }).isRequired
 };
 

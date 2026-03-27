@@ -59,3 +59,39 @@
     font-size: $font-size-5xl;
   }
 }
+
+.region {
+  color: $color-primary-lighter;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: $spacing-3;
+  margin-top: $spacing-6;
+}
+
+.indicatorsBtn {
+  @include button-reset;
+  padding: $spacing-2 $spacing-4;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-white;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: background-color $transition-fast;
+  white-space: nowrap;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.28);
+  }
+
+  @include media-md {
+    font-size: $font-size-base;
+    padding: $spacing-2 $spacing-5;
+  }
+}
+

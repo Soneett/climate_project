@@ -6,6 +6,7 @@ const NavItemWithSubmenu = (
     id: _id, label, submenu = [],
     isActive = false,
     onActivate = () => {},
+    onSubmenuItemSelect = () => {},
   }) => {
 
   const [open, setOpen] = useState(isActive);
@@ -61,8 +62,30 @@ const NavItemWithSubmenu = (
         <span className={styles.label}>
           {label.split("\n").map((line, i) => <span key={i} className={styles.line}>{line}</span>)}
         </span>
-        <span className={styles.caret} aria-hidden>{open ? "▴" : "▾"}</span>
       </div>
+      {open && submenu.length > 0 && (
+        <ul className={styles.submenu} role="menu">
+          {submenu.map((item) => (
+            <li
+              key={item.id}
+              className={styles.submenuItem}
+              role="menuitem"
+              tabIndex={0}
+              onClick={() => { onSubmenuItemSelect(item); setOpen(false); onActivate(false); }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onSubmenuItemSelect(item);
+                  setOpen(false);
+                  onActivate(false);
+                }
+              }}
+            >
+              {item.label}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

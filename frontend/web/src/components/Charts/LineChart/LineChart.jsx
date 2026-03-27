@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import ReactECharts from 'echarts-for-react';
 import { useChartResize } from '../../../hooks/useChartResize';
 import {
-  getTitleConfig,
   TOOLTIP_CONFIG,
   TEXT_STYLES,
   GRID_CONFIG,
   AXIS_LINE_STYLE,
   SPLIT_LINE_STYLE
 } from '../chartConfig';
+import ChartWrapper from '../ChartWrapper/ChartWrapper';
 import styles from './LineChart.module.scss';
 
 const LineChart = ({ title, labels = [], datasets = [] }) => {
@@ -17,13 +17,12 @@ const LineChart = ({ title, labels = [], datasets = [] }) => {
   useChartResize(chartRef);
 
   const option = {
-    title: getTitleConfig(title),
     tooltip: {
       ...TOOLTIP_CONFIG,
       trigger: 'axis'
     },
     legend: {
-      top: 60,
+      top: 20,
       left: 'center',
       textStyle: TEXT_STYLES.legend
     },
@@ -62,13 +61,13 @@ const LineChart = ({ title, labels = [], datasets = [] }) => {
   };
 
   return (
-    <div className={styles.lineChart}>
+    <ChartWrapper chartRef={chartRef} filename="line-chart" className={styles.lineChart}>
       <ReactECharts 
         ref={chartRef} 
         option={option} 
         style={{ height: '100%', width: '100%', minHeight: '400px' }} 
       />
-    </div>
+    </ChartWrapper>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import NavBar from "../../components/NavBar/NavBar";
 import SecondarySubBar from "../../components/SecondarySubBar/SecondarySubBar";
 import RelationsSubBar from "../../components/RelationsSubBar/RelationsSubBar";
@@ -8,14 +8,18 @@ import NavigationButton from "../../components/NavigationButton/NavigationButton
 import PageNavigationMenu from "../../components/PageNavigationMenu/PageNavigationMenu";
 import { useContentData } from "../../hooks/useContentData";
 import { TOP_MENUS } from "../../constants/navigationMenus";
+import { RegionContext } from "../../context/RegionContext";
 import styles from "./RegionIndicatorsPage.module.scss";
 
 export default function RegionIndicatorsPage() {
   const { 
     contentBlocks: CONTENT_BLOCKS, 
     relationsContentBlocks: RELATIONS_CONTENT,
+    hasData: regionHasData,
     loading 
   } = useContentData();
+
+  const { region } = useContext(RegionContext);
 
   const [activeTopMenuId, setActiveTopMenuId] = useState(null);
   const [activeSubItemId, setActiveSubItemId] = useState(null);
@@ -24,9 +28,9 @@ export default function RegionIndicatorsPage() {
 
   const activeMenu = TOP_MENUS.find(m => m.id === activeTopMenuId);
 
-  // Автоматический выбор "Социальные аспекты" и первого подпункта при монтировании
+  // Автоматический выбор "Региональные данные" и первого подпункта при монтировании
   useEffect(() => {
-    const defaultTop = TOP_MENUS.find(m => m.id === "social") || TOP_MENUS[0];
+    const defaultTop = TOP_MENUS.find(m => m.id === "regional") || TOP_MENUS[0];
     setActiveTopMenuId(defaultTop.id);
     if (defaultTop.submenu && defaultTop.submenu.length > 0) {
       setActiveSubItemId(defaultTop.submenu[0].id);
@@ -152,7 +156,11 @@ export default function RegionIndicatorsPage() {
       )}
 
       <main className={styles.main}>
-        {contentBlocks.length > 0 ? (
+        {!regionHasData ? (
+          <section className={styles.placeholder}>
+            <p>Данные для региона «{region}» пока не доступны</p>
+          </section>
+        ) : contentBlocks.length > 0 ? (
           <div className={styles.content}>
             {contentBlocks.map((block) => (
               <ContentBlock
@@ -173,7 +181,7 @@ export default function RegionIndicatorsPage() {
         )}
       </main>
 
-      {contentBlocks.length > 0 && (
+      {regionHasData && contentBlocks.length > 0 && (
         <PageNavigationMenu blocks={contentBlocks} />
       )}
 
