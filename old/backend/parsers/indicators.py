@@ -13,10 +13,7 @@ def parse_indicators(data: list[dict], session):
         for s in session.query(IndicatorSubtypesTable).all()
     }
 
-    existing_indicators = {
-        ind.name: ind
-        for ind in session.query(IndicatorsTable).all()
-    }
+    existing_indicators = {ind.name: ind for ind in session.query(IndicatorsTable).all()}
 
     for item in data["indicators"]:
         name = item["name"]
@@ -33,10 +30,7 @@ def parse_indicators(data: list[dict], session):
             for k, v in values.items():
                 setattr(indicator, k, v)
         else:
-            session.add(
-                IndicatorsTable(
-                    name=name,
-                    **values
-                )
-            )
-
+            indicator = IndicatorsTable(name=name, **values)
+            session.add(indicator)
+            session.flush()
+            existing_indicators[name] = indicator

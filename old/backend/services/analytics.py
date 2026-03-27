@@ -86,7 +86,13 @@ class AnalyticsService:
         indicators: str,
     ) -> LineChartResponseModel:
         indicator_ids = self._resolve_indicator_ids(session=session, indicators=indicators)
+        if not indicator_ids:
+            return LineChartResponseModel(labels=[], datasets=[])
+
         values = self.repo.get_indicator_values(session=session, region_id=region_id, indicator_ids=indicator_ids)
+        if not values:
+            return LineChartResponseModel(labels=[], datasets=[])
+
         indicators = self.repo.get_indicators(session=session, indicator_ids=indicator_ids)
 
         labels = sorted({str(value.year) for value in values})
@@ -126,7 +132,13 @@ class AnalyticsService:
         indicators: str,
     ) -> PieChartResponseModel:
         indicator_ids = self._resolve_indicator_ids(session=session, indicators=indicators)
+        if not indicator_ids:
+            return PieChartResponseModel(timelineLabels=[], timelineData=[])
+
         values = self.repo.get_indicator_values(session=session, region_id=region_id, indicator_ids=indicator_ids)
+        if not values:
+            return PieChartResponseModel(timelineLabels=[], timelineData=[])
+
         indicators = self.repo.get_indicators(session=session, indicator_ids=indicator_ids)
 
         subtype_ids = [indicator.subtype_id for indicator in indicators if indicator.subtype_id is not None]
