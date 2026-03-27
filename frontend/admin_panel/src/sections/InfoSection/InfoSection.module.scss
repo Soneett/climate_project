@@ -1,0 +1,187 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+@use 'sass:color';
+
+.section {
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-md;
+}
+
+.content {
+  background: $color-content-box;
+  padding: $spacing-8 $spacing-6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-8;
+}
+
+// ============================================================================
+// Stats table
+// ============================================================================
+.statsTableWrapper {
+  background: $color-info-table;
+  border-radius: $border-radius-lg;
+  padding: $spacing-1;
+  width: 100%;
+  max-width: 600px;
+}
+
+.statsTable {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+}
+
+.statsRow {
+  &:nth-child(odd) {
+    background: color.adjust($color-info-table, $lightness: 5%);
+  }
+
+  &:nth-child(even) {
+    background: $color-info-table;
+  }
+}
+
+.statsRowGap td {
+  padding-top: $spacing-6;
+}
+
+.statsCell {
+  padding: $spacing-3 $spacing-5;
+  font-size: $font-size-sm;
+  color: $color-white;
+  border-bottom: 1px solid color.adjust($color-info-table, $lightness: 10%);
+
+  &:last-child {
+    border-bottom-color: transparent;
+  }
+}
+
+.statsCellValue {
+  text-align: right;
+  font-weight: $font-weight-semibold;
+}
+
+// ============================================================================
+// Tables block
+// ============================================================================
+.tablesBlock {
+  width: 100%;
+  max-width: 700px;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-sm;
+}
+
+.tablesBar {
+  background: $color-section-stripe;
+  padding: $spacing-3 $spacing-5;
+  text-align: center;
+}
+
+.tablesBarText {
+  color: $color-white;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+}
+
+.tablesContainer {
+  background: $color-content-box;
+  padding: $spacing-4 $spacing-5;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+.tableItem {
+  @include button-reset;
+  text-align: left;
+  width: 100%;
+  padding: $spacing-2 $spacing-3;
+  font-size: $font-size-base;
+  color: $color-text-primary;
+  border-radius: $border-radius-sm;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background: color.adjust($color-content-box, $lightness: -5%);
+  }
+}
+
+.tableItemActive {
+  font-weight: $font-weight-semibold;
+  color: $color-section-stripe;
+}
+
+// ============================================================================
+// Preview card
+// ============================================================================
+.previewCard {
+  background: $color-card-bg;
+  border-radius: $border-radius-md;
+  padding: $spacing-4 $spacing-5;
+  margin: $spacing-2 0 $spacing-3;
+  box-shadow: $shadow-sm;
+}
+
+.previewTitle {
+  margin: 0 0 $spacing-3;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  text-transform: capitalize;
+}
+
+.previewTableWrapper {
+  overflow-x: auto;
+  margin-bottom: $spacing-4;
+}
+
+.modalTableWrapper {
+  overflow-x: auto;
+}
+
+.previewTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: $font-size-sm;
+  min-width: 400px;
+}
+
+.previewTh {
+  text-align: left;
+  padding: $spacing-2 $spacing-3;
+  background: $color-content-box;
+  border-bottom: 2px solid $color-border;
+  font-weight: $font-weight-semibold;
+  white-space: nowrap;
+  color: $color-text-secondary;
+}
+
+.previewTd {
+  padding: $spacing-2 $spacing-3;
+  border-bottom: $border-width solid $color-border;
+  color: $color-text-primary;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.viewAllBtn {
+  @include button-reset;
+  background: $color-section-stripe;
+  color: $color-white;
+  border-radius: $border-radius-sm;
+  padding: $spacing-2 $spacing-5;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: color.adjust($color-section-stripe, $lightness: -8%);
+  }
+}

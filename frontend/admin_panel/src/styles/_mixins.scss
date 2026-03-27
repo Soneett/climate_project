@@ -1,0 +1,70 @@
+@use './variables' as *;
+
+// ============================================================================
+// Responsive Breakpoints
+// ============================================================================
+@mixin media-sm {
+  @media (min-width: 576px) {
+    @content;
+  }
+}
+
+@mixin media-md {
+  @media (min-width: 768px) {
+    @content;
+  }
+}
+
+@mixin media-lg {
+  @media (min-width: 992px) {
+    @content;
+  }
+}
+
+// ============================================================================
+// Button Reset
+// ============================================================================
+@mixin button-reset {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+// ============================================================================
+// Interactive States
+// ============================================================================
+@mixin interactive-hover {
+  transition: background-color $transition-fast, box-shadow $transition-fast;
+
+  &:hover {
+    background-color: $color-hover-overlay;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px $color-focus-ring;
+  }
+}
+
+// ============================================================================
+// Flex Center
+// ============================================================================
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ============================================================================
+// Truncate
+// ============================================================================
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -1,0 +1,32 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.page {
+  min-height: 100vh;
+  background-color: $color-page-bg;
+  display: flex;
+  flex-direction: column;
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  position: relative;
+}
+
+.main {
+  flex: 1;
+  padding: $spacing-6;
+  padding-left: $spacing-10;
+  transition: padding-left $transition-slow;
+  min-width: 0;
+
+  @include media-md {
+    padding: $spacing-8;
+    padding-left: $spacing-10;
+  }
+}
+
+.mainShifted {
+  padding-left: calc(220px + $spacing-6);
+}

@@ -1,0 +1,88 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+@use 'sass:color';
+
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+}
+
+.toggleBtn {
+  @include button-reset;
+  position: absolute;
+  left: 0;
+  top: $spacing-4;
+  z-index: $z-index-menu;
+  width: 32px;
+  height: 32px;
+  background: $color-side-menu;
+  border-radius: 0 $border-radius-sm $border-radius-sm 0;
+  box-shadow: $shadow-md;
+  @include flex-center;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  transition: background-color $transition-base, left $transition-slow;
+
+  &:hover {
+    background-color: color.adjust($color-side-menu, $lightness: -8%);
+  }
+}
+
+.toggleBtnOpen {
+  left: 220px;
+}
+
+.menu {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 220px;
+  min-height: 200px;
+  background: $color-side-menu;
+  border-radius: 0 $border-radius-lg $border-radius-lg 0;
+  box-shadow: $shadow-lg;
+  transform: translateX(-100%);
+  transition: transform $transition-slow;
+  z-index: calc($z-index-menu - 1);
+  padding: $spacing-4 0;
+  padding-top: $spacing-12;
+}
+
+.menuOpen {
+  transform: translateX(0);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+.menuItem {
+  @include button-reset;
+  width: 100%;
+  text-align: left;
+  padding: $spacing-3 $spacing-5;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  border-radius: 0;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: color.adjust($color-side-menu, $lightness: -8%);
+  }
+}
+
+.menuItemActive {
+  background-color: $color-section-stripe;
+  color: $color-white;
+
+  &:hover {
+    background-color: color.adjust($color-section-stripe, $lightness: -5%);
+  }
+}
