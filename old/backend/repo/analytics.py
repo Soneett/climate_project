@@ -1,4 +1,4 @@
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
 from tables.indicators import IndicatorsTable
@@ -37,14 +37,19 @@ class AnalyticsRepo:
         if not normalized_names:
             return []
 
+        exact_name_filter = func.lower(IndicatorsTable.name).in_(normalized_names)
+        exact_subtype_filter = func.lower(IndicatorSubtypesTable.name).in_(normalized_names)
+
+        partial_filters = []
+        for name in normalized_names:
+            partial_filters.append(func.lower(IndicatorsTable.name).like(f"%{name}%"))
+            partial_filters.append(func.lower(IndicatorSubtypesTable.name).like(f"%{name}%"))
+
         return (
             session.query(IndicatorsTable)
             .outerjoin(IndicatorSubtypesTable, IndicatorsTable.subtype_id == IndicatorSubtypesTable.id)
             .filter(
-                (
-                    func.lower(IndicatorsTable.name).in_(normalized_names)
-                    | func.lower(IndicatorSubtypesTable.name).in_(normalized_names)
-                ),
+                or_(exact_name_filter, exact_subtype_filter, *partial_filters),
                 IndicatorsTable.is_deleted == False,
             )
             .all()

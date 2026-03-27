@@ -15,6 +15,22 @@ from models import (
 from repo.analytics import AnalyticsRepo
 from tables.indicator_subtypes import IndicatorSubtypesTable
 
+_INDICATOR_ALIASES: dict[str, list[str]] = {
+    "сердечно-сосудистые": ["болезни системы кровообращения"],
+    "онкологические": ["новообразования"],
+    "несчастные случаи": ["внешние причины"],
+    "города": ["городское население", "город"],
+    "районы": ["район"],
+    "сельские поселения": ["сельское население", "село"],
+}
+
+
+def _normalize_indicator_term(value: str) -> str:
+    normalized = value.strip().lower().replace("ё", "е")
+    normalized = normalized.replace("–", "-").replace("—", "-")
+    normalized = re.sub(r"[^\w\s\-]", " ", normalized)
+    return re.sub(r"\s+", " ", normalized).strip()
+
 
 def _is_age_interval(age_code: str) -> bool:
     normalized = age_code.strip().replace('–', '-').replace('—', '-')
@@ -54,15 +70,36 @@ class AnalyticsService:
         if not names:
             return []
 
-        resolved = self.repo.get_indicators_by_names(session=session, names=names)
+        expanded_names: list[str] = []
+        for name in names:
+            expanded_names.append(name)
+            alias_candidates = _INDICATOR_ALIASES.get(_normalize_indicator_term(name), [])
+            expanded_names.extend(alias_candidates)
+
+        deduplicated_names = list(dict.fromkeys(expanded_names))
+        resolved = self.repo.get_indicators_by_names(session=session, names=deduplicated_names)
         ordered_ids: list[int] = []
-        normalized_names = [name.lower() for name in names]
+        normalized_names = [_normalize_indicator_term(name) for name in names]
+        subtype_ids = [indicator.subtype_id for indicator in resolved if indicator.subtype_id is not None]
+        subtype_map = {
+            subtype.id: _normalize_indicator_term(subtype.name)
+            for subtype in session.query(IndicatorSubtypesTable)
+            .filter(IndicatorSubtypesTable.id.in_(subtype_ids), IndicatorSubtypesTable.is_deleted == False)
+            .all()
+        } if subtype_ids else {}
+
         for name in normalized_names:
-            same_name = [
-                indicator
-                for indicator in resolved
-                if indicator.name.strip().lower() == name
-            ]
+            same_name = []
+            for indicator in resolved:
+                indicator_name = _normalize_indicator_term(indicator.name)
+                subtype_name = subtype_map.get(indicator.subtype_id) if indicator.subtype_id is not None else ""
+                if (
+                    indicator_name == name
+                    or (subtype_name and subtype_name == name)
+                    or name in indicator_name
+                    or (subtype_name and name in subtype_name)
+                ):
+                    same_name.append(indicator)
 
             if same_name:
                 subindicators = [indicator.id for indicator in same_name if indicator.subtype_id is not None]
