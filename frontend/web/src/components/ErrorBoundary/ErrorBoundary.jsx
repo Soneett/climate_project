@@ -8,7 +8,7 @@ class ErrorBoundary extends React.Component {
   }
 
   static getDerivedStateFromError(_error) {
-    // Update state so the next render will show the fallback UI
+
     return { hasError: true };
   }
 
@@ -22,7 +22,7 @@ class ErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
-      // Fallback UI
+
       return (
         <div style={{
           padding: '2rem',

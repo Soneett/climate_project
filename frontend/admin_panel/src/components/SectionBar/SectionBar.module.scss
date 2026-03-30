@@ -1,0 +1,14 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.bar {
+  background: $color-section-stripe;
+  padding: $spacing-3 $spacing-6;
+  border-radius: $border-radius-md $border-radius-md 0 0;
+}
+
+.title {
+  color: $color-white;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+}

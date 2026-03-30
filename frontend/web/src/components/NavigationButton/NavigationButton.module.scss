@@ -4,33 +4,33 @@
 
 .button {
   @include button-reset;
-  
+
   display: flex;
   align-items: center;
   gap: $spacing-2;
-  
+
   background-color: #B7CCAD;
   color: $color-text-primary;
   border-radius: $border-radius-md;
   padding: $spacing-3 $spacing-4;
-  
+
   font-size: $font-size-sm;
   font-weight: $font-weight-medium;
-  
+
   transition: all $transition-base;
   box-shadow: $shadow-md;
-  
+
   &:hover:not(:disabled) {
     background-color: color.adjust(#B7CCAD, $lightness: -8%);
     box-shadow: $shadow-lg;
     transform: translateY(-2px);
   }
-  
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
-  
+
   @include media-md {
     padding: $spacing-4 $spacing-6;
     font-size: $font-size-base;
@@ -51,7 +51,7 @@
 .label {
   max-width: 150px;
   @include truncate;
-  
+
   @include media-md {
     max-width: 200px;
   }

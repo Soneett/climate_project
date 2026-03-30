@@ -20,22 +20,22 @@ const PieChart = ({ title, timelineLabels = [], legendLeftItems = [], legendRigh
         ...TIMELINE_CONFIG,
         data: timelineLabels
       },
-      tooltip: { 
+      tooltip: {
         ...TOOLTIP_CONFIG,
-        trigger: 'item', 
+        trigger: 'item',
         formatter: '{b}: {c} ({d}%)'
       },
       legend: [
-        { 
-          orient: 'vertical', 
-          left: '5%', 
+        {
+          orient: 'vertical',
+          left: '5%',
           top: 20,
           data: legendLeftItems,
           textStyle: TEXT_STYLES.legendSmall
         },
-        { 
-          orient: 'vertical', 
-          right: '5%', 
+        {
+          orient: 'vertical',
+          right: '5%',
           top: 30,
           data: legendRightItems,
           textStyle: TEXT_STYLES.legendSmall
@@ -46,12 +46,12 @@ const PieChart = ({ title, timelineLabels = [], legendLeftItems = [], legendRigh
         type: 'pie',
         radius: '50%',
         center: ['50%', '55%'],
-        emphasis: { 
-          itemStyle: { 
-            shadowBlur: 10, 
-            shadowOffsetX: 0, 
-            shadowColor: 'rgba(0,0,0,0.5)' 
-          } 
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0,0,0,0.5)'
+          }
         },
         label: TEXT_STYLES.legendSmall
       }]
@@ -64,10 +64,10 @@ const PieChart = ({ title, timelineLabels = [], legendLeftItems = [], legendRigh
 
   return (
     <ChartWrapper chartRef={chartRef} filename="pie-chart" className={styles.pieChart}>
-      <ReactECharts 
-        ref={chartRef} 
-        option={option} 
-        style={{ height: '100%', width: '100%', minHeight: '500px' }} 
+      <ReactECharts
+        ref={chartRef}
+        option={option}
+        style={{ height: '100%', width: '100%', minHeight: '500px' }}
       />
     </ChartWrapper>
   );

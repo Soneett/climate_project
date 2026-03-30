@@ -105,7 +105,7 @@ const MapChart = ({ geojsonPath, data = [], regionTitle = 'Республика 
         label: {
           show: false,
           color: '#F3F4F6',
-          textBorderColor: 'rgba(0,0,0,0.85)', // тёмная обводка при hover
+          textBorderColor: 'rgba(0,0,0,0.85)',
           textBorderWidth: 3,
           fontSize: 10
         },
@@ -113,7 +113,7 @@ const MapChart = ({ geojsonPath, data = [], regionTitle = 'Республика 
           label: {
             show: true,
             color: '#F3F4F6',
-            textBorderColor: 'rgba(0,0,0,0.85)', // тёмная обводка при hover
+            textBorderColor: 'rgba(0,0,0,0.85)',
             textBorderWidth: 3,
             fontWeight: 'bold',
             fontSize: 12
@@ -130,7 +130,7 @@ const MapChart = ({ geojsonPath, data = [], regionTitle = 'Республика 
           },
           label: {
             color: '#F3F4F6',
-            textBorderColor: 'rgba(0,0,0,0.85)', // тёмная обводка при hover
+            textBorderColor: 'rgba(0,0,0,0.85)',
             textBorderWidth: 3,
             fontSize: 10,
           },

@@ -92,7 +92,7 @@
 .btn {
   @include button-reset;
   @include interactive-hover;
-  
+
   font-size: $font-size-sm;
   border-radius: $border-radius-md;
   padding: $spacing-2 $spacing-3;

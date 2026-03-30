@@ -1,0 +1,59 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: $color-overlay-dark;
+  z-index: $z-index-modal;
+  @include flex-center;
+  padding: $spacing-4;
+}
+
+.dialog {
+  background: $color-bg-primary;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-xl;
+  width: 100%;
+  max-width: 800px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-4 $spacing-6;
+  border-bottom: $border-width solid $color-border;
+  background: $color-section-stripe;
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-white;
+}
+
+.closeBtn {
+  @include button-reset;
+  color: $color-white;
+  font-size: $font-size-xl;
+  line-height: 1;
+  opacity: 0.8;
+  transition: opacity $transition-fast;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: $spacing-6;
+}

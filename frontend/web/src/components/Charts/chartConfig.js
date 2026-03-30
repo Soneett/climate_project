@@ -1,9 +1,3 @@
-/**
- * Common chart configuration and styles
- * Used across all chart components for consistent styling
- */
-
-// Color palette
 export const CHART_COLORS = {
   primary: '#366164',
   secondary: '#9FB69F',
@@ -16,10 +10,8 @@ export const CHART_COLORS = {
   compass: '#2FA4A9'
 };
 
-// Font family
 export const FONT_FAMILY = 'Raleway, sans-serif';
 
-// Common text styles
 export const TEXT_STYLES = {
   title: {
     fontFamily: FONT_FAMILY,
@@ -47,7 +39,6 @@ export const TEXT_STYLES = {
   }
 };
 
-// Common timeline configuration
 export const TIMELINE_CONFIG = {
   axisType: 'category',
   autoPlay: false,
@@ -77,7 +68,6 @@ export const TIMELINE_CONFIG = {
   }
 };
 
-// Common title configuration
 export const getTitleConfig = (text) => ({
   text,
   left: 'center',
@@ -85,7 +75,6 @@ export const getTitleConfig = (text) => ({
   textStyle: TEXT_STYLES.title
 });
 
-// Common tooltip configuration
 export const TOOLTIP_CONFIG = {
   backgroundColor: CHART_COLORS.background,
   borderColor: CHART_COLORS.borderLight,
@@ -94,7 +83,6 @@ export const TOOLTIP_CONFIG = {
   textStyle: TEXT_STYLES.tooltip
 };
 
-// Grid configuration for standard charts
 export const GRID_CONFIG = {
   left: '3%',
   right: '4%',
@@ -103,14 +91,12 @@ export const GRID_CONFIG = {
   containLabel: true
 };
 
-// Axis line style
 export const AXIS_LINE_STYLE = {
   lineStyle: {
     color: CHART_COLORS.border
   }
 };
 
-// Split line style
 export const SPLIT_LINE_STYLE = {
   lineStyle: {
     color: CHART_COLORS.borderLight,

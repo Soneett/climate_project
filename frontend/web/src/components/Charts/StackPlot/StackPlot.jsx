@@ -13,9 +13,9 @@ import {
 import ChartWrapper from '../ChartWrapper/ChartWrapper';
 import styles from './StackPlot.module.scss';
 
-const StackPlot = ({ 
-  title, 
-  timelineLabels = [], 
+const StackPlot = ({
+  title,
+  timelineLabels = [],
   legendItems = [],
   timelineData = []
 }) => {
@@ -91,10 +91,10 @@ const StackPlot = ({
 
   return (
     <ChartWrapper chartRef={chartRef} filename="stack-plot" className={styles.stackPlot}>
-      <ReactECharts 
-        ref={chartRef} 
-        option={option} 
-        style={{ height: '100%', width: '100%', minHeight: '500px' }} 
+      <ReactECharts
+        ref={chartRef}
+        option={option}
+        style={{ height: '100%', width: '100%', minHeight: '500px' }}
       />
     </ChartWrapper>
   );

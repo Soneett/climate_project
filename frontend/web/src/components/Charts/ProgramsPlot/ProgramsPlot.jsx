@@ -11,7 +11,6 @@ import {
 import ChartWrapper from '../ChartWrapper/ChartWrapper';
 import styles from './ProgramsPlot.module.scss';
 
-// Status colors matching project palette
 const STATUS_COLORS = {
   'завершена': '#81C784',
   'в процессе': '#64B5F6',
@@ -150,7 +149,7 @@ const ProgramsPlot = ({ title, programs = [] }) => {
 
   const option = useMemo(() => ({
     tooltip: isMobile
-      ? { show: false } // на мобильном отключаем hover-tooltip
+      ? { show: false }
       : {
         ...TOOLTIP_CONFIG,
         trigger: 'item',

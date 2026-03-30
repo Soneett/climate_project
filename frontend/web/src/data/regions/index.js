@@ -16,16 +16,6 @@ export const REGIONS_CONFIG = {
     geojsonPath: '/altai.geojson',
     hasData: true,
   },
-  'Алтайский край': {
-    id: 'altai-krai',
-    name: 'Алтайский край',
-    contentBlocks: altaiContent,
-    relationsContent: altaiRelations,
-    subjectIndicators: altaiSubjects,
-    objectIndicators: altaiObjects,
-    geojsonPath: '/altai.geojson',
-    hasData: true,
-  },
   'Свердловская область': {
     id: 'sverdlovsk',
     name: 'Свердловская область',

@@ -17,7 +17,7 @@ import styles from './WindPlot.module.scss';
 const WindPlot = ({
                     title = "Скорость и преобладающее направление ветра",
                     timelineLabels = [],
-                    timelineData = [] // массив объектов { dir, avg, max } для каждого года
+                    timelineData = []
                   }) => {
   const chartRef = useRef(null);
   useChartResize(chartRef);
@@ -47,12 +47,12 @@ const WindPlot = ({
           return params.name || '';
         }
       },
-      // Поставил grid так, чтобы полоса с барами была центровой (под компасом)
+
       grid: {
         left: '10%',
         right: '10%',
-        top: '60%',   // чуть ниже центра (регулируй при необходимости)
-        height: '12%', // невысокая полоса — чтобы бары выглядели центрированными
+        top: '60%',
+        height: '12%',
         containLabel: true
       },
       xAxis: {
@@ -121,10 +121,10 @@ const WindPlot = ({
           data: [{ value: timelineData[0]?.dir || 0 }]
         },
         {
-          // Фон-бар (максимальная скорость) — контейнер
+
           name: 'Макс. скорость',
           type: 'bar',
-          // Одинаковая ширина для фонового и среднего — чтобы avg занимал всю высоту
+
           barWidth: 36,
           itemStyle: {
             color: '#C62828',
@@ -174,7 +174,7 @@ const WindPlot = ({
     },
     options: timelineData.map((data, index) => ({
       title: { text: timelineLabels[index] || '', left: 'center', top: 10, textStyle: TEXT_STYLES.axis },
-      // чтобы max полностью доходил до правого края (avg будет его долей) — ставим max как предел оси
+
       xAxis: { max: Math.max(1, data.max) },
       series: [
         { data: [{ value: data.dir }] },
