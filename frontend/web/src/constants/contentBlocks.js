@@ -206,6 +206,7 @@ export const CONTENT_BLOCKS = {
     { 
       id: "s1-4", 
       title: "Причины смерти", 
+      indicators: ["Причины смертности"],
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -219,6 +220,7 @@ export const CONTENT_BLOCKS = {
     {
       id: "social-demo-death-causes",
       title: "Причины смерти",
+      indicators: ["Причины смертности"],
       chartType: "waffleChart",
       waffleChartData: {
         title: "Структура причин смерти",
