@@ -38,7 +38,6 @@ const CHART_COMPONENTS = {
   colorMarkerMap: ColorMarkerMap
 };
 
-<<<<<<< HEAD
 const hasLinePayload = (payload) => {
   return Boolean(
     payload
@@ -93,14 +92,11 @@ const deriveIndicatorsFromBlock = (block) => {
  * @param {Object} block - Content block configuration
  * @returns {React.Element|null} - Rendered chart component or null
  */
-=======
->>>>>>> 93c4991b26f514346e836191b9f961c013cbea7a
 const ChartRenderer = ({ block }) => {
   const [lineData, setLineData] = useState(block.chartData);
   const [pieData, setPieData] = useState(block.pieData);
   const { chartType, title } = block;
 
-<<<<<<< HEAD
   useEffect(() => {
     setLineData(block.chartData);
     setPieData(block.pieData);
@@ -131,8 +127,6 @@ const ChartRenderer = ({ block }) => {
   }, [block]);
 
   // Determine which chart component to use
-=======
->>>>>>> 93c4991b26f514346e836191b9f961c013cbea7a
   const ChartComponent = CHART_COMPONENTS[chartType];
 
   if (!ChartComponent) {
