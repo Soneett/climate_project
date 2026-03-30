@@ -4,12 +4,6 @@ export const CONTENT_BLOCKS = {
     { 
       id: "regional-1", 
       title: "Карта региона", 
-      // chartType: "line",
-      // indicators: "Рождаемость,Смертность",
-      // chartData: {
-      //   labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
-      //   datasets: [
-      //     { name: 'Показатель 1', data: [120, 132, 101, 134, 90, 230] }
       chartType: "mapChart",
       mapChartData: {
         regionTitle: "Республика Алтай",
@@ -129,6 +123,7 @@ export const CONTENT_BLOCKS = {
     { 
       id: "s1-1", 
       title: "Динамика рождаемости и смертности", 
+      indicators: ["Рождаемость", "Смертность"],
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -141,6 +136,7 @@ export const CONTENT_BLOCKS = {
     { 
       id: "s1-2", 
       title: "Распределение численности населения", 
+      indicators: ["Оценка численности населения"],
       chartType: "pie",
       pieData: {
         title: "Распределение численности населения",

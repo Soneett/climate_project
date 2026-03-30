@@ -49,28 +49,28 @@ def process_births_deaths_natural_local(xlsx_path: str, sheet=0) -> Dict:
             rows.append({
                 "year": year,
                 "value": births,
-                "indicator_key": "births_abs"
+                "indicator_name": "births_abs"
             })
 
         if deaths is not None:
             rows.append({
                 "year": year,
                 "value": deaths,
-                "indicator_key": "deaths_abs"
+                "indicator_name": "deaths_abs"
             })
 
         if infant_deaths is not None:
             rows.append({
                 "year": year,
                 "value": infant_deaths,
-                "indicator_key": "infant_deaths_abs"
+                "indicator_name": "infant_deaths_abs"
             })
 
         if natural is not None:
             rows.append({
                 "year": year,
                 "value": natural,
-                "indicator_key": "natural_abs"
+                "indicator_name": "natural_abs"
             })
 
     return {

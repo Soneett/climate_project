@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 
-
 class LineChartDatasetModel(BaseModel):
     name: str
     data: list[float]
