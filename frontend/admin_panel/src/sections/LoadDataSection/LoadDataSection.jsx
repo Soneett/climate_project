@@ -3,9 +3,6 @@ import SectionBar from "../../components/SectionBar/SectionBar";
 import { DB_TABLES } from "../../data/mockData";
 import styles from "./LoadDataSection.module.scss";
 
-// ============================================================================
-// Mock selectors data — replace with real data from API / site config
-// ============================================================================
 const REGIONS_LIST = [
   "Свердловская область", "Республика Алтай",
 ];
@@ -16,9 +13,6 @@ const CHARTS_LIST = [
 
 const DATA_SOURCES_LIST = ["МЧС", "Росстат",];
 
-// ============================================================================
-// Admin-only: table management card
-// ============================================================================
 function TableManageCard({ table }) {
   return (
     <div className={styles.manageCard}>
@@ -33,9 +27,6 @@ function TableManageCard({ table }) {
   );
 }
 
-// ============================================================================
-// Admin-only part: tables management
-// ============================================================================
 function TablesManagePart() {
   const [openTableKey, setOpenTableKey] = useState(null);
 
@@ -63,9 +54,6 @@ function TablesManagePart() {
   );
 }
 
-// ============================================================================
-// Charts upload part (admin + editor)
-// ============================================================================
 function ChartsUploadPart() {
   const [region, setRegion] = useState("");
   const [chart, setChart] = useState("");
@@ -143,9 +131,6 @@ function ChartsUploadPart() {
   );
 }
 
-// ============================================================================
-// Main LoadDataSection
-// ============================================================================
 export default function LoadDataSection({ role }) {
   return (
     <div className={styles.section}>
@@ -157,11 +142,10 @@ export default function LoadDataSection({ role }) {
             <TablesManagePart />
           </div>
         )}
-
-        <div className={styles.part}>
-          <SectionBar title="Загрузка и обновление данных графиков" />
-          <ChartsUploadPart />
-        </div>
+      </div>
+      <div className={styles.part}>
+        <SectionBar title="Загрузка и обновление данных графиков" />
+        <ChartsUploadPart />
       </div>
     </div>
   );

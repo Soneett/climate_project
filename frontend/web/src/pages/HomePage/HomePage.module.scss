@@ -12,7 +12,7 @@
   background-repeat: no-repeat;
 
   @include flex-center;
-  
+
   position: fixed;
   top: $navbar-height;
   color: $color-white;
@@ -94,4 +94,3 @@
     padding: $spacing-2 $spacing-5;
   }
 }
-

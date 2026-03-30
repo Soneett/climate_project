@@ -62,10 +62,10 @@ const LineChart = ({ title, labels = [], datasets = [] }) => {
 
   return (
     <ChartWrapper chartRef={chartRef} filename="line-chart" className={styles.lineChart}>
-      <ReactECharts 
-        ref={chartRef} 
-        option={option} 
-        style={{ height: '100%', width: '100%', minHeight: '400px' }} 
+      <ReactECharts
+        ref={chartRef}
+        option={option}
+        style={{ height: '100%', width: '100%', minHeight: '400px' }}
       />
     </ChartWrapper>
   );

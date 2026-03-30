@@ -51,7 +51,7 @@ const NavBar = ({
   return (
     <header className={styles.header} role="banner">
       <div className={styles.inner}>
-        <div 
+        <div
           className={styles.brand}
           role="button"
           tabIndex={0}

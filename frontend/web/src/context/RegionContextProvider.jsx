@@ -7,14 +7,14 @@ const RegionContextProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   const setRegion = useCallback((newRegion) => {
-    // Validate region
+
     if (!REGIONS.includes(newRegion)) {
       const errorMsg = `Недопустимый регион: ${newRegion}. Допустимые регионы: ${REGIONS.join(", ")}`;
       setError(errorMsg);
       console.error(errorMsg);
       return false;
     }
-    
+
     setError(null);
     setRegionState(newRegion);
     return true;

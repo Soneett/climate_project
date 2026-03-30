@@ -18,9 +18,6 @@ import {
   ColorMarkerMap
 } from './index';
 
-/**
- * Chart type to component mapping
- */
 const CHART_COMPONENTS = {
   line: LineChart,
   pie: PieChart,
@@ -40,22 +37,15 @@ const CHART_COMPONENTS = {
   colorMarkerMap: ColorMarkerMap
 };
 
-/**
- * Factory component for rendering different chart types
- * @param {Object} block - Content block configuration
- * @returns {React.Element|null} - Rendered chart component or null
- */
 const ChartRenderer = ({ block }) => {
   const { chartType, title } = block;
 
-  // Determine which chart component to use
   const ChartComponent = CHART_COMPONENTS[chartType];
 
   if (!ChartComponent) {
     return null;
   }
 
-  // Prepare props based on chart type
   let chartProps = { title };
 
   switch (chartType) {

@@ -1,4 +1,3 @@
-// Centralized export for all chart components
 export { default as LineChart } from './LineChart/LineChart';
 export { default as PieChart } from './PieChart/PieChart';
 export { default as BarChartA } from './BarChartA/BarChartA';

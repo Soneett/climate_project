@@ -197,8 +197,8 @@ const ColorMarkerMap = ({
         tooltip: { show: true },
         label: {
           show: false,
-          color: '#ffffff', // белый текст
-          textBorderColor: 'rgba(0,0,0,0.9)', // темная обводка
+          color: '#ffffff',
+          textBorderColor: 'rgba(0,0,0,0.9)',
           textBorderWidth: 3,
           fontSize: 10,
         },
@@ -209,8 +209,8 @@ const ColorMarkerMap = ({
         emphasis: {
           label: {
             show: true,
-            color: '#ffffff', // белый текст при hover
-            textBorderColor: 'rgba(0,0,0,0.9)', // темная обводка при hover
+            color: '#ffffff',
+            textBorderColor: 'rgba(0,0,0,0.9)',
             textBorderWidth: 3,
             fontWeight: 'bold',
             fontSize: 12,

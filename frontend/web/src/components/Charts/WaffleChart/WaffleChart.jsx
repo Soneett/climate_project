@@ -129,7 +129,7 @@ const WaffleChart = ({ title, timelineLabels = [], timelineData = [] }) => {
         trigger: 'item',
         formatter: (params) => {
           const marker = `<span style="display:inline-block;margin-right:8px;border-radius:2px;width:10px;height:10px;background-color:${params.color};"></span>`;
-          // ДОБАВЛЕН жирный текст <b> для числовых значений
+
           return `
             <div style="font-family: ${TEXT_STYLES.tooltip.fontFamily}; min-width: 160px; padding: 5px;">
               ${marker}<b>${params.data.name}</b><br/>

@@ -12,11 +12,11 @@ import { RegionContext } from "../../context/RegionContext";
 import styles from "./RegionIndicatorsPage.module.scss";
 
 export default function RegionIndicatorsPage() {
-  const { 
-    contentBlocks: CONTENT_BLOCKS, 
+  const {
+    contentBlocks: CONTENT_BLOCKS,
     relationsContentBlocks: RELATIONS_CONTENT,
     hasData: regionHasData,
-    loading 
+    loading
   } = useContentData();
 
   const { region } = useContext(RegionContext);
@@ -28,7 +28,6 @@ export default function RegionIndicatorsPage() {
 
   const activeMenu = TOP_MENUS.find(m => m.id === activeTopMenuId);
 
-  // Автоматический выбор "Региональные данные" и первого подпункта при монтировании
   useEffect(() => {
     const defaultTop = TOP_MENUS.find(m => m.id === "regional") || TOP_MENUS[0];
     setActiveTopMenuId(defaultTop.id);
@@ -37,7 +36,6 @@ export default function RegionIndicatorsPage() {
     }
   }, []);
 
-  // Выбор верхнего меню
   const handleTopMenuChange = (newId) => {
     if (!newId) return;
     setActiveTopMenuId(newId);
@@ -47,34 +45,30 @@ export default function RegionIndicatorsPage() {
     } else {
       setActiveSubItemId(null);
     }
-    // Reset relations selection when changing menu
+
     setSelectedSubject(null);
     setSelectedObject(null);
-    // Scroll to top instantly
+
     window.scrollTo({ top: 0, behavior: "instant" });
   };
 
-  // Handle relations selection
   const handleRelationsSelection = (subjectId, objectId) => {
     setSelectedSubject(subjectId);
     setSelectedObject(objectId);
-    // Scroll to top instantly
+
     window.scrollTo({ top: 0, behavior: "instant" });
   };
 
-  // Get current section ID (submenu item or top menu item)
   const getCurrentSectionId = () => {
     if (activeSubItemId) return activeSubItemId;
     if (activeTopMenuId) return activeTopMenuId;
     return null;
   };
 
-  // Get navigation info
   const getNavigationInfo = () => {
     const currentSectionId = getCurrentSectionId();
     if (!currentSectionId) return { prev: null, next: null };
 
-    // Find all sections (flatten structure)
     const allSections = [];
     TOP_MENUS.forEach(menu => {
       if (menu.submenu && menu.submenu.length > 0) {
@@ -97,7 +91,7 @@ export default function RegionIndicatorsPage() {
 
   const handleNavigate = (section) => {
     if (!section) return;
-    
+
     if (section.parentId) {
       setActiveTopMenuId(section.parentId);
       setActiveSubItemId(section.id);
@@ -110,8 +104,8 @@ export default function RegionIndicatorsPage() {
   };
 
   const currentSectionId = getCurrentSectionId();
-  
-  // Get content blocks based on current view
+
+
   let contentBlocks = [];
   if (activeTopMenuId === "relations" && selectedSubject && selectedObject) {
     const relationKey = `${selectedSubject}-${selectedObject}`;
@@ -193,7 +187,7 @@ export default function RegionIndicatorsPage() {
             onClick={() => handleNavigate(prev)}
           />
         )}
-        
+
         {showRightButton && (
           <NavigationButton
             direction="right"

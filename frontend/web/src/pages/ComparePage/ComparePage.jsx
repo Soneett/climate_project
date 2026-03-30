@@ -1,4 +1,3 @@
-// ComparePage.jsx
 import React from "react";
 import { useLocation } from "react-router-dom";
 import Layout from "../../shared/Layout/Layout";

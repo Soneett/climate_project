@@ -10,7 +10,7 @@
 .trigger {
   @include button-reset;
   @include interactive-hover;
-  
+
   padding: $spacing-2 $spacing-3;
   font-size: $font-size-sm;
   border-radius: $border-radius-md;
@@ -95,7 +95,7 @@
   align-items: center;
   cursor: pointer;
   width: 100%;
-  
+
   input[type="radio"] {
     cursor: pointer;
     width: 16px;
@@ -126,7 +126,7 @@
 .cancel,
 .confirm {
   @include button-reset;
-  
+
   padding: $spacing-2 $spacing-3;
   border-radius: $border-radius-sm;
   font-size: $font-size-sm;

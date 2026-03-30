@@ -9,9 +9,6 @@ import CleanDataSection from "../../sections/CleanDataSection/CleanDataSection";
 import HistorySection from "../../sections/HistorySection/HistorySection";
 import styles from "./AdminPage.module.scss";
 
-// ============================================================================
-// Sections config — filtered by role
-// ============================================================================
 const ALL_SECTIONS = [
   { id: "info", label: "Информация", roles: ["admin", "editor"] },
   { id: "users", label: "Пользователи и роли", roles: ["admin"] },

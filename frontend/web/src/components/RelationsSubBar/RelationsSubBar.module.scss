@@ -37,11 +37,6 @@
   text-align: center;
 }
 
-/* ОДИНАКОВАЯ суммарная высота слева и справа:
-   обе колонки растянуты (.inner align-items: stretch),
-   .buttonList занимает всю доступную высоту (flex:1),
-   кнопки делят её через grid-доли.
-   При этом базовая высота масштабируется от ширины экрана через clamp(). */
 .buttonList {
   --rows-count: 1;
   --row-span: 1;
@@ -50,18 +45,16 @@
   min-height: clamp(220px, 22vw, 520px);
 
   display: grid;
-  grid-template-rows: repeat(12, minmax(0, 1fr)); /* общая шкала высоты */
+  grid-template-rows: repeat(12, minmax(0, 1fr));
   gap: clamp(4px, 0.8vw, 12px);
   align-items: stretch;
 }
 
-/* Слева 4 кнопки => по 3 доли */
 .column:first-child .buttonList {
   --rows-count: 4;
   --row-span: 3;
 }
 
-/* Справа 3 кнопки => по 4 доли */
 .column:last-child .buttonList {
   --rows-count: 3;
   --row-span: 4;
@@ -82,7 +75,6 @@
   font-size: clamp(10px, 0.95vw, $font-size-base);
 }
 
-/* Доп. подстройка для очень узких экранов */
 @media (max-width: $breakpoint-sm) {
   .inner {
     gap: clamp($spacing-2, 2vw, $spacing-4);

@@ -17,7 +17,6 @@ const BarChartA = ({ title, timelineLabels = [], dataSource = [], seriesCount = 
   const chartRef = useRef(null);
   useChartResize(chartRef);
 
-  // Генерация series на основе количества столбцов
   const series = Array(seriesCount).fill(null).map(() => ({ type: 'bar' }));
 
   const option = {
@@ -64,10 +63,10 @@ const BarChartA = ({ title, timelineLabels = [], dataSource = [], seriesCount = 
 
   return (
     <ChartWrapper chartRef={chartRef} filename="bar-chart" className={styles.barChart}>
-      <ReactECharts 
-        ref={chartRef} 
-        option={option} 
-        style={{ height: '100%', width: '100%', minHeight: '500px' }} 
+      <ReactECharts
+        ref={chartRef}
+        option={option}
+        style={{ height: '100%', width: '100%', minHeight: '500px' }}
       />
     </ChartWrapper>
   );

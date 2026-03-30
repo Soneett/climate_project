@@ -15,7 +15,6 @@ export const useContentData = () => {
   const [loading, setLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
-  // Reset to region-specific defaults when region changes
   useEffect(() => {
     setContentBlocks(regionConfig.contentBlocks);
     setSubjectIndicators(regionConfig.subjectIndicators);
@@ -39,7 +38,6 @@ export const useContentData = () => {
         fetchRelationsContentBlocks()
       ]);
 
-      // Use data from server or fallback to region constants
       if (contentData) setContentBlocks(contentData);
       if (subjectData) setSubjectIndicators(subjectData);
       if (objectData) setObjectIndicators(objectData);

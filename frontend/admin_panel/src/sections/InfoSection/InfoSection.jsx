@@ -100,9 +100,6 @@ function TablePreviewCard({ table, onClose }) {
   );
 }
 
-// ============================================================================
-// Main InfoSection
-// ============================================================================
 export default function InfoSection({ stats = INFO_STATS }) {
   const [openTableKey, setOpenTableKey] = useState(null);
 

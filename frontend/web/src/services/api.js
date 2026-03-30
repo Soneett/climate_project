@@ -1,10 +1,5 @@
 const API_BASE_URL = 'http://localhost:3001';
 
-/**
- * Base fetch function for API requests
- * @param {string} endpoint - API endpoint to fetch from
- * @returns {Promise<any|null>} - Parsed JSON response or null on error
- */
 const fetchData = async (endpoint) => {
   try {
     const response = await fetch(`${API_BASE_URL}/${endpoint}`);
@@ -14,7 +9,7 @@ const fetchData = async (endpoint) => {
     return await response.json();
   } catch (error) {
     console.error(`API Error (${endpoint}):`, error);
-    return null; // Return null for fallback to constants
+    return null;
   }
 };
 

@@ -1,15 +1,15 @@
 export const CONTENT_BLOCKS = {
-  // Региональные данные
+
   "regional": [
-    { 
-      id: "regional-1", 
-      title: "Карта региона", 
+    {
+      id: "regional-1",
+      title: "Карта региона",
       chartType: "mapChart",
       mapChartData: {
         regionTitle: "Республика Алтай",
         geojsonPath: "/altai.geojson",
         data: [
-          // Районы
+
           { name: 'Усть-Коксинский район', value: 15234 },
           { name: 'Усть-Канский район', value: 13456 },
           { name: 'Шебалинский район', value: 12890 },
@@ -21,7 +21,7 @@ export const CONTENT_BLOCKS = {
           { name: 'Чемальский район', value: 9876 },
           { name: 'Чойский район', value: 8234 },
           { name: 'городской округ Горно-Алтайск', value: 64234 },
-          // Сельские поселения
+
           { name: 'Акташское сельское поселение', value: 3456 },
           { name: 'Актельское сельское поселение', value: 1234 },
           { name: 'Амурское сельское поселение', value: 890 },
@@ -117,12 +117,12 @@ export const CONTENT_BLOCKS = {
       }
     },
   ],
-  
-  // Социальные аспекты - Демография
+
+
   "s1": [
-    { 
-      id: "s1-1", 
-      title: "Динамика рождаемости и смертности", 
+    {
+      id: "s1-1",
+      title: "Динамика рождаемости и смертности",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -132,9 +132,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s1-2", 
-      title: "Распределение численности населения", 
+    {
+      id: "s1-2",
+      title: "Распределение численности населения",
       chartType: "pie",
       pieData: {
         title: "Распределение численности населения",
@@ -149,9 +149,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s1-3", 
-      title: "Половозрастная структура", 
+    {
+      id: "s1-3",
+      title: "Половозрастная структура",
       chartType: "barB",
       barBData: {
         title: "Половозрастная структура населения",
@@ -201,9 +201,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s1-4", 
-      title: "Причины смерти", 
+    {
+      id: "s1-4",
+      title: "Причины смерти",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -280,9 +280,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s1-5", 
-      title: "Миграция населения", 
+    {
+      id: "s1-5",
+      title: "Миграция населения",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -293,12 +293,12 @@ export const CONTENT_BLOCKS = {
       }
     },
   ],
-  
-  // Социальные аспекты - Уровень жизни
+
+
   "s2": [
-    { 
-      id: "s2-1", 
-      title: "Состав доходов", 
+    {
+      id: "s2-1",
+      title: "Состав доходов",
       chartType: "pie",
       pieData: {
         title: "Состав доходов",
@@ -314,9 +314,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s2-2", 
-      title: "Состав расходов", 
+    {
+      id: "s2-2",
+      title: "Состав расходов",
       chartType: "pie",
       pieData: {
         title: "Состав расходов",
@@ -332,9 +332,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s2-3", 
-      title: "Уровень бедности", 
+    {
+      id: "s2-3",
+      title: "Уровень бедности",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -343,9 +343,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s2-4", 
-      title: "Индекс стоимости жизни", 
+    {
+      id: "s2-4",
+      title: "Индекс стоимости жизни",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -354,9 +354,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s2-5", 
-      title: "Занятость", 
+    {
+      id: "s2-5",
+      title: "Занятость",
       chartType: "pie",
       pieData: {
         title: "Занятость",
@@ -372,12 +372,12 @@ export const CONTENT_BLOCKS = {
       }
     },
   ],
-  
-  // Социальные аспекты - Здравоохранение
+
+
   "s3": [
-    { 
-      id: "s3-1", 
-      title: "Численность врачей и среднего медицинского персонала", 
+    {
+      id: "s3-1",
+      title: "Численность врачей и среднего медицинского персонала",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -387,9 +387,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s3-2", 
-      title: "Число амбулаторно-поликлинических организаций", 
+    {
+      id: "s3-2",
+      title: "Число амбулаторно-поликлинических организаций",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -398,9 +398,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s3-3", 
-      title: "Мощность амбулаторно-поликлинических организаций", 
+    {
+      id: "s3-3",
+      title: "Мощность амбулаторно-поликлинических организаций",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -409,9 +409,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s3-4", 
-      title: "Число фельдшерско-акушерских пунктов", 
+    {
+      id: "s3-4",
+      title: "Число фельдшерско-акушерских пунктов",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -420,9 +420,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s3-5", 
-      title: "Число больничных организаций", 
+    {
+      id: "s3-5",
+      title: "Число больничных организаций",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -431,9 +431,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s3-6", 
-      title: "Расходы на здравоохранение", 
+    {
+      id: "s3-6",
+      title: "Расходы на здравоохранение",
       chartType: "bar",
       barData: {
         title: "Расходы на здравоохранение",
@@ -498,9 +498,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s3-7", 
-      title: "Число больничных коек", 
+    {
+      id: "s3-7",
+      title: "Число больничных коек",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -509,9 +509,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s3-8", 
-      title: "Заболеваемость населения", 
+    {
+      id: "s3-8",
+      title: "Заболеваемость населения",
       chartType: "pie",
       pieData: {
         title: "Заболеваемость населения",
@@ -528,12 +528,12 @@ export const CONTENT_BLOCKS = {
       }
     },
   ],
-  
-  // Социальные аспекты - Образование
+
+
   "s4": [
-    { 
-      id: "s4-1", 
-      title: "Уровень грамотности", 
+    {
+      id: "s4-1",
+      title: "Уровень грамотности",
       chartType: "stackPlot",
       stackPlotData: {
         title: "Уровень грамотности населения",
@@ -593,9 +593,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s4-2", 
-      title: "Количество образовательных организаций", 
+    {
+      id: "s4-2",
+      title: "Количество образовательных организаций",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -605,9 +605,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s4-3", 
-      title: "Расходы на образование", 
+    {
+      id: "s4-3",
+      title: "Расходы на образование",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -617,12 +617,12 @@ export const CONTENT_BLOCKS = {
       }
     },
   ],
-  
-  // Социальные аспекты - Экономика
+
+
   "s5": [
-    { 
-      id: "s5-1", 
-      title: "Валовой региональный продукт", 
+    {
+      id: "s5-1",
+      title: "Валовой региональный продукт",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -631,9 +631,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s5-2", 
-      title: "Индекс выпуска товаров", 
+    {
+      id: "s5-2",
+      title: "Индекс выпуска товаров",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -642,9 +642,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s5-3", 
-      title: "Доля высокотехнической и наукоемкой продукции в РВП", 
+    {
+      id: "s5-3",
+      title: "Доля высокотехнической и наукоемкой продукции в РВП",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -653,9 +653,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s5-4", 
-      title: "Организации по формам собственности", 
+    {
+      id: "s5-4",
+      title: "Организации по формам собственности",
       chartType: "pie",
       pieData: {
         title: "Организации по формам собственности",
@@ -671,9 +671,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s5-5", 
-      title: "Коэффициент рождаемости организаций по видам деятельности", 
+    {
+      id: "s5-5",
+      title: "Коэффициент рождаемости организаций по видам деятельности",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -683,9 +683,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s5-6", 
-      title: "Коэффициент ликвидации организаций по видам деятельности", 
+    {
+      id: "s5-6",
+      title: "Коэффициент ликвидации организаций по видам деятельности",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -695,15 +695,15 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s5-7", 
-      title: "Структура сельскохозяйственного производства", 
+    {
+      id: "s5-7",
+      title: "Структура сельскохозяйственного производства",
       chartType: "waffle",
       waffleData: {
         title: "Структура сельскохозяйственного производства",
         timelineLabels: ['2020', '2021', '2022', '2023', '2024'],
         timelineData: [
-          { 
+          {
             title: { text: 'Структура производства — 2020' },
             data: [
               { id: 'wheat', name: 'Пшеница', value: 25, absoluteValue: 1250000 },
@@ -719,7 +719,7 @@ export const CONTENT_BLOCKS = {
               { id: 'eggs', name: 'Яйца', value: 3, absoluteValue: 150000 }
             ]
           },
-          { 
+          {
             title: { text: 'Структура производства — 2021' },
             data: [
               { id: 'wheat', name: 'Пшеница', value: 24, absoluteValue: 1220000 },
@@ -735,7 +735,7 @@ export const CONTENT_BLOCKS = {
               { id: 'eggs', name: 'Яйца', value: 2, absoluteValue: 110000 }
             ]
           },
-          { 
+          {
             title: { text: 'Структура производства — 2022' },
             data: [
               { id: 'wheat', name: 'Пшеница', value: 23, absoluteValue: 1180000 },
@@ -751,7 +751,7 @@ export const CONTENT_BLOCKS = {
               { id: 'eggs', name: 'Яйца', value: 2, absoluteValue: 120000 }
             ]
           },
-          { 
+          {
             title: { text: 'Структура производства — 2023' },
             data: [
               { id: 'wheat', name: 'Пшеница', value: 22, absoluteValue: 1150000 },
@@ -767,7 +767,7 @@ export const CONTENT_BLOCKS = {
               { id: 'eggs', name: 'Яйца', value: 1, absoluteValue: 80000 }
             ]
           },
-          { 
+          {
             title: { text: 'Структура производства — 2024' },
             data: [
               { id: 'wheat', name: 'Пшеница', value: 21, absoluteValue: 1120000 },
@@ -786,9 +786,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s5-8", 
-      title: "Промышленность", 
+    {
+      id: "s5-8",
+      title: "Промышленность",
       chartType: "bar",
       barData: {
         title: "Промышленность",
@@ -853,9 +853,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s5-9", 
-      title: "Энергетика", 
+    {
+      id: "s5-9",
+      title: "Энергетика",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1007,12 +1007,12 @@ export const CONTENT_BLOCKS = {
       }
     },
   ],
-  
-  // Социальные аспекты - Инфраструктура
+
+
   "s6": [
-    { 
-      id: "s6-1", 
-      title: "Жилищный фонд", 
+    {
+      id: "s6-1",
+      title: "Жилищный фонд",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1021,9 +1021,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s6-2", 
-      title: "Покрытие сотовой связью", 
+    {
+      id: "s6-2",
+      title: "Покрытие сотовой связью",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1032,9 +1032,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s6-3", 
-      title: "Протяженность железных дорог", 
+    {
+      id: "s6-3",
+      title: "Протяженность железных дорог",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1043,9 +1043,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s6-4", 
-      title: "Протяженность водных путей", 
+    {
+      id: "s6-4",
+      title: "Протяженность водных путей",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1054,9 +1054,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s6-5", 
-      title: "Количество аэропортов", 
+    {
+      id: "s6-5",
+      title: "Количество аэропортов",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1065,17 +1065,17 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "s6-6", 
-      title: "Дороги", 
+    {
+      id: "s6-6",
+      title: "Дороги",
       chartType: "stackPlot",
       stackPlotData: {
         title: "Состояние автомобильных дорог",
         timelineLabels: ['2020', '2021', '2022', '2023', '2024'],
         legendItems: [
-          'Автодороги всего', 
-          'С твёрдым покрытием', 
-          'С иным покрытием', 
+          'Автодороги всего',
+          'С твёрдым покрытием',
+          'С иным покрытием',
           'Не отвечающие нормативам'
         ],
         timelineData: [
@@ -1133,12 +1133,12 @@ export const CONTENT_BLOCKS = {
       }
     },
   ],
-  
-  // Климат - Температура
+
+
   "c1": [
-    { 
-      id: "c1-1", 
-      title: "Температура", 
+    {
+      id: "c1-1",
+      title: "Температура",
       chartType: "line",
       chartData: {
         labels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
@@ -1149,12 +1149,12 @@ export const CONTENT_BLOCKS = {
       }
     },
   ],
-  
-  // Климат - Осадки
+
+
   "c2": [
-    { 
-      id: "c2-1", 
-      title: "Годовое количество осадков", 
+    {
+      id: "c2-1",
+      title: "Годовое количество осадков",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1163,9 +1163,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "c2-3", 
-      title: "Количество дождливых и снежных дней", 
+    {
+      id: "c2-3",
+      title: "Количество дождливых и снежных дней",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1177,31 +1177,30 @@ export const CONTENT_BLOCKS = {
     },
   ],
 
-  // Климат - Ветер
   "c3": [
-    { 
-      id: "c3-1", 
-      title: "Скорость и преобладающее направление ветра", 
+    {
+      id: "c3-1",
+      title: "Скорость и преобладающее направление ветра",
       chartType: "windPlot",
       windPlotData: {
         title: "Скорость и преобладающее направление ветра",
         timelineLabels: ['2020', '2021', '2022', '2023', '2024'],
         timelineData: [
-          { dir: 0,   avg: 4.2, max: 8.5 },   // Север
-          { dir: 45,  avg: 5.0, max: 10.2 },  // Северо-восток
-          { dir: 135, avg: 3.6, max: 7.8 },   // Юго-восток
-          { dir: 270, avg: 6.1, max: 11.5 },  // Запад
-          { dir: 315, avg: 4.8, max: 9.0 }    // Северо-запад
+          { dir: 0,   avg: 4.2, max: 8.5 },
+          { dir: 45,  avg: 5.0, max: 10.2 },
+          { dir: 135, avg: 3.6, max: 7.8 },
+          { dir: 270, avg: 6.1, max: 11.5 },
+          { dir: 315, avg: 4.8, max: 9.0 }
         ]
       }
     }
   ],
-  
-  // Климат - Природные катаклизмы
+
+
   "c4": [
-    { 
-      id: "c4-1", 
-      title: "Данные о катаклизмах", 
+    {
+      id: "c4-1",
+      title: "Данные о катаклизмах",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1210,9 +1209,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "c4-2", 
-      title: "Карта катаклизмов", 
+    {
+      id: "c4-2",
+      title: "Карта катаклизмов",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1222,12 +1221,12 @@ export const CONTENT_BLOCKS = {
       }
     },
   ],
-  
-  // Климат - Экология
+
+
   "c5": [
-    { 
-      id: "c5-1", 
-      title: "Индекс качества воздуха и воды", 
+    {
+      id: "c5-1",
+      title: "Индекс качества воздуха и воды",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1237,9 +1236,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "c5-3", 
-      title: "Лесной покров", 
+    {
+      id: "c5-3",
+      title: "Лесной покров",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1248,9 +1247,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "c5-4", 
-      title: "Процент охраняемых территорий", 
+    {
+      id: "c5-4",
+      title: "Процент охраняемых территорий",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1259,9 +1258,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "c5-5", 
-      title: "Экологические проблемы", 
+    {
+      id: "c5-5",
+      title: "Экологические проблемы",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1271,12 +1270,12 @@ export const CONTENT_BLOCKS = {
       }
     },
   ],
-  
-  // Управление и политика - Бюджет
+
+
   "g1": [
-    { 
-      id: "g1-1", 
-      title: "Доходы бюджета", 
+    {
+      id: "g1-1",
+      title: "Доходы бюджета",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1285,9 +1284,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "g1-2", 
-      title: "Расходы бюджета", 
+    {
+      id: "g1-2",
+      title: "Расходы бюджета",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1296,9 +1295,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "g1-3", 
-      title: "Дефицит/профицит бюджета", 
+    {
+      id: "g1-3",
+      title: "Дефицит/профицит бюджета",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1308,12 +1307,12 @@ export const CONTENT_BLOCKS = {
       }
     },
   ],
-  
-  // Управление и политика - Региональные программы развития
+
+
   "g2": [
-    { 
-      id: "g2-1", 
-      title: "Региональные программы развития", 
+    {
+      id: "g2-1",
+      title: "Региональные программы развития",
       chartType: "programsPlot",
       programsPlotData: {
         title: "Региональные программы развития",
@@ -1386,12 +1385,12 @@ export const CONTENT_BLOCKS = {
       }
     },
   ],
-  
-  // Управление и политика - Федеральные программы
+
+
   "g3": [
-    { 
-      id: "g3-1", 
-      title: "Федеральные программы", 
+    {
+      id: "g3-1",
+      title: "Федеральные программы",
       chartType: "programsPlot",
       programsPlotData: {
         title: "Федеральные программы в регионе",
@@ -1448,12 +1447,12 @@ export const CONTENT_BLOCKS = {
       }
     },
   ],
-  
-  // Управление и политика - Программы адаптации к климатическим изменениям
+
+
   "g4": [
-    { 
-      id: "g4-1", 
-      title: "Региональные программы адаптации", 
+    {
+      id: "g4-1",
+      title: "Региональные программы адаптации",
       chartType: "programsPlot",
       programsPlotData: {
         title: "Региональные программы адаптации к климатическим изменениям",
@@ -1493,9 +1492,9 @@ export const CONTENT_BLOCKS = {
         ]
       }
     },
-    { 
-      id: "g4-2", 
-      title: "Муниципальные программы адаптации", 
+    {
+      id: "g4-2",
+      title: "Муниципальные программы адаптации",
       chartType: "programsPlot",
       programsPlotData: {
         title: "Муниципальные программы адаптации к климатическим изменениям",
@@ -1552,7 +1551,7 @@ export const CONTENT_BLOCKS = {
       }
     },
   ],
-  
-  // Взаимосвязи
+
+
   "relations": [],
 };

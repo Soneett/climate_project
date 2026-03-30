@@ -3,20 +3,20 @@ import { createPortal } from "react-dom";
 import { useKeyPress } from "../../hooks/useKeyPress";
 import styles from "./Dropdown.module.scss";
 
-export default function Dropdown({ 
-  trigger, 
-  children, 
-  open: controlledOpen, 
-  onOpenChange 
+export default function Dropdown({
+  trigger,
+  children,
+  open: controlledOpen,
+  onOpenChange
 }) {
   const [internalOpen, setInternalOpen] = useState(false);
   const rootRef = useRef(null);
   const panelRef = useRef(null);
   const [panelStyle, setPanelStyle] = useState({});
-  
+
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
-  
+
   const setOpen = useCallback((value) => {
     if (isControlled) {
       onOpenChange?.(value);
