@@ -340,6 +340,7 @@ export const CONTENT_BLOCKS = {
     {
       id: "s2-3",
       title: "Уровень бедности",
+      indicators: "Численность населения с денежными доходами ниже границы бедности",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],

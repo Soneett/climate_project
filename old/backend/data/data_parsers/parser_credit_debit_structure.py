@@ -141,7 +141,7 @@ def parse_credit_debit_structure_pdf(
             val = parse_number_ru(tok)
             if val is None:
                 continue
-            indicator = f"{activity} — {metric_name}" if activity else metric_name
+            indicator = f"{metric_name} — {activity}" if activity else metric_name
             rows_out.append(
                 {
                     "region_name": region_name,
@@ -215,8 +215,8 @@ def parse_credit_debit_structure_pdf(
 
 
 if __name__ == "__main__":
-    pdf_path = "/home/daria/altay-db/Структура кредит. и дебит. зад-ти(3).pdf"
-    out_path = "/home/daria/altay-db/credit_debit_structure_altai.json"
+    pdf_path = "C:/Users/kukoc/Desktop/2215/old/backend/data/sources/credit_debit_structure.pdf"
+    out_path = "C:/Users/kukoc/Desktop/2215/old/backend/data/indicator_values/credit_debit_structure.json"
 
     result = parse_credit_debit_structure_pdf(pdf_path, region_name="Республика Алтай")
 
