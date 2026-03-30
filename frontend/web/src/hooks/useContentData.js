@@ -42,7 +42,6 @@ export const useContentData = () => {
         fetchRelationsContentBlocks()
       ]);
 
-<<<<<<< HEAD
       const hasContentData = contentData && Object.keys(contentData).length > 0;
       const hasSubjectData = Array.isArray(subjectData) && subjectData.length > 0;
       const hasObjectData = Array.isArray(objectData) && objectData.length > 0;
@@ -53,12 +52,6 @@ export const useContentData = () => {
       setSubjectIndicators(hasSubjectData ? subjectData : regionConfig.subjectIndicators);
       setObjectIndicators(hasObjectData ? objectData : regionConfig.objectIndicators);
       setRelationsContentBlocks(hasRelationsData ? relationsData : regionConfig.relationsContent);
-=======
-      if (contentData) setContentBlocks(contentData);
-      if (subjectData) setSubjectIndicators(subjectData);
-      if (objectData) setObjectIndicators(objectData);
-      if (relationsData) setRelationsContentBlocks(relationsData);
->>>>>>> 93c4991b26f514346e836191b9f961c013cbea7a
 
       if (!contentData && !subjectData && !objectData && !relationsData) {
         setIsError(true);
