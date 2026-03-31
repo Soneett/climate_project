@@ -16,6 +16,9 @@ from .analytics import (
     PieTimelineSeriesItemModel,
     PieTimelinePointModel,
     PieChartResponseModel,
+    WaffleChartTimelineSeriesItemModel,
+    WaffleChartTimelinePointModel,
+    WaffleChartResponseModel,
     PopulationPyramidTimelinePointModel,
     PopulationPyramidResponseModel,
 )

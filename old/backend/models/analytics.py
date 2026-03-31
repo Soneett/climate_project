@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+
 class LineChartDatasetModel(BaseModel):
     name: str
     data: list[float]
@@ -23,6 +24,21 @@ class PieTimelinePointModel(BaseModel):
 class PieChartResponseModel(BaseModel):
     timelineLabels: list[str]
     timelineData: list[PieTimelinePointModel]
+
+
+class WaffleChartTimelineSeriesItemModel(BaseModel):
+    name: str
+    value: float
+    absoluteValue: float
+
+
+class WaffleChartTimelinePointModel(BaseModel):
+    data: list[WaffleChartTimelineSeriesItemModel]
+
+
+class WaffleChartResponseModel(BaseModel):
+    timelineLabels: list[str]
+    timelineData: list[WaffleChartTimelinePointModel]
 
 
 class PopulationPyramidTimelinePointModel(BaseModel):

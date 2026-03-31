@@ -1,4 +1,5 @@
 from collections import defaultdict
+from dataclasses import dataclass
 import re
 
 from sqlalchemy.orm import Session
@@ -9,6 +10,9 @@ from models import (
     PieChartResponseModel,
     PieTimelinePointModel,
     PieTimelineSeriesItemModel,
+    WaffleChartResponseModel,
+    WaffleChartTimelinePointModel,
+    WaffleChartTimelineSeriesItemModel,
     PopulationPyramidResponseModel,
     PopulationPyramidTimelinePointModel,
 )
@@ -53,6 +57,12 @@ def _age_sort_key(age_code: str) -> tuple[int, int, str]:
     return (2, 10**9, normalized)
 
 
+@dataclass
+class IndicatorSelection:
+    indicator_term: str
+    subtype_patterns: list[str]
+
+
 class AnalyticsService:
     def __init__(self, repo: AnalyticsRepo | None = None):
         self.repo = repo or AnalyticsRepo()
@@ -61,12 +71,48 @@ class AnalyticsService:
     def _parse_indicators(indicators: str) -> list[str]:
         return [part.strip() for part in indicators.split(",") if part.strip()]
 
+    @staticmethod
+    def _parse_indicator_selections(indicators: str) -> list[IndicatorSelection]:
+        selections: list[IndicatorSelection] = []
+        for raw_value in AnalyticsService._parse_indicators(indicators):
+            if ":" not in raw_value:
+                selections.append(IndicatorSelection(indicator_term=raw_value, subtype_patterns=[]))
+                continue
+
+            indicator_term, patterns_csv = raw_value.split(":", 1)
+            patterns = [pattern.strip() for pattern in patterns_csv.split("|") if pattern.strip()]
+            selections.append(
+                IndicatorSelection(
+                    indicator_term=indicator_term.strip(),
+                    subtype_patterns=patterns,
+                )
+            )
+        return selections
+
+    @staticmethod
+    def _build_regex(pattern: str) -> re.Pattern[str] | None:
+        if pattern == "*":
+            return re.compile(".*", re.IGNORECASE)
+
+        prepared = pattern.strip()
+        if not prepared:
+            return None
+
+        if "*" in prepared and ".*" not in prepared:
+            prepared = prepared.replace("*", ".*")
+
+        try:
+            return re.compile(prepared, re.IGNORECASE)
+        except re.error:
+            return None
+
     def _resolve_indicator_ids(
         self,
         session: Session,
         indicators: str,
     ) -> list[int]:
-        names = self._parse_indicators(indicators)
+        selections = self._parse_indicator_selections(indicators)
+        names = [selection.indicator_term for selection in selections]
         if not names:
             return []
 
@@ -80,6 +126,10 @@ class AnalyticsService:
         resolved = self.repo.get_indicators_by_names(session=session, names=deduplicated_names)
         ordered_ids: list[int] = []
         normalized_names = [_normalize_indicator_term(name) for name in names]
+        normalized_patterns_by_name: dict[str, list[str]] = {
+            _normalize_indicator_term(selection.indicator_term): selection.subtype_patterns
+            for selection in selections
+        }
         subtype_ids = [indicator.subtype_id for indicator in resolved if indicator.subtype_id is not None]
         subtype_map = {
             subtype.id: _normalize_indicator_term(subtype.name)
@@ -102,8 +152,31 @@ class AnalyticsService:
                     same_name.append(indicator)
 
             if same_name:
-                subindicators = [indicator.id for indicator in same_name if indicator.subtype_id is not None]
-                candidate_ids = subindicators or [indicator.id for indicator in same_name]
+                selected_patterns = normalized_patterns_by_name.get(name, [])
+
+                if selected_patterns:
+                    regex_patterns = [
+                        compiled
+                        for compiled in (self._build_regex(pattern) for pattern in selected_patterns)
+                        if compiled is not None
+                    ]
+                    filtered = []
+                    for indicator in same_name:
+                        subtype_name = subtype_map.get(indicator.subtype_id, "")
+                        indicator_name = _normalize_indicator_term(indicator.name)
+
+                        if regex_patterns and any(
+                            pattern.fullmatch(subtype_name)
+                            or pattern.search(subtype_name)
+                            or pattern.fullmatch(indicator_name)
+                            or pattern.search(indicator_name)
+                            for pattern in regex_patterns
+                        ):
+                            filtered.append(indicator.id)
+                    candidate_ids = filtered
+                else:
+                    subindicators = [indicator.id for indicator in same_name if indicator.subtype_id is not None]
+                    candidate_ids = subindicators or [indicator.id for indicator in same_name]
             else:
                 candidate_ids = []
 
@@ -215,6 +288,64 @@ class AnalyticsService:
             )
 
         return PieChartResponseModel(timelineLabels=timeline_labels, timelineData=timeline_data)
+
+    def get_waffle_chart_data(
+        self,
+        session: Session,
+        region_id: int,
+        indicators: str,
+    ) -> WaffleChartResponseModel:
+        indicator_ids = self._resolve_indicator_ids(session=session, indicators=indicators)
+        if not indicator_ids:
+            return WaffleChartResponseModel(timelineLabels=[], timelineData=[])
+
+        values = self.repo.get_indicator_values(session=session, region_id=region_id, indicator_ids=indicator_ids)
+        if not values:
+            return WaffleChartResponseModel(timelineLabels=[], timelineData=[])
+
+        indicators_rows = self.repo.get_indicators(session=session, indicator_ids=indicator_ids)
+        subtype_ids = [indicator.subtype_id for indicator in indicators_rows if indicator.subtype_id is not None]
+        subtype_map = {
+            subtype.id: subtype.name
+            for subtype in session.query(IndicatorSubtypesTable)
+            .filter(IndicatorSubtypesTable.id.in_(subtype_ids), IndicatorSubtypesTable.is_deleted == False)
+            .all()
+        } if subtype_ids else {}
+
+        indicator_names = {
+            indicator.id: (subtype_map.get(indicator.subtype_id) or indicator.name)
+            for indicator in indicators_rows
+        }
+
+        grouped_by_year: dict[int, dict[int, float]] = defaultdict(dict)
+        for row in values:
+            grouped_by_year[row.year][row.indicator_id] = float(row.value)
+
+        timeline_labels = [str(year) for year in sorted(grouped_by_year.keys())]
+        timeline_data: list[WaffleChartTimelinePointModel] = []
+
+        for year in sorted(grouped_by_year.keys()):
+            year_total = sum(grouped_by_year[year].get(indicator_id, 0.0) for indicator_id in indicator_ids)
+            points: list[WaffleChartTimelineSeriesItemModel] = []
+            for indicator_id in indicator_ids:
+                if indicator_id not in indicator_names:
+                    continue
+                absolute_value = grouped_by_year[year].get(indicator_id, 0.0)
+                percentage_value = (absolute_value / year_total * 100.0) if year_total else 0.0
+                points.append(
+                    WaffleChartTimelineSeriesItemModel(
+                        name=indicator_names[indicator_id],
+                        value=percentage_value,
+                        absoluteValue=absolute_value,
+                    )
+                )
+
+            timeline_data.append(WaffleChartTimelinePointModel(data=points))
+
+        return WaffleChartResponseModel(
+            timelineLabels=timeline_labels,
+            timelineData=timeline_data,
+        )
 
     def get_population_pyramid(
         self,
