@@ -288,7 +288,7 @@ export const CONTENT_BLOCKS = {
       id: "s1-5",
       title: "Миграция населения",
       chartType: "line",
-      indicators: ['Миграционный прирост'],
+      indicators: ["Миграционный прирост"],
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
         datasets: [
