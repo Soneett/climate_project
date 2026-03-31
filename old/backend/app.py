@@ -26,6 +26,9 @@ from routers import (
 
 from scripts.fill_db import main
 
+from fastapi.staticfiles import StaticFiles
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("Creating database tables...")
@@ -50,6 +53,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+app.mount("/static", StaticFiles(directory="data"), name="static")
 
 @app.get("/", response_model=str)
 async def read_root():
