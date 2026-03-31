@@ -126,8 +126,7 @@ def parse_kmn_population_xlsx(
                 {
                     "region_name": region_name,
                     "year": int(year),
-                    "indicator_name": indicator_name,
-                    "subtype_name": subtype_name,
+                    "indicator_name": f"{indicator_name} — {subtype_name}",
                     "value": v,
                     "unit_code": unit_code,
                 }
@@ -147,8 +146,8 @@ def parse_kmn_population_xlsx(
 
 if __name__ == "__main__":
 
-    xlsx_path = "/home/daria/altay-db/Оценка численности населения КМН Республики Алтай (динамика)(2).xlsx"
-    out_path = "/home/daria/altay-db/kmn_population.json"
+    xlsx_path = "C:/Users/kukoc/Desktop/2215/old/backend/data/sources/kmn.xlsx"
+    out_path = "C:/Users/kukoc/Desktop/2215/old/backend/data/indicator_values/kmn_population.json"
 
     result = parse_kmn_population_xlsx(
         xlsx_path=xlsx_path,
