@@ -15,6 +15,8 @@ from models import (
     WaffleChartTimelineSeriesItemModel,
     PopulationPyramidResponseModel,
     PopulationPyramidTimelinePointModel,
+    StackPlotResponseModel,
+    StackPlotSeriesItemModel,
 )
 from repo.analytics import AnalyticsRepo
 from tables.indicator_subtypes import IndicatorSubtypesTable
@@ -259,10 +261,7 @@ class AnalyticsService:
             .all()
         } if subtype_ids else {}
 
-        indicator_names = {
-            indicator.id: (subtype_map.get(indicator.subtype_id) or indicator.name)
-            for indicator in indicators
-        }
+        indicator_names = self._build_unique_indicator_labels(indicators, subtype_map)
 
         grouped_by_year: dict[int, dict[int, float]] = defaultdict(dict)
         for row in values:
@@ -287,7 +286,14 @@ class AnalyticsService:
                 )
             )
 
-        return PieChartResponseModel(timelineLabels=timeline_labels, timelineData=timeline_data)
+        midpoint = (len(indicator_ids) + 1) // 2
+        legend_items = [indicator_names[indicator_id] for indicator_id in indicator_ids if indicator_id in indicator_names]
+        return PieChartResponseModel(
+            timelineLabels=timeline_labels,
+            legendLeftItems=legend_items[:midpoint],
+            legendRightItems=legend_items[midpoint:],
+            timelineData=timeline_data,
+        )
 
     def get_waffle_chart_data(
         self,
@@ -312,10 +318,7 @@ class AnalyticsService:
             .all()
         } if subtype_ids else {}
 
-        indicator_names = {
-            indicator.id: (subtype_map.get(indicator.subtype_id) or indicator.name)
-            for indicator in indicators_rows
-        }
+        indicator_names = self._build_unique_indicator_labels(indicators_rows, subtype_map)
 
         grouped_by_year: dict[int, dict[int, float]] = defaultdict(dict)
         for row in values:
@@ -346,6 +349,67 @@ class AnalyticsService:
             timelineLabels=timeline_labels,
             timelineData=timeline_data,
         )
+
+    @staticmethod
+    def _build_unique_indicator_labels(indicators, subtype_map: dict[int, str]) -> dict[int, str]:
+        labels: dict[int, str] = {}
+        raw_labels: dict[int, str] = {}
+        for indicator in indicators:
+            subtype_name = subtype_map.get(indicator.subtype_id) if indicator.subtype_id is not None else None
+            raw_labels[indicator.id] = f"{indicator.name} — {subtype_name}" if subtype_name else indicator.name
+
+        label_counts: dict[str, int] = defaultdict(int)
+        for label in raw_labels.values():
+            label_counts[label] += 1
+
+        for indicator in indicators:
+            label = raw_labels[indicator.id]
+            if label_counts[label] > 1:
+                label = f"{label} (#{indicator.id})"
+            labels[indicator.id] = label
+        return labels
+
+    def get_stack_plot_data(
+        self,
+        session: Session,
+        region_id: int,
+        indicators: str,
+    ) -> StackPlotResponseModel:
+        indicator_ids = self._resolve_indicator_ids(session=session, indicators=indicators)
+        if not indicator_ids:
+            return StackPlotResponseModel(timelineLabels=[], legendItems=[], seriesData=[])
+
+        values = self.repo.get_indicator_values(session=session, region_id=region_id, indicator_ids=indicator_ids)
+        if not values:
+            return StackPlotResponseModel(timelineLabels=[], legendItems=[], seriesData=[])
+
+        indicators_rows = self.repo.get_indicators(session=session, indicator_ids=indicator_ids)
+        subtype_ids = [indicator.subtype_id for indicator in indicators_rows if indicator.subtype_id is not None]
+        subtype_map = {
+            subtype.id: subtype.name
+            for subtype in session.query(IndicatorSubtypesTable)
+            .filter(IndicatorSubtypesTable.id.in_(subtype_ids), IndicatorSubtypesTable.is_deleted == False)
+            .all()
+        } if subtype_ids else {}
+        indicator_names = self._build_unique_indicator_labels(indicators_rows, subtype_map)
+
+        grouped: dict[int, dict[int, float]] = defaultdict(dict)
+        for row in values:
+            grouped[row.indicator_id][row.year] = float(row.value)
+        years = sorted({row.year for row in values})
+
+        series = [
+            StackPlotSeriesItemModel(
+                name=indicator_names[indicator_id],
+                data=[grouped[indicator_id].get(year, 0.0) for year in years],
+            )
+            for indicator_id in indicator_ids
+            if indicator_id in indicator_names
+        ]
+
+        legend_items = [item.name for item in series]
+        timeline_labels = [str(year) for year in years]
+        return StackPlotResponseModel(timelineLabels=timeline_labels, legendItems=legend_items, seriesData=series)
 
     def get_population_pyramid(
         self,

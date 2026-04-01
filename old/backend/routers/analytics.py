@@ -7,6 +7,7 @@ from models import (
     PieChartResponseModel,
     PopulationPyramidResponseModel,
     WaffleChartResponseModel,
+    StackPlotResponseModel,
 )
 from services import AnalyticsService
 
@@ -59,3 +60,13 @@ async def get_waffle_chart_data(
 ):
     service = AnalyticsService()
     return service.get_waffle_chart_data(session=session, region_id=region_id, indicators=indicators)
+
+
+@router.get("/stack-plot", response_model=StackPlotResponseModel)
+async def get_stack_plot_data(
+    region_id: int = Query(..., description="ID региона"),
+    indicators: str = Query(..., description="Список показателей и подпоказателей через запятую"),
+    session: Session = Depends(get_db),
+):
+    service = AnalyticsService()
+    return service.get_stack_plot_data(session=session, region_id=region_id, indicators=indicators)

@@ -23,6 +23,8 @@ class PieTimelinePointModel(BaseModel):
 
 class PieChartResponseModel(BaseModel):
     timelineLabels: list[str]
+    legendLeftItems: list[str] = []
+    legendRightItems: list[str] = []
     timelineData: list[PieTimelinePointModel]
 
 
@@ -39,6 +41,17 @@ class WaffleChartTimelinePointModel(BaseModel):
 class WaffleChartResponseModel(BaseModel):
     timelineLabels: list[str]
     timelineData: list[WaffleChartTimelinePointModel]
+
+
+class StackPlotSeriesItemModel(BaseModel):
+    name: str
+    data: list[float]
+
+
+class StackPlotResponseModel(BaseModel):
+    timelineLabels: list[str]
+    legendItems: list[str]
+    seriesData: list[StackPlotSeriesItemModel]
 
 
 class PopulationPyramidTimelinePointModel(BaseModel):

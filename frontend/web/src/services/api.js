@@ -13,6 +13,12 @@ export const fetchLineChart = (indicators, regionId) =>
 
 export const fetchPieChart = (indicators, regionId) =>
   fetchData(`analytics/pie-chart?${buildAnalyticsQuery(indicators, regionId)}`);
+
+export const fetchWaffleChart = (indicators, regionId) =>
+  fetchData(`analytics/waffle-chart?${buildAnalyticsQuery(indicators, regionId)}`);
+
+export const fetchStackPlot = (indicators, regionId) =>
+  fetchData(`analytics/stack-plot?${buildAnalyticsQuery(indicators, regionId)}`);
 /**
  * Base fetch function for API requests
  * @param {string} endpoint - API endpoint to fetch from

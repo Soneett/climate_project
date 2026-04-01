@@ -19,6 +19,8 @@ from .analytics import (
     WaffleChartTimelineSeriesItemModel,
     WaffleChartTimelinePointModel,
     WaffleChartResponseModel,
+    StackPlotSeriesItemModel,
+    StackPlotResponseModel,
     PopulationPyramidTimelinePointModel,
     PopulationPyramidResponseModel,
 )
