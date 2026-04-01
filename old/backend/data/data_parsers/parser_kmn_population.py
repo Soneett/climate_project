@@ -76,12 +76,27 @@ def find_year_row(df0: pd.DataFrame, max_scan_rows: int = 30) -> Tuple[int, Dict
     raise RuntimeError("Не удалось найти строку с годами.")
 
 
+def normalize_subtype_name(territory: str) -> str:
+    t = clean_text(territory)
+    low = t.lower()
+
+    if "всего" in low and "республика алтай" in low:
+        return "всего"
+
+    if low in ("республика алтай", "республика алтай всего", "всего"):
+        return "всего"
+
+    return t
+
+
 def parse_kmn_population_xlsx(
     xlsx_path: str,
     sheet: int = 0,
-    indicator_name: str = "Оценка численности населения КМН (на 1 января), человек",
+    region_name: str = "Республика Алтай",
+    indicator_name: str = "Оценка численности населения КМН",
     unit_code: str = "чел",
 ) -> Dict[str, Any]:
+
     df0 = pd.read_excel(xlsx_path, sheet_name=sheet, header=None, engine="openpyxl")
 
     year_row_idx, year_cols = find_year_row(df0)
@@ -89,6 +104,7 @@ def parse_kmn_population_xlsx(
     rows: List[Dict[str, Any]] = []
 
     for r in range(year_row_idx + 1, len(df0)):
+
         territory = clean_text(df0.iloc[r, 0])
 
         if is_skip_name(territory):
@@ -98,15 +114,19 @@ def parse_kmn_population_xlsx(
         if not any_num:
             continue
 
+        subtype_name = normalize_subtype_name(territory)
+
         for c, year in sorted(year_cols.items(), key=lambda x: x[1]):
+
             v = to_number(df0.iloc[r, c])
             if v is None:
                 continue
+
             rows.append(
                 {
-                    "region_name": territory,
+                    "region_name": region_name,
                     "year": int(year),
-                    "indicator_name": indicator_name,
+                    "indicator_name": f"{indicator_name} — {subtype_name}",
                     "value": v,
                     "unit_code": unit_code,
                 }
@@ -115,11 +135,8 @@ def parse_kmn_population_xlsx(
     return {
         "meta": {
             "file": xlsx_path,
+            "indicator_name": indicator_name,
             "rows_count": len(rows),
-            "years_found": sorted({x["year"] for x in rows}),
-            "territories_found": sorted({x["region_name"] for x in rows}),
-            "year_header_row": year_row_idx,
-            "year_cols": {str(k): int(v) for k, v in year_cols.items()},
         },
         "indicator_values": {
             "rows": rows
@@ -128,15 +145,19 @@ def parse_kmn_population_xlsx(
 
 
 if __name__ == "__main__":
-    xlsx_path = "/home/daria/altay-db/Оценка численности населения КМН Республики Алтай (динамика)(2).xlsx"
-    out_path = "/home/daria/altay-db/kmn_population_altai.json"
 
-    result = parse_kmn_population_xlsx(xlsx_path, sheet=0)
+    xlsx_path = "C:/Users/kukoc/Desktop/2215/old/backend/data/sources/kmn.xlsx"
+    out_path = "C:/Users/kukoc/Desktop/2215/old/backend/data/indicator_values/kmn_population.json"
+
+    result = parse_kmn_population_xlsx(
+        xlsx_path=xlsx_path,
+        sheet=0,
+        region_name="Республика Алтай",
+        indicator_name="Оценка численности населения КМН",
+        unit_code="чел",
+    )
 
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
 
-    print(f"OK: saved {result['meta']['rows_count']} rows to {out_path}")
-    print("Years:", result["meta"]["years_found"])
-    print("First 5 rows sample:")
-    print(json.dumps(result["indicator_values"]["rows"][:5], ensure_ascii=False, indent=2))
+    print(f"OK: сохранено {result['meta']['rows_count']} строк в файл {out_path}")

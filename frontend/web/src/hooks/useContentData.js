@@ -19,7 +19,6 @@ export const useContentData = () => {
   const [loading, setLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
-  // Reset to region-specific defaults when region changes
   useEffect(() => {
     setContentBlocks(regionConfig.contentBlocks);
     setSubjectIndicators(regionConfig.subjectIndicators);
@@ -49,17 +48,10 @@ export const useContentData = () => {
       const hasRelationsData = relationsData && Object.keys(relationsData).length > 0;
 
       // Prefer DB/API data and only fallback when it is missing
-      setContentBlocks(hasContentData ? contentData : CONTENT_BLOCKS);
-      setSubjectIndicators(hasSubjectData ? subjectData : SUBJECT_INDICATORS);
-      setObjectIndicators(hasObjectData ? objectData : OBJECT_INDICATORS);
-      setRelationsContentBlocks(hasRelationsData ? relationsData : RELATIONS_CONTENT);
-      
-      // If all requests failed, mark as error
-      // Use data from server or fallback to region constants
-      if (contentData) setContentBlocks(contentData);
-      if (subjectData) setSubjectIndicators(subjectData);
-      if (objectData) setObjectIndicators(objectData);
-      if (relationsData) setRelationsContentBlocks(relationsData);
+      setContentBlocks(hasContentData ? contentData : regionConfig.contentBlocks);
+      setSubjectIndicators(hasSubjectData ? subjectData : regionConfig.subjectIndicators);
+      setObjectIndicators(hasObjectData ? objectData : regionConfig.objectIndicators);
+      setRelationsContentBlocks(hasRelationsData ? relationsData : regionConfig.relationsContent);
 
       if (!contentData && !subjectData && !objectData && !relationsData) {
         setIsError(true);

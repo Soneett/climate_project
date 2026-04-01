@@ -1,0 +1,77 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+@use 'sass:color';
+
+.section {
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-md;
+}
+
+.content {
+  background: $color-content-box;
+  padding: $spacing-6;
+}
+
+.tableWrapper {
+  background: $color-content-box;
+  border-radius: $border-radius-md;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: $font-size-sm;
+}
+
+.th {
+  text-align: left;
+  padding: $spacing-3 $spacing-4;
+  background: color.adjust($color-content-box, $lightness: -5%);
+  border-bottom: 2px solid $color-border;
+  font-weight: $font-weight-semibold;
+  color: $color-text-secondary;
+  white-space: nowrap;
+}
+
+.row {
+  &:nth-child(even) {
+    background: color.adjust($color-content-box, $lightness: 3%);
+  }
+
+  &:hover {
+    background: color.adjust($color-content-box, $lightness: -3%);
+  }
+}
+
+.cell {
+  padding: $spacing-3 $spacing-4;
+  border-bottom: $border-width solid $color-border;
+  color: $color-text-primary;
+}
+
+.passwordCell {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+}
+
+.passwordValue {
+  font-family: monospace;
+  letter-spacing: 0.05em;
+  min-width: 90px;
+}
+
+.eyeBtn {
+  @include button-reset;
+  font-size: $font-size-base;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity $transition-fast;
+  flex-shrink: 0;
+
+  &:hover {
+    opacity: 1;
+  }
+}

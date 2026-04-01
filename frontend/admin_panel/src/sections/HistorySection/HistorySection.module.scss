@@ -1,0 +1,87 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+@use 'sass:color';
+
+.section {
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-md;
+}
+
+.content {
+  background: $color-content-box;
+  padding: $spacing-5;
+}
+
+.filterRow {
+  display: flex;
+  gap: $spacing-2;
+  margin-bottom: $spacing-4;
+  flex-wrap: wrap;
+}
+
+.filterBtn {
+  @include button-reset;
+  background: $color-bg-primary;
+  border: $border-width solid $color-border;
+  border-radius: $border-radius-sm;
+  padding: $spacing-2 $spacing-4;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: color.adjust($color-content-box, $lightness: -5%);
+    border-color: $color-primary;
+  }
+}
+
+.filterBtnActive {
+  background: $color-section-stripe;
+  color: $color-white;
+  border-color: $color-section-stripe;
+
+  &:hover {
+    background: color.adjust($color-section-stripe, $lightness: -5%);
+    border-color: $color-section-stripe;
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+}
+
+.card {
+  background: $color-card-bg;
+  border-radius: $border-radius-md;
+  padding: $spacing-4 $spacing-5;
+  box-shadow: $shadow-sm;
+  border-left: 4px solid $color-section-stripe;
+}
+
+.cardTarget {
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-2;
+}
+
+.cardMeta {
+  display: flex;
+  gap: $spacing-4;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.cardEmail {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.cardDate {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  font-weight: $font-weight-medium;
+}

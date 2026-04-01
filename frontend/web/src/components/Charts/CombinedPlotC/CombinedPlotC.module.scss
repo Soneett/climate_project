@@ -2,7 +2,7 @@
 @use '../../../styles/mixins' as *;
 
 :root {
-  --download-slot: 96px; /* место под кнопку скачивания */
+  --download-slot: 96px;
 }
 
 .combinedPlotC {
@@ -23,8 +23,6 @@
   }
 }
 
-/* Controls: резервируем место справа под кнопку скачивания,
-   делаем область кнопок скроллируемой при необходимости */
 .controls {
   display: flex;
   align-items: center;
@@ -43,13 +41,12 @@
   }
 }
 
-/* Группа кнопок режимов/показателей — горизонтально скроллируемая */
 .modeGroup {
   display: flex;
   align-items: center;
   gap: 8px;
   flex: 1 1 auto;
-  min-width: 0; /* важно, чтобы flex overflow работал */
+  min-width: 0;
   overflow-x: auto;
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
@@ -62,7 +59,6 @@
   }
 }
 
-/* Отдельные кнопки режима (modeBtn) */
 .modeBtn {
   flex: 0 0 auto;
   font-family: 'Raleway', sans-serif;
@@ -85,8 +81,6 @@
   border-color: #366164;
 }
 
-/* Если есть вспомогательные селекторы рядом с кнопками,
-   запрещаем им сжиматься и при мобильном перемещаем под годы */
 .controlsAside {
   flex: 0 0 auto;
   margin-left: 12px;
@@ -97,7 +91,6 @@
   }
 }
 
-/* Legend */
 .legend {
   display: flex;
   flex-wrap: wrap;
@@ -125,7 +118,6 @@
   background: #366164;
 }
 
-/* Мелкие улучшения для мобильного: кнопки не растягиваются и остаются доступными */
 @include mobile {
   .modeBtn {
     min-width: 96px;

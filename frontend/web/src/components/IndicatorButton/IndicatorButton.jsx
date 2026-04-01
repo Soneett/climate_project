@@ -2,16 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import styles from "./IndicatorButton.module.scss";
 
-/**
- * IndicatorButton component
- * Displays a button with different visual states
- * @param {string} label - Button text
- * @param {string} state - Button state: "default", "selected", or "disabled"
- * @param {Function} onClick - Click handler
- * @param {string} size - Button size: "medium" or "small"
- */
-const IndicatorButton = ({ 
-  label, 
+const IndicatorButton = ({
+  label,
   state = "default",
   onClick = () => {},
   size = "medium"

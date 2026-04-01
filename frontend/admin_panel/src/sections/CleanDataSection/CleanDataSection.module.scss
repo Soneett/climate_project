@@ -1,0 +1,84 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+@use 'sass:color';
+
+.section {
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-md;
+}
+
+.content {
+  background: $color-content-box;
+  padding: $spacing-5;
+}
+
+.tablesList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+.tableItem {
+  @include button-reset;
+  text-align: left;
+  width: 100%;
+  padding: $spacing-2 $spacing-3;
+  font-size: $font-size-base;
+  color: $color-text-primary;
+  border-radius: $border-radius-sm;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background: color.adjust($color-content-box, $lightness: -5%);
+  }
+}
+
+.tableItemActive {
+  font-weight: $font-weight-semibold;
+  color: $color-section-stripe;
+}
+
+.cleanCard {
+  background: $color-card-bg;
+  border-radius: $border-radius-md;
+  padding: $spacing-4 $spacing-5;
+  margin: $spacing-2 0 $spacing-3;
+  box-shadow: $shadow-sm;
+}
+
+.cleanActions {
+  display: flex;
+  gap: $spacing-3;
+  flex-wrap: wrap;
+}
+
+.cleanBtn {
+  @include button-reset;
+  border-radius: $border-radius-sm;
+  padding: $spacing-2 $spacing-5;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  transition: background-color $transition-fast;
+  border: $border-width solid transparent;
+}
+
+.cleanBtnWarn {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fca5a5;
+
+  &:hover {
+    background: #fecaca;
+  }
+}
+
+.cleanBtnNeutral {
+  background: $color-content-box;
+  color: $color-text-secondary;
+  border-color: $color-border;
+
+  &:hover {
+    background: color.adjust($color-content-box, $lightness: -5%);
+  }
+}

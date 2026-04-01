@@ -136,7 +136,7 @@ def process_mortality_causes_rates_local(
             rows.append({
                 "year": int(y),
                 "value": val,
-                "indicator_key": key
+                "indicator_name": key
             })
 
     return {
@@ -156,7 +156,7 @@ def save_json(data: dict, out_path: str) -> None:
 
 
 if __name__ == "__main__":
-    xlsx_path = "C:/Users/kukoc/Desktop/2215/old/backend/data/data_parsers/death_causes.xlsx"
+    xlsx_path = "C:/Users/kukoc/Desktop/2215/old/backend/data/sources/death_causes.xlsx"
     out_path = "C:/Users/kukoc/Desktop/2215/old/backend/data/indicator_values/death_causes.json"
 
     out = process_mortality_causes_rates_local(

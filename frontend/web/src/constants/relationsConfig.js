@@ -1,32 +1,30 @@
-// Каждый элемент левого столбца имеет массив доступных элементов правого столбца
-
 import { DISASTER_ROADS_DATA, INDICATOR_OPTIONS } from '../data/disasterRoadsData';
 export { DISASTER_ROADS_DATA };
 
 export const SUBJECT_INDICATORS = [
-  { 
-    id: "temperature", 
-    label: "Температура", 
+  {
+    id: "temperature",
+    label: "Температура",
     availableObjects: ["demography", "healthcare", "livingStandard", "economy"]
   },
-  { 
-    id: "precipitation", 
-    label: "Осадки", 
+  {
+    id: "precipitation",
+    label: "Осадки",
     availableObjects: ["healthcare", "economy", "infrastructure"]
   },
-  { 
-    id: "wind", 
-    label: "Ветер", 
+  {
+    id: "wind",
+    label: "Ветер",
     availableObjects: ["healthcare"]
   },
-  { 
-    id: "disasters", 
-    label: "Природные катаклизмы", 
-    availableObjects: ["demography", "healthcare", "livingStandard", "economy", "infrastructure"] 
+  {
+    id: "disasters",
+    label: "Природные катаклизмы",
+    availableObjects: ["demography", "healthcare", "livingStandard", "economy", "infrastructure"]
   },
-  { 
-    id: "ecology", 
-    label: "Экология", 
+  {
+    id: "ecology",
+    label: "Экология",
     availableObjects: ["demography", "healthcare", "livingStandard"]
   },
 ];

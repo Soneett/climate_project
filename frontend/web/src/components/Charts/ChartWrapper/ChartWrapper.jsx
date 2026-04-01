@@ -2,10 +2,6 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styles from './ChartWrapper.module.scss';
 
-/**
- * Wrapper component that adds a PNG download button to any ECharts-based chart.
- * The button is positioned in the top-right corner of the chart container.
- */
 const ChartWrapper = ({ children, chartRef, filename = 'chart', className = '' }) => {
   const handleDownload = useCallback(() => {
     const instance = chartRef?.current?.getEchartsInstance?.();

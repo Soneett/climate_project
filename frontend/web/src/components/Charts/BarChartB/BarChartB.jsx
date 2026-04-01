@@ -17,9 +17,9 @@ import styles from './BarChartB.module.scss';
 const BarChartB = ({
                      title,
                      timelineLabels = [],
-                     categories = [], // возрастные группы: ['0–4', '5–9', '10–14', ...]
+                     categories = [],
                      legendItems = ['Мужчины', 'Женщины'],
-                     timelineData = [] // массив данных для каждого года
+                     timelineData = []
                    }) => {
   const chartRef = useRef(null);
   useChartResize(chartRef);
@@ -63,7 +63,7 @@ const BarChartB = ({
           const rawMin = value.min || 0;
           const rawMax = value.max || 0;
           const m = Math.max(Math.abs(rawMin), Math.abs(rawMax));
-          const padded = m === 0 ? 1 : m * 1.15; // запас 15%
+          const padded = m === 0 ? 1 : m * 1.15;
           return -padded;
         },
         max: function (value) {
@@ -79,7 +79,7 @@ const BarChartB = ({
         },
         axisLabel: {
           ...TEXT_STYLES.axis,
-          margin: 8, // чтобы подписи имели отступ от оси/баров
+          margin: 8,
           formatter: value => Math.abs(value)
         },
         splitLine: SPLIT_LINE_STYLE

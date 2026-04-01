@@ -10,13 +10,16 @@ from sqlalchemy.orm import Session
 
 from parsers.indicator_values import parse_indicator_values
 from tables.indicator_values import IndicatorValuesTable
-from services.parsers.registry import get_parser_config
+from services.parsers.registry import get_parser_config, list_parser_configs
 
 
 class DataUploadService:
     SUPPORTED_EXTENSIONS = {".xls", ".xlsx", ".xlsm", ".xlsb"}
 
-    async def upload_file(self, session: Session, file: UploadFile, indicator_name: str) -> dict:
+    def get_available_indicators(self) -> list[dict[str, str]]:
+        return list_parser_configs()
+
+    async def upload_file(self, session: Session, file: UploadFile, indicator_key: str) -> dict:
         filename = file.filename or ""
         extension = Path(filename).suffix.lower()
 
@@ -26,11 +29,11 @@ class DataUploadService:
                 detail="Unsupported file format. Use .xls, .xlsx, .xlsm or .xlsb.",
             )
 
-        parser_config = get_parser_config(indicator_name)
+        parser_config = get_parser_config(indicator_key)
         if parser_config is None:
             raise HTTPException(
                 status_code=400,
-                detail=f"Unknown indicator_name '{indicator_name}'. Configure parser mapping first.",
+                detail=f"Unknown indicator_key '{indicator_key}'.",
             )
 
         upload_dir = Path(tempfile.gettempdir()) / "uploads"
@@ -57,7 +60,7 @@ class DataUploadService:
             return {
                 "status": "success",
                 "fileType": extension.lstrip("."),
-                "indicator": indicator_name,
+                "indicator": indicator_key,
                 "uploaded": uploaded,
                 "skipped": skipped,
             }

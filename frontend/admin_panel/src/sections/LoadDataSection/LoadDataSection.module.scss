@@ -1,0 +1,181 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+@use 'sass:color';
+
+.section {
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-md;
+}
+
+.content {
+  background: $color-content-box;
+  padding: $spacing-6;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-6;
+}
+
+.part {
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-sm;
+}
+
+.partContent {
+  background: $color-content-box;
+  padding: $spacing-5;
+}
+
+.tablesList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+.tableItem {
+  @include button-reset;
+  text-align: left;
+  width: 100%;
+  padding: $spacing-2 $spacing-3;
+  font-size: $font-size-base;
+  color: $color-text-primary;
+  border-radius: $border-radius-sm;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background: color.adjust($color-content-box, $lightness: -5%);
+  }
+}
+
+.tableItemActive {
+  font-weight: $font-weight-semibold;
+  color: $color-section-stripe;
+}
+
+.manageCard {
+  background: $color-card-bg;
+  border-radius: $border-radius-md;
+  padding: $spacing-4 $spacing-5;
+  margin: $spacing-2 0 $spacing-3;
+  box-shadow: $shadow-sm;
+}
+
+.manageCardTitle {
+  margin: 0 0 $spacing-3;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  text-transform: capitalize;
+}
+
+.manageActions {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+  align-items: flex-start;
+}
+
+.actionBtn {
+  @include button-reset;
+  background: $color-content-box;
+  border: $border-width solid $color-border;
+  border-radius: $border-radius-sm;
+  padding: $spacing-2 $spacing-4;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background: color.adjust($color-content-box, $lightness: -5%);
+  }
+}
+
+.actionBtnDanger {
+  color: #dc2626;
+  border-color: #fca5a5;
+
+  &:hover {
+    background: #fee2e2;
+  }
+}
+
+.selectorsRow {
+  display: flex;
+  gap: $spacing-3;
+  flex-wrap: wrap;
+  margin-bottom: $spacing-4;
+}
+
+.selector {
+  flex: 1 1 180px;
+  padding: $spacing-2 $spacing-3;
+  font-family: $font-family-base;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  background: $color-bg-primary;
+  border: $border-width solid $color-border;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  transition: border-color $transition-fast;
+
+  &:focus {
+    outline: none;
+    border-color: $color-primary;
+  }
+}
+
+.uploadRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  flex-wrap: wrap;
+}
+
+.fileLabel {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.fileInput {
+  display: none;
+}
+
+.fileLabelText {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-2;
+  background: $color-section-stripe;
+  color: $color-white;
+  border-radius: $border-radius-md;
+  padding: $spacing-2 $spacing-5;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  transition: background-color $transition-fast;
+  cursor: pointer;
+
+  &:hover {
+    background-color: color.adjust($color-section-stripe, $lightness: -8%);
+  }
+}
+
+.fileName {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.loadBtn {
+  @include button-reset;
+  background: $color-section-stripe;
+  color: $color-white;
+  border-radius: $border-radius-md;
+  padding: $spacing-2 $spacing-5;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  transition: background-color $transition-fast;
+  cursor: pointer;
+
+  &:hover {
+    background-color: color.adjust($color-section-stripe, $lightness: -8%);
+  }
+}

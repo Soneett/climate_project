@@ -103,7 +103,6 @@ const ALL_DISTRICTS = [
   'Яконурское сельское поселение',
 ];
 
-// Simple deterministic pseudo-random based on seed
 function seededRand(seed) {
   const x = Math.sin(seed) * 10000;
   return x - Math.floor(x);

@@ -7,9 +7,7 @@
 }
 
 .panel {
-  position: absolute;
-  top: calc(100% + $spacing-2);
-  left: 0;
+  position: fixed;
   min-width: 240px;
   background: $color-bg-primary;
   border-radius: $border-radius-md;

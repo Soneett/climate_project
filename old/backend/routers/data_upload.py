@@ -10,8 +10,14 @@ router = APIRouter(prefix="/data", tags=["Data Upload"])
 @router.post("/upload")
 async def upload_data_file(
     file: UploadFile = File(...),
-    indicator_name: str = Form(...),
+    indicator_key: str = Form(...),
     session: Session = Depends(get_db),
 ):
     service = DataUploadService()
-    return await service.upload_file(session=session, file=file, indicator_name=indicator_name)
+    return await service.upload_file(session=session, file=file, indicator_key=indicator_key)
+
+
+@router.get("/upload/indicators")
+async def get_upload_indicators():
+    service = DataUploadService()
+    return service.get_available_indicators()

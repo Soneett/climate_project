@@ -4,7 +4,7 @@ import styles from "./NavigationButton.module.scss";
 
 const NavigationButton = ({ direction = "left", label, onClick, disabled = false }) => {
   const isLeft = direction === "left";
-  
+
   return (
     <button
       className={`${styles.button} ${isLeft ? styles.left : styles.right}`}

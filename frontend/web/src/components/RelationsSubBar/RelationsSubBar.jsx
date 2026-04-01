@@ -4,16 +4,10 @@ import IndicatorButton from "../IndicatorButton/IndicatorButton";
 import { SUBJECT_INDICATORS, OBJECT_INDICATORS } from "../../constants/relationsConfig";
 import styles from "./RelationsSubBar.module.scss";
 
-/**
- * RelationsSubBar component
- * Displays two columns of indicators for selecting subject-object relationships
- * @param {Function} onSelectionChange - Callback when selection changes, receives (subjectId, objectId)
- */
 const RelationsSubBar = ({ onSelectionChange = () => {} }) => {
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [selectedObject, setSelectedObject] = useState(null);
 
-  // Определяем доступность элементов левого столбца
   const getSubjectState = (subjectId) => {
     if (selectedSubject === subjectId) return 'selected';
     if (selectedObject) {
@@ -23,7 +17,6 @@ const RelationsSubBar = ({ onSelectionChange = () => {} }) => {
     return 'default';
   };
 
-  // Определяем доступность элементов правого столбца
   const getObjectState = (objectId) => {
     if (selectedObject === objectId) return 'selected';
     if (selectedSubject) {
@@ -33,19 +26,18 @@ const RelationsSubBar = ({ onSelectionChange = () => {} }) => {
     return 'default';
   };
 
-  // Обработка кликов по субъектам
   const handleSubjectClick = (subjectId) => {
     const state = getSubjectState(subjectId);
     if (state === 'disabled') return;
 
     if (selectedSubject === subjectId) {
-      // Deselect
+
       setSelectedSubject(null);
       onSelectionChange(null, selectedObject);
     } else {
-      // Select new subject
+
       setSelectedSubject(subjectId);
-      // Check if current object is still valid
+
       const subjectConfig = SUBJECT_INDICATORS.find(s => s.id === subjectId);
       if (selectedObject && subjectConfig && !subjectConfig.availableObjects.includes(selectedObject)) {
         setSelectedObject(null);
@@ -56,19 +48,18 @@ const RelationsSubBar = ({ onSelectionChange = () => {} }) => {
     }
   };
 
-  // Обработка кликов по объектам
   const handleObjectClick = (objectId) => {
     const state = getObjectState(objectId);
     if (state === 'disabled') return;
 
     if (selectedObject === objectId) {
-      // Deselect
+
       setSelectedObject(null);
       onSelectionChange(selectedSubject, null);
     } else {
-      // Select new object
+
       setSelectedObject(objectId);
-      // Check if current subject is still valid
+
       const objectConfig = OBJECT_INDICATORS.find(o => o.id === objectId);
       if (selectedSubject && objectConfig && !objectConfig.availableSubjects.includes(selectedSubject)) {
         setSelectedSubject(null);

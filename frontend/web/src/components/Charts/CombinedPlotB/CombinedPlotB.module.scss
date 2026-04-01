@@ -23,7 +23,6 @@
   }
 }
 
-/* Controls: reserve space for download button and make years scrollable */
 .controls {
   display: flex;
   align-items: center;
@@ -42,7 +41,6 @@
   }
 }
 
-/* Year filter: scrollable row of year buttons */
 .yearFilter {
   display: flex;
   align-items: center;
@@ -68,7 +66,6 @@
   margin-right: 4px;
 }
 
-/* Year buttons */
 .yearBtn {
   flex: 0 0 auto;
   margin-right: 8px;
@@ -90,7 +87,6 @@
   border-color: #366164;
 }
 
-/* Metric selector (tempSelector) */
 .tempSelector {
   position: relative;
   flex: 0 0 auto;
@@ -147,7 +143,6 @@
 }
 .tempMenuItemActive { color: #366164; font-weight: 600; }
 
-/* Legend */
 .legend {
   display: flex;
   flex-wrap: wrap;

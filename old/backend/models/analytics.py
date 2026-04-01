@@ -26,6 +26,21 @@ class PieChartResponseModel(BaseModel):
     timelineData: list[PieTimelinePointModel]
 
 
+class WaffleChartTimelineSeriesItemModel(BaseModel):
+    name: str
+    value: float
+    absoluteValue: float
+
+
+class WaffleChartTimelinePointModel(BaseModel):
+    data: list[WaffleChartTimelineSeriesItemModel]
+
+
+class WaffleChartResponseModel(BaseModel):
+    timelineLabels: list[str]
+    timelineData: list[WaffleChartTimelinePointModel]
+
+
 class PopulationPyramidTimelinePointModel(BaseModel):
     title: dict[str, str]
     series: list[dict[str, list[float]]]

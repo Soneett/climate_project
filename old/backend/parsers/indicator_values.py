@@ -149,11 +149,16 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
     regions_map = {_normalize_region_name(r.name): r.id for r in session.query(RegionsTable).all()}
     sources_map = {_normalize_text(s.name): s.id for s in session.query(DataSourcesTable).all()}
     units_map = {_normalize_text(u.code): u.id for u in session.query(UnitsTable).all()}
+    units_name_map = {_normalize_text(u.name): u.id for u in session.query(UnitsTable).all()}
     subtypes_map = {_normalize_text(s.name): s.id for s in session.query(IndicatorSubtypesTable).all()}
 
-    indicators_map: dict[tuple[str, int | None], IndicatorsTable] = {
-        (_normalize_text(i.name), i.subtype_id): i
+    indicators_map: dict[str, IndicatorsTable] = {
+        _normalize_text(i.name): i
         for i in session.query(IndicatorsTable).all()
+    }
+    existing_values_map: dict[tuple[int, int, int, int], IndicatorValuesTable] = {
+        (v.region_id, v.indicator_id, v.year, v.source_id): v
+        for v in session.query(IndicatorValuesTable).all()
     }
 
     if source_name and source_name not in sources_map:
@@ -196,13 +201,14 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
         unit_code = _normalize_text(row.get("unit_code"))
         unit_id = None
         if unit_code:
-            unit_id = units_map.get(unit_code)
+            unit_id = units_map.get(unit_code) or units_name_map.get(unit_code)
             if unit_id is None:
                 unit = UnitsTable(id=_next_id(session, UnitsTable), code=unit_code, name=unit_code)
                 session.add(unit)
                 session.flush()
                 unit_id = unit.id
                 units_map[unit_code] = unit_id
+                units_name_map[unit_code] = unit_id
 
         subtype_id = None
         if subtype_name:
@@ -214,7 +220,7 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
                 subtype_id = subtype.id
                 subtypes_map[subtype_name] = subtype_id
 
-        indicator_key = (indicator_name, subtype_id)
+        indicator_key = indicator_name
         indicator = indicators_map.get(indicator_key)
         if indicator is None:
             indicator = IndicatorsTable(
@@ -228,6 +234,8 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
             session.flush()
             indicators_map[indicator_key] = indicator
         else:
+            if indicator.subtype_id is None and subtype_id is not None:
+                indicator.subtype_id = subtype_id
             if indicator.unit_id is None and unit_id is not None:
                 indicator.unit_id = unit_id
             if not indicator.type and indicator_type:
@@ -240,12 +248,20 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
         if year is None or value is None:
             continue
 
-        session.add(
-            IndicatorValuesTable(
+        year_int = int(year)
+        value_float = float(value)
+        value_key = (region_id, indicator.id, year_int, source_id)
+        existing_value = existing_values_map.get(value_key)
+        if existing_value is None:
+            new_value = IndicatorValuesTable(
                 region_id=region_id,
                 indicator_id=indicator.id,
-                year=int(year),
-                value=float(value),
+                year=year_int,
+                value=value_float,
                 source_id=source_id,
             )
-        )
+            session.add(new_value)
+            session.flush()
+            existing_values_map[value_key] = new_value
+        elif float(existing_value.value) != value_float:
+            existing_value.value = value_float

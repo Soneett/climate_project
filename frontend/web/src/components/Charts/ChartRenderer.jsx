@@ -19,9 +19,6 @@ import {
 } from './index';
 import { fetchLineChart, fetchPieChart } from '../../services/api';
 
-/**
- * Chart type to component mapping
- */
 const CHART_COMPONENTS = {
   line: LineChart,
   pie: PieChart,
@@ -61,6 +58,35 @@ const hasPiePayload = (payload) => {
   );
 };
 
+const deriveIndicatorsFromBlock = (block) => {
+  if (block.indicators) {
+    return (Array.isArray(block.indicators) ? block.indicators : String(block.indicators).split(','))
+      .map((item) => String(item).trim())
+      .filter(Boolean);
+  }
+
+  if (block.chartType === 'line' && block.chartData?.datasets) {
+    return block.chartData.datasets
+      .map((dataset) => dataset?.name)
+      .filter(Boolean);
+  }
+
+  if (block.chartType === 'pie') {
+    const legendItems = block.pieData?.legendLeftItems;
+    if (Array.isArray(legendItems) && legendItems.length > 0) {
+      return legendItems.filter(Boolean);
+    }
+
+    const timelinePoint = block.pieData?.timelineData?.[0];
+    const seriesData = timelinePoint?.series?.[0]?.data;
+    if (Array.isArray(seriesData)) {
+      return seriesData.map((item) => item?.name).filter(Boolean);
+    }
+  }
+
+  return [];
+};
+
 /**
  * Factory component for rendering different chart types
  * @param {Object} block - Content block configuration
@@ -75,13 +101,7 @@ const ChartRenderer = ({ block }) => {
     setLineData(block.chartData);
     setPieData(block.pieData);
 
-    if (!block.indicators) {
-      return;
-    }
-
-    const indicatorsCsv = Array.isArray(block.indicators)
-      ? block.indicators.join(',')
-      : block.indicators;
+    const indicatorsCsv = deriveIndicatorsFromBlock(block).join(',');
 
     if (!indicatorsCsv) {
       return;
@@ -113,7 +133,6 @@ const ChartRenderer = ({ block }) => {
     return null;
   }
 
-  // Prepare props based on chart type
   let chartProps = { title };
 
   switch (chartType) {
