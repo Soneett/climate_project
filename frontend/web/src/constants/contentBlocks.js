@@ -720,6 +720,7 @@ export const CONTENT_BLOCKS = {
     {
       id: "s5-6",
       title: "Коэффициент ликвидации организаций по видам деятельности",
+      indicators: ["Коэффициент ликвидации организаций"],
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1069,7 +1070,7 @@ export const CONTENT_BLOCKS = {
     },
     {
       id: "s6-3",
-      title: "Протяженность железных дорог",
+      title: "Автомобильные дороги",
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
