@@ -141,18 +141,25 @@ class AnalyticsService:
         } if subtype_ids else {}
 
         for name in normalized_names:
-            exact_matches = []
+            exact_name_matches = []
+            exact_subtype_matches = []
             fuzzy_matches = []
             for indicator in resolved:
                 indicator_name = _normalize_indicator_term(indicator.name)
                 subtype_name = subtype_map.get(indicator.subtype_id) if indicator.subtype_id is not None else ""
-                if indicator_name == name or (subtype_name and subtype_name == name):
-                    exact_matches.append(indicator)
+
+                if indicator_name == name:
+                    exact_name_matches.append(indicator)
                     continue
+
+                if subtype_name and subtype_name == name:
+                    exact_subtype_matches.append(indicator)
+                    continue
+
                 if name in indicator_name or (subtype_name and name in subtype_name):
                     fuzzy_matches.append(indicator)
 
-            same_name = exact_matches or fuzzy_matches
+            same_name = exact_name_matches or exact_subtype_matches or fuzzy_matches
 
             if same_name:
                 selected_patterns = normalized_patterns_by_name.get(name, [])
@@ -177,9 +184,14 @@ class AnalyticsService:
                         ):
                             filtered.append(indicator.id)
                     candidate_ids = filtered
+                elif exact_name_matches:
+                    base_indicators = [indicator.id for indicator in exact_name_matches if indicator.subtype_id is None]
+                    candidate_ids = base_indicators or [indicator.id for indicator in exact_name_matches]
+                elif exact_subtype_matches:
+                    candidate_ids = [indicator.id for indicator in exact_subtype_matches]
                 else:
-                    subindicators = [indicator.id for indicator in same_name if indicator.subtype_id is not None]
-                    candidate_ids = subindicators or [indicator.id for indicator in same_name]
+                    base_indicators = [indicator.id for indicator in fuzzy_matches if indicator.subtype_id is None]
+                    candidate_ids = base_indicators or [indicator.id for indicator in fuzzy_matches]
             else:
                 candidate_ids = []
 
