@@ -1071,6 +1071,7 @@ export const CONTENT_BLOCKS = {
     {
       id: "s6-3",
       title: "Протяженность железных дорог",
+      indicators: ["Протяженность железных дорог"],
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1082,6 +1083,7 @@ export const CONTENT_BLOCKS = {
     {
       id: "s6-4",
       title: "Протяженность водных путей",
+      indicators: ["Протяженность водных путей"],
       chartType: "line",
       chartData: {
         labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
@@ -1105,7 +1107,7 @@ export const CONTENT_BLOCKS = {
       id: "s6-6",
       title: "Дороги",
       chartType: "stackPlot",
-      indicators: ["Автомобильные дороги:общая протяженность|с твердым покрытием|доля с твердым покрытием|с усовершенствованным покрытием"],
+      indicators: ["Автомобильные дороги"],
       stackPlotData: {
         title: "Состояние автомобильных дорог",
         timelineLabels: ['2020', '2021', '2022', '2023', '2024'],
