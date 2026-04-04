@@ -7,7 +7,7 @@ import re
 
 from typing import Any, Dict, List
 
-import pandas as pd
+#import pandas as pd
 
 # утилиты
 

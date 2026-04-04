@@ -5,7 +5,7 @@ import json
 import re
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-import pandas as pd
+#import pandas as pd
 
 
 # утилиты

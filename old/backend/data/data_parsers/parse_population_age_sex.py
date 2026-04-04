@@ -4,7 +4,7 @@ import json
 import re
 from pathlib import Path
 
-import pandas as pd
+#import pandas as pd
 
 
 def _fix_hyphen_parts(parts):

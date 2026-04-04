@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 from typing import Optional, Dict, List
 
-import pandas as pd
+#import pandas as pd
 
 
 def _clean(s):
