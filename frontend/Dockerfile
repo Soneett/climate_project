@@ -1,15 +1,28 @@
-FROM node:18 AS build
+# -------- STAGE 1: build frontend --------
+FROM node:18 AS builder
 
 WORKDIR /app
 
-COPY . .
+# копируем весь фронт
+COPY frontend ./frontend
+
+# билд web
+WORKDIR /app/frontend/web
 RUN npm install
+RUN npm run build
 
-RUN cd web && npm install && npm run build
-RUN cd admin_panel && npm install && npm run build
+# билд admin
+WORKDIR /app/frontend/admin_panel
+RUN npm install
+RUN npm run build
 
-# nginx stage
+
+# -------- STAGE 2: nginx --------
 FROM nginx:alpine
 
-COPY --from=build /app/web/dist /usr/share/nginx/html/web
-COPY --from=build /app/admin_panel/dist /usr/share/nginx/html/admin
+# nginx config
+COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
+
+# копируем билды
+COPY --from=builder /app/frontend/web/dist /usr/share/nginx/html/web
+COPY --from=builder /app/frontend/admin_panel/dist /usr/share/nginx/html/admin
