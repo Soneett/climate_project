@@ -112,7 +112,7 @@ export default function InfoSection({ stats = INFO_STATS }) {
       <SectionBar title="Информация" />
 
       <div className={styles.content}>
-        {/* Stats table */}
+
         <div className={styles.statsTableWrapper}>
           <table className={styles.statsTable}>
             <tbody>
@@ -128,7 +128,6 @@ export default function InfoSection({ stats = INFO_STATS }) {
           </table>
         </div>
 
-        {/* Tables section */}
         <div className={styles.tablesBlock}>
           <div className={styles.tablesBar}>
             <span className={styles.tablesBarText}>Таблицы</span>

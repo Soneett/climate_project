@@ -142,10 +142,11 @@ export default function LoadDataSection({ role }) {
             <TablesManagePart />
           </div>
         )}
-      </div>
-      <div className={styles.part}>
-        <SectionBar title="Загрузка и обновление данных графиков" />
-        <ChartsUploadPart />
+
+        <div className={styles.part}>
+          <SectionBar title="Загрузка и обновление данных графиков" />
+          <ChartsUploadPart />
+        </div>
       </div>
     </div>
   );
