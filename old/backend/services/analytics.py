@@ -141,17 +141,18 @@ class AnalyticsService:
         } if subtype_ids else {}
 
         for name in normalized_names:
-            same_name = []
+            exact_matches = []
+            fuzzy_matches = []
             for indicator in resolved:
                 indicator_name = _normalize_indicator_term(indicator.name)
                 subtype_name = subtype_map.get(indicator.subtype_id) if indicator.subtype_id is not None else ""
-                if (
-                    indicator_name == name
-                    or (subtype_name and subtype_name == name)
-                    or name in indicator_name
-                    or (subtype_name and name in subtype_name)
-                ):
-                    same_name.append(indicator)
+                if indicator_name == name or (subtype_name and subtype_name == name):
+                    exact_matches.append(indicator)
+                    continue
+                if name in indicator_name or (subtype_name and name in subtype_name):
+                    fuzzy_matches.append(indicator)
+
+            same_name = exact_matches or fuzzy_matches
 
             if same_name:
                 selected_patterns = normalized_patterns_by_name.get(name, [])

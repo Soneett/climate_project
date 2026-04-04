@@ -55,6 +55,7 @@ FILE_SOURCE_MAP = {
     "natural_abs": "Демографические показатели: рождаемость, смертность, естественный прирост",
     "org_liquidation": "Ликвидация организаций",
     "org_ownership": "Структура организаций по формам собственности",
+    "temperature_gorno_altaysk": "Температурные показатели (Горно-Алтайск)",
 }
 
 FILE_TYPE_THEME_MAP = {
@@ -72,6 +73,7 @@ FILE_TYPE_THEME_MAP = {
     "birth_abs": ("демография", "рождаемость, смертность, естественный прирост"),
     "deaths": ("демография", "рождаемость, смертность, естественный прирост"),
     "natural_abs": ("демография", "рождаемость, смертность, естественный прирост"),
+    "temperature_gorno_altaysk": ("климат", "температура"),
 }
 
 
@@ -81,6 +83,27 @@ def _normalize_text(value: str | None) -> str:
 
 def _normalize_region_name(value: str | None) -> str:
     return _normalize_text(value).replace("-всего", "")
+
+
+REGION_ALIASES = {
+    "горно-алтайск": "Республика Алтай",
+    "г. горно-алтайск": "Республика Алтай",
+}
+
+
+def _resolve_region_name(raw_region_name: str, regions_map: dict[str, int], default_region_name: str = "") -> str:
+    if raw_region_name in regions_map:
+        return raw_region_name
+
+    normalized = _normalize_region_name(raw_region_name).lower()
+    alias_value = REGION_ALIASES.get(normalized)
+    if alias_value and alias_value in regions_map:
+        return alias_value
+
+    if default_region_name and default_region_name in regions_map:
+        return default_region_name
+
+    return raw_region_name
 
 
 def _split_indicator(raw_name: str) -> tuple[str, str | None]:
@@ -100,6 +123,11 @@ def _resolve_indicator_payload(
     default_indicator_theme: str | None = None,
 ) -> tuple[str, str | None, str | None, str | None] | None:
     indicator_name = row.get("indicator_name")
+    indicator_key = row.get("indicator_key")
+    if indicator_name and str(indicator_name) in INDICATOR_KEY_MAP and not indicator_key:
+        indicator_key = str(indicator_name)
+        indicator_name = None
+
     if indicator_name:
         base_name, subtype_name = _split_indicator(str(indicator_name))
         indicator_type, indicator_theme = (
@@ -110,7 +138,6 @@ def _resolve_indicator_payload(
             indicator_type, indicator_theme = FILE_TYPE_THEME_MAP.get(file_stem, ("авто-добавленный", "импорт indicator_values"))
         return base_name, subtype_name, indicator_type, indicator_theme
 
-    indicator_key = row.get("indicator_key")
     if not indicator_key:
         return None
 
@@ -175,7 +202,8 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
         if not row_source:
             row_source = source_name
 
-        region_id = regions_map.get(row_region)
+        resolved_region_name = _resolve_region_name(row_region, regions_map, default_region_name=region_name)
+        region_id = regions_map.get(resolved_region_name)
         if not region_id:
             continue
 
@@ -246,8 +274,19 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
         if year is None or value is None:
             continue
 
-        year_int = int(year)
-        value_float = float(value)
+        try:
+            year_int = int(year)
+        except (TypeError, ValueError):
+            continue
+
+        try:
+            value_float = float(value)
+        except (TypeError, ValueError):
+            value_normalized = str(value).strip().replace(" ", "").replace(",", ".")
+            try:
+                value_float = float(value_normalized)
+            except ValueError:
+                continue
         value_key = (region_id, indicator.id, year_int, source_id)
         existing_value = existing_values_map.get(value_key)
         if existing_value is None:
