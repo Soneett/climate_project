@@ -1,4 +1,4 @@
-FROM python:3.9-slim
+FROM python:3.10-slim
 
 WORKDIR /app
 
@@ -13,9 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY requirements.txt .
 
-# Устанавливаем старые, проверенные версии
-RUN pip install --no-cache-dir numpy==1.19.5
-RUN pip install --no-cache-dir pandas==1.3.5
+RUN pip install --no-cache-dir numpy pandas
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
