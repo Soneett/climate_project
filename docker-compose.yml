@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
 
   backend:
-    build: ./backend
+    build: ./old/backend
     environment:
       DB_HOST: db
       DB_PORT: 5432
