@@ -1,0 +1,35 @@
+services:
+
+  postgres-service:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: orbits
+      POSTGRES_USER: orbits_user
+      POSTGRES_PASSWORD: orbits_pass
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d orbits -U orbits_user" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  backend-service:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+
+    environment:
+      DB_NAME: orbits
+      DB_USER: orbits_user
+      DB_PASS: orbits_pass
+      DB_PORT: 5432
+      DB_HOST: postgres-service
+
+    ports:
+      - 8080:8080
+
+    depends_on:
+      - postgres-service
