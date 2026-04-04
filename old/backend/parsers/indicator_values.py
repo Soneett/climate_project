@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 
 from sqlalchemy.orm import Session
 
@@ -91,6 +92,19 @@ REGION_ALIASES = {
 }
 
 
+def _get_fallback_region_name(regions_map: dict[str, int], preferred_region_name: str = "") -> str:
+    if preferred_region_name and preferred_region_name in regions_map:
+        return preferred_region_name
+
+    if "Республика Алтай" in regions_map:
+        return "Республика Алтай"
+
+    if len(regions_map) == 1:
+        return next(iter(regions_map.keys()))
+
+    return ""
+
+
 def _resolve_region_name(raw_region_name: str, regions_map: dict[str, int], default_region_name: str = "") -> str:
     if raw_region_name in regions_map:
         return raw_region_name
@@ -108,10 +122,11 @@ def _resolve_region_name(raw_region_name: str, regions_map: dict[str, int], defa
 
 def _split_indicator(raw_name: str) -> tuple[str, str | None]:
     clean_name = _normalize_text(raw_name)
-    if "—" not in clean_name:
+    parts = re.split(r"\s+[—–-]\s+", clean_name, maxsplit=1)
+    if len(parts) < 2:
         return clean_name, None
 
-    base_name, subtype_part = clean_name.split("—", 1)
+    base_name, subtype_part = parts[0], parts[1]
     subtype = subtype_part.split(",", 1)[0].strip()
     return base_name.strip(), subtype or None
 
@@ -174,6 +189,7 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
         return
 
     regions_map = {_normalize_region_name(r.name): r.id for r in session.query(RegionsTable).all()}
+    fallback_region_name = _get_fallback_region_name(regions_map, preferred_region_name=region_name)
     sources_map = {_normalize_text(s.name): s.id for s in session.query(DataSourcesTable).all()}
     units_map = {_normalize_text(u.code): u.id for u in session.query(UnitsTable).all()}
     units_name_map = {_normalize_text(u.name): u.id for u in session.query(UnitsTable).all()}
@@ -195,7 +211,7 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
         sources_map[source_name] = source.id
 
     for row in rows:
-        row_region = _normalize_region_name(row.get("region_name")) or region_name
+        row_region = _normalize_region_name(row.get("region_name")) or region_name or fallback_region_name
         row_source = _normalize_text(row.get("source_name")) or source_name
         if not row_region:
             continue

@@ -53,7 +53,8 @@ const PieChart = ({ title, timelineLabels = [], legendLeftItems = [], legendRigh
             shadowColor: 'rgba(0,0,0,0.5)'
           }
         },
-        label: TEXT_STYLES.legendSmall
+        label: { show: false },
+        labelLine: { show: false }
       }]
     },
     options: timelineData.map((o, i) => ({
