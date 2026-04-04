@@ -1,17 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import SectionBar from "../../components/SectionBar/SectionBar";
 import { DB_TABLES } from "../../data/mockData";
+import { getUploadIndicators, uploadIndicatorData } from "../../services/dataUploadApi";
 import styles from "./LoadDataSection.module.scss";
-
-const REGIONS_LIST = [
-  "Свердловская область", "Республика Алтай",
-];
-
-const CHARTS_LIST = [
-  "Численность населения", "ВРП на душу населения",
-];
-
-const DATA_SOURCES_LIST = ["МЧС", "Росстат",];
 
 function TableManageCard({ table }) {
   return (
@@ -55,15 +46,76 @@ function TablesManagePart() {
 }
 
 function ChartsUploadPart() {
-  const [region, setRegion] = useState("");
+  const [indicatorOptions, setIndicatorOptions] = useState([]);
   const [chart, setChart] = useState("");
-  const [source, setSource] = useState("");
   const [file, setFile] = useState(null);
+  const [loadingIndicators, setLoadingIndicators] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
+  const [status, setStatus] = useState(null);
 
-  const allSelected = region && chart && source;
+  useEffect(() => {
+    let isCancelled = false;
+
+    async function loadIndicators() {
+      setLoadingIndicators(true);
+      try {
+        const indicators = await getUploadIndicators();
+        if (!isCancelled) {
+          setIndicatorOptions(indicators);
+          if (indicators.length > 0) {
+            setChart(indicators[0].key);
+          }
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          setStatus({ type: "error", message: error.message });
+        }
+      } finally {
+        if (!isCancelled) {
+          setLoadingIndicators(false);
+        }
+      }
+    }
+
+    loadIndicators();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
+  const selectedIndicator = useMemo(
+    () => indicatorOptions.find((indicator) => indicator.key === chart),
+    [indicatorOptions, chart]
+  );
+
+  const canUpload = chart && file && !isUploading;
 
   function handleFileChange(e) {
     setFile(e.target.files[0] || null);
+    setStatus(null);
+  }
+
+  async function handleUpload() {
+    if (!canUpload) {
+      return;
+    }
+
+    setIsUploading(true);
+    setStatus(null);
+
+    try {
+      const result = await uploadIndicatorData({ file, indicatorKey: chart });
+      setStatus({
+        type: "success",
+        message: `Файл обработан. Добавлено: ${result.uploaded}, пропущено: ${result.skipped}.`,
+      });
+      setFile(null);
+    } catch (error) {
+      setStatus({ type: "error", message: error.message });
+    } finally {
+      setIsUploading(false);
+    }
   }
 
   return (
@@ -71,47 +123,29 @@ function ChartsUploadPart() {
       <div className={styles.selectorsRow}>
         <select
           className={styles.selector}
-          value={region}
-          onChange={(e) => setRegion(e.target.value)}
-          aria-label="Выберите регион"
-        >
-          <option value="">Выберите регион</option>
-          {REGIONS_LIST.map((r) => (
-            <option key={r} value={r}>{r}</option>
-          ))}
-        </select>
-
-        <select
-          className={styles.selector}
           value={chart}
-          onChange={(e) => setChart(e.target.value)}
-          aria-label="Выберите название графика"
+          onChange={(e) => {
+            setChart(e.target.value);
+            setStatus(null);
+          }}
+          aria-label="Выберите показатель"
+          disabled={loadingIndicators || indicatorOptions.length === 0}
         >
-          <option value="">Выберите название графика</option>
-          {CHARTS_LIST.map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
-
-        <select
-          className={styles.selector}
-          value={source}
-          onChange={(e) => setSource(e.target.value)}
-          aria-label="Выберите источник данных"
-        >
-          <option value="">Выберите источник данных</option>
-          {DATA_SOURCES_LIST.map((s) => (
-            <option key={s} value={s}>{s}</option>
+          <option value="">
+            {loadingIndicators ? "Загружаем список показателей..." : "Выберите показатель"}
+          </option>
+          {indicatorOptions.map((item) => (
+            <option key={item.key} value={item.key}>{item.label}</option>
           ))}
         </select>
       </div>
 
-      {allSelected && (
+      {chart && (
         <div className={styles.uploadRow}>
           <label className={styles.fileLabel}>
             <input
               type="file"
-              accept=".pdf,.xlsx,.xls"
+              accept=".xlsx,.xls,.xlsm,.xlsb"
               className={styles.fileInput}
               onChange={handleFileChange}
             />
@@ -122,10 +156,26 @@ function ChartsUploadPart() {
           {file && (
             <span className={styles.fileName}>{file.name}</span>
           )}
-          <button className={styles.loadBtn} type="button" aria-label="Загрузить данные">
-            Загрузить данные
+          <button
+            className={styles.loadBtn}
+            type="button"
+            aria-label="Загрузить данные"
+            onClick={handleUpload}
+            disabled={!canUpload}
+          >
+            {isUploading ? "Загружаем..." : "Загрузить данные"}
           </button>
         </div>
+      )}
+
+      {selectedIndicator && (
+        <p className={styles.fileName}>Показатель: {selectedIndicator.label}</p>
+      )}
+
+      {status && (
+        <p className={status.type === "success" ? styles.fileName : styles.errorText}>
+          {status.message}
+        </p>
       )}
     </div>
   );
