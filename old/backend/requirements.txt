@@ -12,3 +12,4 @@ pandas==2.2.3
 pyxlsb==1.0.10
 xlrd==2.0.1
 python-multipart
+strenum
