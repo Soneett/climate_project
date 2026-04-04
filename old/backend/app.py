@@ -4,9 +4,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
-from database import engine
+from database import engine, SessionLocal
 from database_views import create_reporting_views
 from tables.base import Base
+from tables.regions import RegionsTable
 
 from routers import (
     regions_router,
@@ -33,7 +34,21 @@ from fastapi.staticfiles import StaticFiles
 async def lifespan(app: FastAPI):
     print("Creating database tables...")
     Base.metadata.create_all(bind=engine)
-    main()  
+    
+    should_seed = True
+    try:
+        with SessionLocal() as session:
+            should_seed = session.query(RegionsTable.id).first() is None
+    except Exception as exc:
+        print(f"Failed to detect seed status: {exc}")
+
+    if should_seed:
+        try:
+            main()
+        except Exception as exc:
+            print(f"Initial DB seed failed, continue without blocking startup: {exc}")
+    else:
+        print("Skipping DB seed: tables already contain data")
     create_reporting_views(engine)
     print("Database tables and views created!")
     yield
