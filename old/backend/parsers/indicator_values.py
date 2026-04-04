@@ -152,8 +152,8 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
     units_name_map = {_normalize_text(u.name): u.id for u in session.query(UnitsTable).all()}
     subtypes_map = {_normalize_text(s.name): s.id for s in session.query(IndicatorSubtypesTable).all()}
 
-    indicators_map: dict[str, IndicatorsTable] = {
-        _normalize_text(i.name): i
+    indicators_map: dict[tuple[str, int | None], IndicatorsTable] = {
+        (_normalize_text(i.name), i.subtype_id): i
         for i in session.query(IndicatorsTable).all()
     }
     existing_values_map: dict[tuple[int, int, int, int], IndicatorValuesTable] = {
@@ -220,7 +220,7 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
                 subtype_id = subtype.id
                 subtypes_map[subtype_name] = subtype_id
 
-        indicator_key = indicator_name
+        indicator_key = (indicator_name, subtype_id)
         indicator = indicators_map.get(indicator_key)
         if indicator is None:
             indicator = IndicatorsTable(
@@ -234,8 +234,6 @@ def parse_indicator_values(data: dict, session: Session, source_file: str | None
             session.flush()
             indicators_map[indicator_key] = indicator
         else:
-            if indicator.subtype_id is None and subtype_id is not None:
-                indicator.subtype_id = subtype_id
             if indicator.unit_id is None and unit_id is not None:
                 indicator.unit_id = unit_id
             if not indicator.type and indicator_type:

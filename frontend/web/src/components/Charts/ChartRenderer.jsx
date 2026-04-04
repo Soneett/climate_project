@@ -17,7 +17,7 @@ import {
   MapChart,
   ColorMarkerMap
 } from './index';
-import { fetchLineChart, fetchPieChart } from '../../services/api';
+import { fetchLineChart, fetchPieChart, fetchWaffleChart, fetchStackPlot } from '../../services/api';
 
 const CHART_COMPONENTS = {
   line: LineChart,
@@ -58,6 +58,26 @@ const hasPiePayload = (payload) => {
   );
 };
 
+const hasWafflePayload = (payload) => {
+  return Boolean(
+    payload
+    && Array.isArray(payload.timelineLabels)
+    && Array.isArray(payload.timelineData)
+    && payload.timelineLabels.length > 0
+    && payload.timelineData.length > 0
+  );
+};
+
+const hasStackPayload = (payload) => {
+  return Boolean(
+    payload
+    && Array.isArray(payload.timelineLabels)
+    && Array.isArray(payload.seriesData)
+    && payload.timelineLabels.length > 0
+    && payload.seriesData.length > 0
+  );
+};
+
 const deriveIndicatorsFromBlock = (block) => {
   if (block.indicators) {
     return (Array.isArray(block.indicators) ? block.indicators : String(block.indicators).split(','))
@@ -95,11 +115,15 @@ const deriveIndicatorsFromBlock = (block) => {
 const ChartRenderer = ({ block }) => {
   const [lineData, setLineData] = useState(block.chartData);
   const [pieData, setPieData] = useState(block.pieData);
+  const [waffleData, setWaffleData] = useState(block.waffleChartData || block.waffleData);
+  const [stackData, setStackData] = useState(block.stackPlotData);
   const { chartType, title } = block;
 
   useEffect(() => {
     setLineData(block.chartData);
     setPieData(block.pieData);
+    setWaffleData(block.waffleChartData || block.waffleData);
+    setStackData(block.stackPlotData);
 
     const indicatorsCsv = deriveIndicatorsFromBlock(block).join(',');
 
@@ -124,6 +148,22 @@ const ChartRenderer = ({ block }) => {
         }
       });
     }
+
+    if (block.chartType === 'waffleChart' || block.chartType === 'waffle') {
+      fetchWaffleChart(indicatorsCsv, regionId).then((res) => {
+        if (hasWafflePayload(res)) {
+          setWaffleData(res);
+        }
+      });
+    }
+
+    if (block.chartType === 'stackPlot') {
+      fetchStackPlot(indicatorsCsv, regionId).then((res) => {
+        if (hasStackPayload(res)) {
+          setStackData(res);
+        }
+      });
+    }
   }, [block]);
 
   // Determine which chart component to use
@@ -137,7 +177,7 @@ const ChartRenderer = ({ block }) => {
 
   switch (chartType) {
     case 'stackPlot':
-      chartProps = { ...chartProps, ...block.stackPlotData };
+      chartProps = { ...chartProps, ...(stackData || block.stackPlotData) };
       break;
     case 'windPlot':
       chartProps = { ...chartProps, ...block.windPlotData };
@@ -155,10 +195,10 @@ const ChartRenderer = ({ block }) => {
       chartProps = { ...chartProps, ...block.programsPlotData };
       break;
     case 'waffleChart':
-      chartProps = { ...chartProps, ...block.waffleChartData };
+      chartProps = { ...chartProps, ...(waffleData || block.waffleChartData) };
       break;
     case 'waffle':
-      chartProps = { ...chartProps, ...block.waffleData };
+      chartProps = { ...chartProps, ...(waffleData || block.waffleData) };
       break;
     case 'scatterPlot':
       chartProps = { ...chartProps, ...block.scatterPlotData };

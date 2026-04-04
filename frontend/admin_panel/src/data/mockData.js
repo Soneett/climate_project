@@ -15,7 +15,6 @@ export const MOCK_USERS = [
   },
 ];
 
-
 export const INFO_STATS = {
   totalIndicators: 63,
   socialAspects: 20,
@@ -108,7 +107,6 @@ export const DB_TABLES = [
   },
 ];
 
-
 export const TABLE_PREVIEW_ROWS = {
   regions: [
     { id: 1, name: "Москва", code: "77", type: "город федерального значения", parent_id: null },
@@ -161,7 +159,6 @@ export const TABLE_PREVIEW_ROWS = {
     { id: 3, region_id: 2, date: "2023-11-20", type: "снегопад", severity: "низкая", description: "Обильные снегопады", economic_loss: 5000000 },
   ],
 };
-
 
 export const MOCK_HISTORY = [
   {
