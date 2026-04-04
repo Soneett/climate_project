@@ -21,15 +21,11 @@ services:
       - db
     restart: unless-stopped
 
-  frontend:
-    build: ./frontend/web
-    restart: unless-stopped
-
   nginx:
-    image: nginx:alpine
+    build: ./frontend/web
+    container_name: climate-nginx
     depends_on:
       - backend
-      - frontend
     volumes:
       - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf
     ports:
@@ -38,3 +34,5 @@ services:
 
 volumes:
   postgres_data:
+
+  
