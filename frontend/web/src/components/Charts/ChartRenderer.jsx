@@ -125,16 +125,15 @@ const ChartRenderer = ({ block }) => {
     setWaffleData(block.waffleChartData || block.waffleData);
     setStackData(block.stackPlotData);
 
-    const indicatorsCsv = deriveIndicatorsFromBlock(block).join(',');
-
-    if (!indicatorsCsv) {
+    const indicatorList = deriveIndicatorsFromBlock(block);
+    if (indicatorList.length === 0) {
       return;
     }
 
     const regionId = block.regionId ?? block.region_id;
 
     if (block.chartType === 'line') {
-      fetchLineChart(indicatorsCsv, regionId).then((res) => {
+      fetchLineChart(indicatorList, regionId).then((res) => {
         if (hasLinePayload(res)) {
           setLineData(res);
         }
@@ -142,7 +141,7 @@ const ChartRenderer = ({ block }) => {
     }
 
     if (block.chartType === 'pie') {
-      fetchPieChart(indicatorsCsv, regionId).then((res) => {
+      fetchPieChart(indicatorList, regionId).then((res) => {
         if (hasPiePayload(res)) {
           setPieData(res);
         }
@@ -150,7 +149,7 @@ const ChartRenderer = ({ block }) => {
     }
 
     if (block.chartType === 'waffleChart' || block.chartType === 'waffle') {
-      fetchWaffleChart(indicatorsCsv, regionId).then((res) => {
+      fetchWaffleChart(indicatorList, regionId).then((res) => {
         if (hasWafflePayload(res)) {
           setWaffleData(res);
         }
@@ -158,7 +157,7 @@ const ChartRenderer = ({ block }) => {
     }
 
     if (block.chartType === 'stackPlot') {
-      fetchStackPlot(indicatorsCsv, regionId).then((res) => {
+      fetchStackPlot(indicatorList, regionId).then((res) => {
         if (hasStackPayload(res)) {
           setStackData(res);
         }

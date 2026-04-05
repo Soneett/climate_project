@@ -1,14 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import SectionBar from "../../components/SectionBar/SectionBar";
 import { DB_TABLES } from "../../data/mockData";
+import { getUploadIndicators, uploadDataFile } from "../../services/api";
 import styles from "./LoadDataSection.module.scss";
 
 const REGIONS_LIST = [
   "Свердловская область", "Республика Алтай",
-];
-
-const CHARTS_LIST = [
-  "Численность населения", "ВРП на душу населения",
 ];
 
 const DATA_SOURCES_LIST = ["МЧС", "Росстат",];
@@ -56,14 +53,59 @@ function TablesManagePart() {
 
 function ChartsUploadPart() {
   const [region, setRegion] = useState("");
-  const [chart, setChart] = useState("");
+  const [indicatorKey, setIndicatorKey] = useState("");
   const [source, setSource] = useState("");
   const [file, setFile] = useState(null);
+  const [indicatorOptions, setIndicatorOptions] = useState([]);
+  const [uploadStatus, setUploadStatus] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
 
-  const allSelected = region && chart && source;
+  const allSelected = region && indicatorKey && source;
+
+  const selectedIndicatorLabel = useMemo(
+    () => indicatorOptions.find((item) => item.key === indicatorKey)?.label || "",
+    [indicatorKey, indicatorOptions]
+  );
+
+  useEffect(() => {
+    let isMounted = true;
+    getUploadIndicators()
+      .then((response) => {
+        if (isMounted && Array.isArray(response)) {
+          setIndicatorOptions(response);
+        }
+      })
+      .catch((error) => {
+        console.error("Не удалось загрузить список парсеров:", error);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   function handleFileChange(e) {
     setFile(e.target.files[0] || null);
+  }
+
+  async function handleUpload() {
+    if (!file || !indicatorKey) {
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadStatus("");
+    try {
+      const result = await uploadDataFile({ file, indicatorKey });
+      setUploadStatus(
+        `Файл обработан (${selectedIndicatorLabel || indicatorKey}): загружено ${result.uploaded}, пропущено ${result.skipped}.`
+      );
+    } catch (error) {
+      console.error("Ошибка загрузки файла:", error);
+      setUploadStatus("Не удалось загрузить файл. Проверьте формат файла и выбранный парсер.");
+    } finally {
+      setIsUploading(false);
+    }
   }
 
   return (
@@ -83,13 +125,13 @@ function ChartsUploadPart() {
 
         <select
           className={styles.selector}
-          value={chart}
-          onChange={(e) => setChart(e.target.value)}
-          aria-label="Выберите название графика"
+          value={indicatorKey}
+          onChange={(e) => setIndicatorKey(e.target.value)}
+          aria-label="Выберите парсер"
         >
-          <option value="">Выберите название графика</option>
-          {CHARTS_LIST.map((c) => (
-            <option key={c} value={c}>{c}</option>
+          <option value="">Выберите показатель/парсер</option>
+          {indicatorOptions.map((option) => (
+            <option key={option.key} value={option.key}>{option.label}</option>
           ))}
         </select>
 
@@ -122,11 +164,18 @@ function ChartsUploadPart() {
           {file && (
             <span className={styles.fileName}>{file.name}</span>
           )}
-          <button className={styles.loadBtn} type="button" aria-label="Загрузить данные">
+          <button
+            className={styles.loadBtn}
+            type="button"
+            aria-label="Загрузить данные"
+            onClick={handleUpload}
+            disabled={!file || isUploading}
+          >
             Загрузить данные
           </button>
         </div>
       )}
+      {uploadStatus && <p>{uploadStatus}</p>}
     </div>
   );
 }

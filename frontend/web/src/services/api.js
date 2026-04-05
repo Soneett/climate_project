@@ -3,7 +3,16 @@ const DEFAULT_REGION_ID = import.meta.env.VITE_DEFAULT_REGION_ID || '1';
 
 const buildAnalyticsQuery = (indicators, regionId) => {
   const params = new URLSearchParams();
-  params.set('indicators', indicators);
+  const indicatorList = Array.isArray(indicators)
+    ? indicators
+    : String(indicators ?? '')
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+  indicatorList.forEach((indicator) => {
+    params.append('indicators', indicator);
+  });
   params.set('region_id', String(regionId || DEFAULT_REGION_ID));
   return params.toString();
 };

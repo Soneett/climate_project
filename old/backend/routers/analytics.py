@@ -17,7 +17,7 @@ router = APIRouter(prefix="/analytics", tags=["Analytics"])
 @router.get("/line-chart", response_model=LineChartResponseModel)
 async def get_line_chart_data(
     region_id: int = Query(..., description="ID региона"),
-    indicators: str = Query(..., description="Список названий показателей через запятую"),
+    indicators: str | list[str] = Query(..., description="Список названий показателей"),
     session: Session = Depends(get_db),
 ):
     service = AnalyticsService()
@@ -27,7 +27,7 @@ async def get_line_chart_data(
 @router.get("/pie-chart", response_model=PieChartResponseModel)
 async def get_pie_chart_data(
     region_id: int = Query(..., description="ID региона"),
-    indicators: str = Query(..., description="Список названий показателей через запятую"),
+    indicators: str | list[str] = Query(..., description="Список названий показателей"),
     session: Session = Depends(get_db),
 ):
     service = AnalyticsService()
@@ -55,7 +55,7 @@ async def get_bar_chart_b_data(
 @router.get("/waffle-chart", response_model=WaffleChartResponseModel)
 async def get_waffle_chart_data(
     region_id: int = Query(..., description="ID региона"),
-    indicators: str = Query(..., description="Список показателей и подпоказателей через запятую"),
+    indicators: str | list[str] = Query(..., description="Список показателей и подпоказателей"),
     session: Session = Depends(get_db),
 ):
     service = AnalyticsService()
@@ -65,7 +65,7 @@ async def get_waffle_chart_data(
 @router.get("/stack-plot", response_model=StackPlotResponseModel)
 async def get_stack_plot_data(
     region_id: int = Query(..., description="ID региона"),
-    indicators: str = Query(..., description="Список показателей и подпоказателей через запятую"),
+    indicators: str | list[str] = Query(..., description="Список показателей и подпоказателей"),
     session: Session = Depends(get_db),
 ):
     service = AnalyticsService()

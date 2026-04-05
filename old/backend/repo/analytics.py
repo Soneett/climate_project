@@ -78,6 +78,26 @@ class AnalyticsRepo:
             .all()
         )
 
+    def get_indicator_values_without_year_bounds(
+        self,
+        session: Session,
+        region_id: int,
+        indicator_ids: list[int],
+    ) -> list[IndicatorValuesTable]:
+        if not indicator_ids:
+            return []
+
+        return (
+            session.query(IndicatorValuesTable)
+            .filter(
+                IndicatorValuesTable.region_id == region_id,
+                IndicatorValuesTable.indicator_id.in_(indicator_ids),
+                IndicatorValuesTable.is_deleted == False,
+            )
+            .order_by(IndicatorValuesTable.year.asc())
+            .all()
+        )
+
     def get_population_rows(
         self,
         session: Session,
