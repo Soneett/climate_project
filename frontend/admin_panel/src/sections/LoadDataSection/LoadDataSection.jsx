@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import SectionBar from "../../components/SectionBar/SectionBar";
 import { DB_TABLES } from "../../data/mockData";
+import { fetchUploadIndicators, uploadIndicatorFile } from "../../services/api";
 import styles from "./LoadDataSection.module.scss";
 
 const REGIONS_LIST = [
   "Свердловская область", "Республика Алтай",
-];
-
-const CHARTS_LIST = [
-  "Численность населения", "ВРП на душу населения",
 ];
 
 const DATA_SOURCES_LIST = ["МЧС", "Росстат",];
@@ -56,14 +53,72 @@ function TablesManagePart() {
 
 function ChartsUploadPart() {
   const [region, setRegion] = useState("");
-  const [chart, setChart] = useState("");
+  const [indicatorKey, setIndicatorKey] = useState("");
   const [source, setSource] = useState("");
   const [file, setFile] = useState(null);
+  const [indicators, setIndicators] = useState([]);
+  const [isLoadingIndicators, setIsLoadingIndicators] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [status, setStatus] = useState("");
+  const [statusType, setStatusType] = useState("default");
 
-  const allSelected = region && chart && source;
+  const allSelected = region && indicatorKey && source;
+
+  React.useEffect(() => {
+    let isMounted = true;
+
+    const loadIndicators = async () => {
+      setIsLoadingIndicators(true);
+      setStatus("");
+      try {
+        const payload = await fetchUploadIndicators();
+        if (!isMounted) {
+          return;
+        }
+        setIndicators(Array.isArray(payload) ? payload : []);
+      } catch (error) {
+        if (!isMounted) {
+          return;
+        }
+        setStatus(error.message || "Не удалось загрузить показатели.");
+        setStatusType("error");
+      } finally {
+        if (isMounted) {
+          setIsLoadingIndicators(false);
+        }
+      }
+    };
+
+    loadIndicators();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   function handleFileChange(e) {
     setFile(e.target.files[0] || null);
+  }
+
+  async function handleUpload() {
+    if (!file || !indicatorKey) {
+      return;
+    }
+
+    setIsUploading(true);
+    setStatus("");
+    try {
+      const result = await uploadIndicatorFile({ indicatorKey, file });
+      setStatusType("success");
+      setStatus(
+        `Файл загружен: добавлено ${result.uploaded ?? 0}, пропущено ${result.skipped ?? 0}.`
+      );
+    } catch (error) {
+      setStatusType("error");
+      setStatus(error.message || "Ошибка при загрузке файла.");
+    } finally {
+      setIsUploading(false);
+    }
   }
 
   return (
@@ -83,13 +138,16 @@ function ChartsUploadPart() {
 
         <select
           className={styles.selector}
-          value={chart}
-          onChange={(e) => setChart(e.target.value)}
-          aria-label="Выберите название графика"
+          value={indicatorKey}
+          onChange={(e) => setIndicatorKey(e.target.value)}
+          aria-label="Выберите показатель"
+          disabled={isLoadingIndicators}
         >
-          <option value="">Выберите название графика</option>
-          {CHARTS_LIST.map((c) => (
-            <option key={c} value={c}>{c}</option>
+          <option value="">
+            {isLoadingIndicators ? "Загрузка показателей..." : "Выберите показатель"}
+          </option>
+          {indicators.map((item) => (
+            <option key={item.key} value={item.key}>{item.name}</option>
           ))}
         </select>
 
@@ -111,7 +169,7 @@ function ChartsUploadPart() {
           <label className={styles.fileLabel}>
             <input
               type="file"
-              accept=".pdf,.xlsx,.xls"
+              accept=".xlsx,.xls,.xlsm,.xlsb"
               className={styles.fileInput}
               onChange={handleFileChange}
             />
@@ -122,10 +180,28 @@ function ChartsUploadPart() {
           {file && (
             <span className={styles.fileName}>{file.name}</span>
           )}
-          <button className={styles.loadBtn} type="button" aria-label="Загрузить данные">
-            Загрузить данные
+          <button
+            className={styles.loadBtn}
+            type="button"
+            aria-label="Загрузить данные"
+            disabled={!file || isUploading}
+            onClick={handleUpload}
+          >
+            {isUploading ? "Загрузка..." : "Загрузить данные"}
           </button>
         </div>
+      )}
+
+      {status && (
+        <p
+          style={{
+            marginTop: 12,
+            color: statusType === "error" ? "#b42318" : "#166534",
+            fontWeight: 600
+          }}
+        >
+          {status}
+        </p>
       )}
     </div>
   );

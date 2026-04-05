@@ -43,6 +43,17 @@ const NavBar = ({
                 />
               </div>
             ))}
+            <div
+              className={styles.itemRight}
+              role="button"
+              tabIndex={0}
+              onClick={() => { window.location.href = "/admin/"; }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") window.location.href = "/admin/";
+              }}
+            >
+              <span className={styles.btn}>Режим администратора</span>
+            </div>
           </nav>
         </div>
       </header>
@@ -81,6 +92,18 @@ const NavBar = ({
                  if (e.key === "Enter") navigate("/indicators");
                }}>
             <span className={styles.btn}>Показатели региона</span>
+          </div>
+
+          <div
+            className={styles.itemRight}
+            role="button"
+            tabIndex={0}
+            onClick={() => { window.location.href = "/admin/"; }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") window.location.href = "/admin/";
+            }}
+          >
+            <span className={styles.btn}>Режим администратора</span>
           </div>
         </nav>
       </div>

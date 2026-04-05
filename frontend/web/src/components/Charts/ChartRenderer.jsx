@@ -25,6 +25,7 @@ const CHART_COMPONENTS = {
   bar: BarChartA,
   barB: BarChartB,
   stackPlot: StackPlot,
+  stackplot: StackPlot,
   windPlot: WindPlot,
   programsPlot: ProgramsPlot,
   waffleChart: WaffleChart,
@@ -104,6 +105,10 @@ const deriveIndicatorsFromBlock = (block) => {
     }
   }
 
+  if ((block.chartType === 'stackPlot' || block.chartType === 'stackplot') && block.stackPlotData?.legendItems) {
+    return block.stackPlotData.legendItems.filter(Boolean);
+  }
+
   return [];
 };
 
@@ -157,7 +162,7 @@ const ChartRenderer = ({ block }) => {
       });
     }
 
-    if (block.chartType === 'stackPlot') {
+    if (block.chartType === 'stackPlot' || block.chartType === 'stackplot') {
       fetchStackPlot(indicatorsCsv, regionId).then((res) => {
         if (hasStackPayload(res)) {
           setStackData(res);
@@ -177,6 +182,7 @@ const ChartRenderer = ({ block }) => {
 
   switch (chartType) {
     case 'stackPlot':
+    case 'stackplot':
       chartProps = { ...chartProps, ...(stackData || block.stackPlotData) };
       break;
     case 'windPlot':
