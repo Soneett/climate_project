@@ -22,7 +22,9 @@ services:
     restart: unless-stopped
 
   nginx:
-    build: ./frontend
+  build:
+    context: .             
+    dockerfile: frontend/Dockerfile
     container_name: climate-nginx
     depends_on:
       - backend

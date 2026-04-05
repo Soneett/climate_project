@@ -4,7 +4,7 @@ FROM node:22 AS builder
 WORKDIR /app
 
 # копируем весь фронт
-COPY . ./frontend
+COPY . .
 
 # билд web
 WORKDIR /app/frontend/web
