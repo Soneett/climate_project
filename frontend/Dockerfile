@@ -1,5 +1,5 @@
 # -------- STAGE 1: build frontend --------
-FROM node:18 AS builder
+FROM node:22 AS builder
 
 WORKDIR /app
 
@@ -21,7 +21,7 @@ RUN npm run build
 FROM nginx:alpine
 
 # nginx config
-COPY ./deploy/nginx.conf /etc/nginx/conf.d/default.conf
+COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
 
 # копируем билды
 COPY --from=builder /app/frontend/web/dist /usr/share/nginx/html/web
