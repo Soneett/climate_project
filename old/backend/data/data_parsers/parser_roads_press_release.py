@@ -4,7 +4,6 @@
 import json
 import re
 from typing import Any, Dict, List, Optional
-import pdfplumber
 
 def _clean(s: str) -> str:
     """Очищает строку от лишних пробелов и неразрывных пробелов"""
@@ -36,6 +35,8 @@ def parse_roads_pdf(pdf_path: str, region_name: str = "Республика Ал
     """
     Парсит PDF-файл и извлекает ключевые показатели
     """
+    import pdfplumber
+
     pages = []
     try:
         with pdfplumber.open(pdf_path) as pdf:
