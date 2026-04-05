@@ -126,6 +126,7 @@ app.include_router(program_regions_router)
 app.include_router(events_router)
 app.include_router(analytics_router, prefix="/api")
 app.include_router(data_upload_router)
+app.include_router(data_upload_router, prefix="/api")
 app.include_router(config_router)
 
 if __name__ == "__main__": 

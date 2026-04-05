@@ -25,7 +25,7 @@ export default function LoginPage() {
               id="email"
               className={styles.input}
               type="email"
-              placeholder="admin@example.com"
+              placeholder="admin"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="username"
