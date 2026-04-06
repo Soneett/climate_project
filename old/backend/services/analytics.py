@@ -59,6 +59,14 @@ def _age_sort_key(age_code: str) -> tuple[int, int, str]:
     return (2, 10**9, normalized)
 
 
+def _extract_age_value(age_code: str) -> int | None:
+    normalized = age_code.strip().replace('–', '-').replace('—', '-')
+    match = re.search(r"\d+", normalized)
+    if not match:
+        return None
+    return int(match.group(0))
+
+
 @dataclass
 class IndicatorSelection:
     indicator_term: str
@@ -437,37 +445,60 @@ class AnalyticsService:
         region_id: int,
     ) -> PopulationPyramidResponseModel:
         rows = self.repo.get_population_rows(session=session, region_id=region_id)
+        if not rows:
+            return PopulationPyramidResponseModel(
+                categories=[],
+                legendItems=["Мужчины", "Женщины"],
+                timelineLabels=[],
+                timelineData=[],
+            )
 
-        grouped: dict[int, dict[str, dict[str, float]]] = defaultdict(lambda: defaultdict(lambda: {"M": 0.0, "F": 0.0}))
-        for row in rows:
-            if not _is_age_interval(row.age_code):
-                continue
-            grouped[row.year][row.age_code][row.sex_code] = float(row.value)
+        available_years = sorted({row.year for row in rows})
+        target_year = 2024 if 2024 in available_years else available_years[-1]
+        year_rows = [row for row in rows if row.year == target_year and row.sex_code in {"M", "F"}]
 
-        timeline_labels = [str(year) for year in sorted(grouped.keys())]
+        grouped: dict[str, dict[str, float]] = defaultdict(lambda: {"M": 0.0, "F": 0.0})
+        interval_rows = [row for row in year_rows if _is_age_interval(row.age_code)]
+
+        if interval_rows:
+            for row in interval_rows:
+                grouped[row.age_code][row.sex_code] = float(row.value)
+        else:
+            for row in year_rows:
+                age_value = _extract_age_value(row.age_code)
+                if age_value is None:
+                    continue
+
+                if age_value >= 100:
+                    bucket = "100+"
+                else:
+                    bucket_start = (age_value // 5) * 5
+                    bucket_end = bucket_start + 4
+                    bucket = f"{bucket_start}-{bucket_end}"
+
+                grouped[bucket][row.sex_code] += float(row.value)
+
         categories = sorted(
-            {age_code for yearly in grouped.values() for age_code in yearly.keys()},
+            grouped.keys(),
             key=_age_sort_key,
         )
 
-        timeline_data: list[PopulationPyramidTimelinePointModel] = []
-        for year in sorted(grouped.keys()):
-            male = []
-            female = []
-            for age_code in categories:
-                male.append(-abs(grouped[year][age_code].get("M", 0.0)))
-                female.append(abs(grouped[year][age_code].get("F", 0.0)))
+        male = []
+        female = []
+        for age_code in categories:
+            male.append(-abs(grouped[age_code].get("M", 0.0)))
+            female.append(abs(grouped[age_code].get("F", 0.0)))
 
-            timeline_data.append(
-                PopulationPyramidTimelinePointModel(
-                    title={"text": f"Половозрастная структура — {year}"},
-                    series=[{"data": male}, {"data": female}],
-                )
+        timeline_data = [
+            PopulationPyramidTimelinePointModel(
+                title={"text": f"Половозрастная структура — {target_year}"},
+                series=[{"data": male}, {"data": female}],
             )
+        ]
 
         return PopulationPyramidResponseModel(
             categories=categories,
             legendItems=["Мужчины", "Женщины"],
-            timelineLabels=timeline_labels,
+            timelineLabels=[str(target_year)],
             timelineData=timeline_data,
         )

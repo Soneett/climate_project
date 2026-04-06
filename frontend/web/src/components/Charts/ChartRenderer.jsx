@@ -128,7 +128,7 @@ const ChartRenderer = ({ block }) => {
   const [pieData, setPieData] = useState(block.pieData);
   const [waffleData, setWaffleData] = useState(block.waffleChartData || block.waffleData);
   const [stackData, setStackData] = useState(block.stackPlotData);
-  const [pyramidData, setPyramidData] = useState(block.barBData);
+  const [pyramidData, setPyramidData] = useState(null);
   const { chartType, title } = block;
 
   useEffect(() => {
@@ -136,7 +136,7 @@ const ChartRenderer = ({ block }) => {
     setPieData(block.pieData);
     setWaffleData(block.waffleChartData || block.waffleData);
     setStackData(block.stackPlotData);
-    setPyramidData(block.barBData);
+    setPyramidData(null);
 
     const indicatorList = deriveIndicatorsFromBlock(block);
     const regionId = block.regionId ?? block.region_id;
@@ -204,7 +204,7 @@ const ChartRenderer = ({ block }) => {
       chartProps = { ...chartProps, ...block.windPlotData };
       break;
     case 'barB':
-      chartProps = { ...chartProps, ...(pyramidData || block.barBData) };
+      chartProps = { ...chartProps, ...(pyramidData || { timelineLabels: [], categories: [], legendItems: ['Мужчины', 'Женщины'], timelineData: [] }) };
       break;
     case 'bar':
       chartProps = { ...chartProps, ...block.barData };
