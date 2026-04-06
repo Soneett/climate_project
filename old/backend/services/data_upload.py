@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import tempfile
 import uuid
+import logging
 from pathlib import Path
 
 from fastapi import HTTPException, UploadFile
@@ -15,6 +16,7 @@ from services.parsers.registry import get_parser_config, list_parser_configs
 
 class DataUploadService:
     SUPPORTED_EXTENSIONS = {".xls", ".xlsx", ".xlsm", ".xlsb"}
+    logger = logging.getLogger(__name__)
 
     def get_available_indicators(self) -> list[dict[str, str]]:
         return list_parser_configs()
@@ -57,6 +59,15 @@ class DataUploadService:
             uploaded = max(0, after_count - before_count)
             skipped = max(0, rows_total - uploaded)
 
+            self.logger.info(
+                "Data upload completed: indicator_key=%s, filename=%s, parsed_rows=%s, uploaded=%s, skipped=%s",
+                indicator_key,
+                filename,
+                rows_total,
+                uploaded,
+                skipped,
+            )
+
             return {
                 "status": "success",
                 "fileType": extension.lstrip("."),
@@ -66,9 +77,11 @@ class DataUploadService:
             }
         except HTTPException:
             session.rollback()
+            self.logger.exception("Data upload failed with HTTPException: indicator_key=%s, filename=%s", indicator_key, filename)
             raise
         except Exception as exc:
             session.rollback()
+            self.logger.exception("Data upload failed: indicator_key=%s, filename=%s", indicator_key, filename)
             raise HTTPException(status_code=500, detail=f"Failed to parse and load file: {exc}") from exc
         finally:
             if temporary_path.exists():

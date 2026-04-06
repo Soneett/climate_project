@@ -13,6 +13,7 @@ from data.data_parsers.parser_migration_increment import parse_migration_increme
 from data.data_parsers.parser_org_liquidation import parse_org_liquidation_ra_yearonly
 from data.data_parsers.parser_org_ownership import parse_org_ownership_xlsx
 from data.data_parsers.parser_poverty_level import parse_poverty_xlsx
+from data.data_parsers.parser_roads_press_release import parse_roads_pdf
 from data.data_parsers.parser_vrp import parse_vrp_xlsx
 
 
@@ -90,6 +91,12 @@ _PARSER_CONFIGS: dict[str, ParserConfig] = {
         label="Оценка численности коренных малочисленных народов",
         parse_fn=parse_kmn_population_xlsx,
         source_file="kmn_population.json",
+    ),
+    "road_press_release": ParserConfig(
+        key="road_press_release",
+        label="Состояние автомобильных дорог (пресс-релиз)",
+        parse_fn=parse_roads_pdf,
+        source_file="road_press_release.json",
     ),
 }
 

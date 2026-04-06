@@ -70,11 +70,13 @@ class AnalyticsService:
         self.repo = repo or AnalyticsRepo()
 
     @staticmethod
-    def _parse_indicators(indicators: str) -> list[str]:
-        return [part.strip() for part in indicators.split(",") if part.strip()]
+    def _parse_indicators(indicators: str | list[str]) -> list[str]:
+        if isinstance(indicators, list):
+            return [str(part).strip() for part in indicators if str(part).strip()]
+        return [part.strip() for part in str(indicators).split(",") if part.strip()]
 
     @staticmethod
-    def _parse_indicator_selections(indicators: str) -> list[IndicatorSelection]:
+    def _parse_indicator_selections(indicators: str | list[str]) -> list[IndicatorSelection]:
         selections: list[IndicatorSelection] = []
         for raw_value in AnalyticsService._parse_indicators(indicators):
             if ":" not in raw_value:
@@ -111,7 +113,7 @@ class AnalyticsService:
     def _resolve_indicator_ids(
         self,
         session: Session,
-        indicators: str,
+        indicators: str | list[str],
     ) -> list[int]:
         selections = self._parse_indicator_selections(indicators)
         names = [selection.indicator_term for selection in selections]
@@ -208,7 +210,7 @@ class AnalyticsService:
         self,
         session: Session,
         region_id: int,
-        indicators: str,
+        indicators: str | list[str],
     ) -> LineChartResponseModel:
         indicator_ids = self._resolve_indicator_ids(session=session, indicators=indicators)
         if not indicator_ids:
@@ -254,7 +256,7 @@ class AnalyticsService:
         self,
         session: Session,
         region_id: int,
-        indicators: str,
+        indicators: str | list[str],
     ) -> PieChartResponseModel:
         indicator_ids = self._resolve_indicator_ids(session=session, indicators=indicators)
         if not indicator_ids:
@@ -312,7 +314,7 @@ class AnalyticsService:
         self,
         session: Session,
         region_id: int,
-        indicators: str,
+        indicators: str | list[str],
     ) -> WaffleChartResponseModel:
         indicator_ids = self._resolve_indicator_ids(session=session, indicators=indicators)
         if not indicator_ids:
@@ -386,13 +388,19 @@ class AnalyticsService:
         self,
         session: Session,
         region_id: int,
-        indicators: str,
+        indicators: str | list[str],
     ) -> StackPlotResponseModel:
         indicator_ids = self._resolve_indicator_ids(session=session, indicators=indicators)
         if not indicator_ids:
             return StackPlotResponseModel(timelineLabels=[], legendItems=[], seriesData=[])
 
         values = self.repo.get_indicator_values(session=session, region_id=region_id, indicator_ids=indicator_ids)
+        if not values:
+            values = self.repo.get_indicator_values_without_year_bounds(
+                session=session,
+                region_id=region_id,
+                indicator_ids=indicator_ids,
+            )
         if not values:
             return StackPlotResponseModel(timelineLabels=[], legendItems=[], seriesData=[])
 

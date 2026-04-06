@@ -303,21 +303,16 @@ export const CONTENT_BLOCKS = {
   "s2": [
     {
       id: "s2-1",
-      title: "Состав доходов",
-      chartType: "pie",
-      pieData: {
-        title: "Состав доходов",
-        timelineLabels: ['2020', '2021', '2022', '2023', '2024'],
-        legendLeftItems: ['Зарплата', 'Пенсии', 'Соцвыплаты'],
-        legendRightItems: ['Доходы от собственности', 'Другие'],
-        timelineData: [
-          { title: { text: 'Состав доходов — 2020' }, series: [{ data: [{ value: 66, name: 'Зарплата' }, { value: 20, name: 'Пенсии' }, { value: 5, name: 'Соцвыплаты' }, { value: 3, name: 'Доходы от собственности' }, { value: 6, name: 'Другие' }] }] },
-          { title: { text: 'Состав доходов — 2021' }, series: [{ data: [{ value: 67, name: 'Зарплата' }, { value: 19, name: 'Пенсии' }, { value: 5, name: 'Соцвыплаты' }, { value: 3, name: 'Доходы от собственности' }, { value: 6, name: 'Другие' }] }] },
-          { title: { text: 'Состав доходов — 2022' }, series: [{ data: [{ value: 68, name: 'Зарплата' }, { value: 19, name: 'Пенсии' }, { value: 5, name: 'Соцвыплаты' }, { value: 3, name: 'Доходы от собственности' }, { value: 5, name: 'Другие' }] }] },
-          { title: { text: 'Состав доходов — 2023' }, series: [{ data: [{ value: 69, name: 'Зарплата' }, { value: 18, name: 'Пенсии' }, { value: 5, name: 'Соцвыплаты' }, { value: 3, name: 'Доходы от собственности' }, { value: 5, name: 'Другие' }] }] },
-          { title: { text: 'Состав доходов — 2024' }, series: [{ data: [{ value: 70, name: 'Зарплата' }, { value: 18, name: 'Пенсии' }, { value: 5, name: 'Соцвыплаты' }, { value: 3, name: 'Доходы от собственности' }, { value: 4, name: 'Другие' }] }] },
+      title: "Структура доходов",
+      indicators: ["Денежные доходы:всего","Денежные расходы:всего"],
+      chartType: "line",
+      chartData: {
+        labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+        datasets: [
+          { name: 'Прибыло', data: [15000, 14500, 13800, 14200, 15100, 15800] },
+          { name: 'Убыло', data: [18000, 17500, 16200, 15800, 15500, 15200] }
         ]
-      }
+        }
     },
     {
       id: "s2-2",

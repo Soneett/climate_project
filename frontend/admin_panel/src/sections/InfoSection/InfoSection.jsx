@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SectionBar from "../../components/SectionBar/SectionBar";
 import Modal from "../../shared/Modal/Modal";
 import { DB_TABLES, TABLE_PREVIEW_ROWS, INFO_STATS } from "../../data/mockData";
+import { getTableChunk, getTableCount } from "../../services/api";
 import styles from "./InfoSection.module.scss";
 
 function StatsRow({ label, value, hasGapBefore }) {
@@ -13,9 +14,8 @@ function StatsRow({ label, value, hasGapBefore }) {
   );
 }
 
-function TablePreviewCard({ table, onClose }) {
+function TablePreviewCard({ table, previewRows }) {
   const [modalOpen, setModalOpen] = useState(false);
-  const previewRows = TABLE_PREVIEW_ROWS[table.key] ?? [];
 
   return (
     <div className={styles.previewCard}>
@@ -102,6 +102,57 @@ function TablePreviewCard({ table, onClose }) {
 
 export default function InfoSection({ stats = INFO_STATS }) {
   const [openTableKey, setOpenTableKey] = useState(null);
+  const [tableRowsMap, setTableRowsMap] = useState(TABLE_PREVIEW_ROWS);
+  const [liveStats, setLiveStats] = useState(stats);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadInfoData() {
+      try {
+        const countEntries = await Promise.all(
+          DB_TABLES.map(async (table) => {
+            const count = await getTableCount(table.key);
+            return [table.key, Number(count) || 0];
+          })
+        );
+
+        if (!isMounted) {
+          return;
+        }
+
+        const countMap = Object.fromEntries(countEntries);
+        setLiveStats((prev) => ({
+          ...prev,
+          totalIndicators: countMap.indicators ?? prev.totalIndicators,
+          socialAspects: countMap.indicator_subtypes ?? prev.socialAspects,
+          regionalData: countMap.regions ?? prev.regionalData,
+          climate: countMap.indicator_values ?? prev.climate,
+          governanceAndPolitics: countMap.regional_programs ?? prev.governanceAndPolitics,
+        }));
+
+        const rowsEntries = await Promise.all(
+          DB_TABLES.map(async (table) => {
+            const rows = await getTableChunk(table.key, 3, 0);
+            return [table.key, Array.isArray(rows) && rows.length > 0 ? rows : (TABLE_PREVIEW_ROWS[table.key] ?? [])];
+          })
+        );
+
+        if (!isMounted) {
+          return;
+        }
+
+        setTableRowsMap(Object.fromEntries(rowsEntries));
+      } catch (error) {
+        console.error("Failed to load admin info data:", error);
+      }
+    }
+
+    loadInfoData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   function handleTableToggle(key) {
     setOpenTableKey((prev) => (prev === key ? null : key));
@@ -116,14 +167,14 @@ export default function InfoSection({ stats = INFO_STATS }) {
         <div className={styles.statsTableWrapper}>
           <table className={styles.statsTable}>
             <tbody>
-              <StatsRow label="Общее число показателей" value={stats.totalIndicators} />
-              <StatsRow label="Социальные аспекты" value={stats.socialAspects} />
-              <StatsRow label="Региональные данные" value={stats.regionalData} />
-              <StatsRow label="Климат" value={stats.climate} />
-              <StatsRow label="Управление и политика" value={stats.governanceAndPolitics} />
-              <StatsRow label="Начало периода" value={stats.periodStart} hasGapBefore />
-              <StatsRow label="Конец периода" value={stats.periodEnd} />
-              <StatsRow label="Последнее обновление" value={stats.lastUpdate} hasGapBefore />
+              <StatsRow label="Общее число показателей" value={liveStats.totalIndicators} />
+              <StatsRow label="Социальные аспекты" value={liveStats.socialAspects} />
+              <StatsRow label="Региональные данные" value={liveStats.regionalData} />
+              <StatsRow label="Климат" value={liveStats.climate} />
+              <StatsRow label="Управление и политика" value={liveStats.governanceAndPolitics} />
+              <StatsRow label="Начало периода" value={liveStats.periodStart} hasGapBefore />
+              <StatsRow label="Конец периода" value={liveStats.periodEnd} />
+              <StatsRow label="Последнее обновление" value={liveStats.lastUpdate} hasGapBefore />
             </tbody>
           </table>
         </div>
@@ -147,7 +198,7 @@ export default function InfoSection({ stats = INFO_STATS }) {
                 {openTableKey === table.key && (
                   <TablePreviewCard
                     table={table}
-                    onClose={() => setOpenTableKey(null)}
+                    previewRows={tableRowsMap[table.key] ?? []}
                   />
                 )}
               </div>
