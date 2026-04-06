@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import SectionBar from "../../components/SectionBar/SectionBar";
 import Modal from "../../shared/Modal/Modal";
 import { DB_TABLES, TABLE_PREVIEW_ROWS, INFO_STATS } from "../../data/mockData";
-import { getTableChunk, getTableCount } from "../../services/api";
+import { getTableChunk, getTableCountFromChunks } from "../../services/api";
 import styles from "./InfoSection.module.scss";
 
 function StatsRow({ label, value, hasGapBefore }) {
@@ -112,7 +112,7 @@ export default function InfoSection({ stats = INFO_STATS }) {
       try {
         const countEntries = await Promise.all(
           DB_TABLES.map(async (table) => {
-            const count = await getTableCount(table.key);
+            const count = await getTableCountFromChunks(table.key);
             return [table.key, Number(count) || 0];
           })
         );

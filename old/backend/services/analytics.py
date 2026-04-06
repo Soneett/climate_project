@@ -177,11 +177,10 @@ class AnalyticsService:
                         subtype_name = subtype_map.get(indicator.subtype_id, "")
                         indicator_name = _normalize_indicator_term(indicator.name)
 
+                        search_target = subtype_name or indicator_name
                         if regex_patterns and any(
-                            pattern.fullmatch(subtype_name)
-                            or pattern.search(subtype_name)
-                            or pattern.fullmatch(indicator_name)
-                            or pattern.search(indicator_name)
+                            pattern.fullmatch(search_target)
+                            or pattern.search(search_target)
                             for pattern in regex_patterns
                         ):
                             filtered.append(indicator.id)
