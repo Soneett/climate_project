@@ -10,12 +10,16 @@ from fastapi import HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
 from parsers.indicator_values import parse_indicator_values
+from parsers.population_age_sex import parse_population_rows
+from tables.data_sources import DataSourcesTable
 from tables.indicator_values import IndicatorValuesTable
+from tables.population_age_sex import PopulationAgeSexTable
+from tables.regions import RegionsTable
 from services.parsers.registry import get_parser_config, list_parser_configs
 
 
 class DataUploadService:
-    SUPPORTED_EXTENSIONS = {".xls", ".xlsx", ".xlsm", ".xlsb"}
+    SUPPORTED_EXTENSIONS = {".xls", ".xlsx", ".xlsm", ".xlsb", ".pdf"}
     logger = logging.getLogger(__name__)
 
     def get_available_indicators(self) -> list[dict[str, str]]:
@@ -47,13 +51,32 @@ class DataUploadService:
             temporary_path.write_bytes(content)
 
             payload = parser_config.parse_fn(str(temporary_path))
-            rows = payload.get("indicator_values", {}).get("rows", []) if isinstance(payload, dict) else []
-            rows_total = len(rows)
+            rows_total = 0
+            before_count = 0
+            after_count = 0
 
-            before_count = session.query(IndicatorValuesTable).count()
-            parse_indicator_values(payload, session=session, source_file=parser_config.source_file)
-            session.flush()
-            after_count = session.query(IndicatorValuesTable).count()
+            if isinstance(payload, dict) and payload.get("indicator_values"):
+                rows = payload.get("indicator_values", {}).get("rows", [])
+                rows_total = len(rows)
+                before_count = session.query(IndicatorValuesTable).count()
+                parse_indicator_values(payload, session=session, source_file=parser_config.source_file)
+                session.flush()
+                after_count = session.query(IndicatorValuesTable).count()
+            elif isinstance(payload, dict) and payload.get("population_age_sex"):
+                rows = payload.get("population_age_sex", {}).get("rows", [])
+                rows_total = len(rows)
+                region = session.query(RegionsTable).filter(RegionsTable.is_deleted == False).order_by(RegionsTable.id.asc()).first()
+                source = session.query(DataSourcesTable).filter(DataSourcesTable.is_deleted == False).order_by(DataSourcesTable.id.asc()).first()
+                if region is None or source is None:
+                    raise HTTPException(status_code=400, detail="Missing regions or data sources in DB for population upload.")
+
+                before_count = session.query(PopulationAgeSexTable).count()
+                parse_population_rows(rows, session=session, region_id=region.id, source_id=source.id)
+                session.flush()
+                after_count = session.query(PopulationAgeSexTable).count()
+            else:
+                raise HTTPException(status_code=400, detail="Parser output is not supported for DB upload.")
+
             session.commit()
 
             uploaded = max(0, after_count - before_count)

@@ -28,6 +28,9 @@ export const fetchWaffleChart = (indicators, regionId) =>
 
 export const fetchStackPlot = (indicators, regionId) =>
   fetchData(`analytics/stack-plot?${buildAnalyticsQuery(indicators, regionId)}`);
+
+export const fetchPopulationPyramid = (regionId) =>
+  fetchData(`analytics/population-pyramid?region_id=${encodeURIComponent(String(regionId || DEFAULT_REGION_ID))}`);
 /**
  * Base fetch function for API requests
  * @param {string} endpoint - API endpoint to fetch from

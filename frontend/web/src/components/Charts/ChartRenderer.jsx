@@ -17,7 +17,7 @@ import {
   MapChart,
   ColorMarkerMap
 } from './index';
-import { fetchLineChart, fetchPieChart, fetchWaffleChart, fetchStackPlot } from '../../services/api';
+import { fetchLineChart, fetchPieChart, fetchWaffleChart, fetchStackPlot, fetchPopulationPyramid } from '../../services/api';
 
 const CHART_COMPONENTS = {
   line: LineChart,
@@ -78,6 +78,17 @@ const hasStackPayload = (payload) => {
   );
 };
 
+
+const hasPyramidPayload = (payload) => {
+  return Boolean(
+    payload
+    && Array.isArray(payload.categories)
+    && Array.isArray(payload.timelineData)
+    && payload.categories.length > 0
+    && payload.timelineData.length > 0
+  );
+};
+
 const deriveIndicatorsFromBlock = (block) => {
   if (block.indicators) {
     return (Array.isArray(block.indicators) ? block.indicators : String(block.indicators).split(','))
@@ -117,6 +128,7 @@ const ChartRenderer = ({ block }) => {
   const [pieData, setPieData] = useState(block.pieData);
   const [waffleData, setWaffleData] = useState(block.waffleChartData || block.waffleData);
   const [stackData, setStackData] = useState(block.stackPlotData);
+  const [pyramidData, setPyramidData] = useState(null);
   const { chartType, title } = block;
 
   useEffect(() => {
@@ -124,13 +136,23 @@ const ChartRenderer = ({ block }) => {
     setPieData(block.pieData);
     setWaffleData(block.waffleChartData || block.waffleData);
     setStackData(block.stackPlotData);
+    setPyramidData(null);
 
     const indicatorList = deriveIndicatorsFromBlock(block);
-    if (indicatorList.length === 0) {
+    const regionId = block.regionId ?? block.region_id;
+
+    if (block.chartType === 'barB') {
+      fetchPopulationPyramid(regionId).then((res) => {
+        if (hasPyramidPayload(res)) {
+          setPyramidData(res);
+        }
+      });
       return;
     }
 
-    const regionId = block.regionId ?? block.region_id;
+    if (indicatorList.length === 0) {
+      return;
+    }
 
     if (block.chartType === 'line') {
       fetchLineChart(indicatorList, regionId).then((res) => {
@@ -182,7 +204,7 @@ const ChartRenderer = ({ block }) => {
       chartProps = { ...chartProps, ...block.windPlotData };
       break;
     case 'barB':
-      chartProps = { ...chartProps, ...block.barBData };
+      chartProps = { ...chartProps, ...(pyramidData || { timelineLabels: [], categories: [], legendItems: ['Мужчины', 'Женщины'], timelineData: [] }) };
       break;
     case 'bar':
       chartProps = { ...chartProps, ...block.barData };

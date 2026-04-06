@@ -7,7 +7,7 @@ const TABLE_ENDPOINTS = {
   indicators: "indicators",
   data_sources: "data_sources",
   indicator_values: "indicator_values",
-  population_age_sex: "population",
+  population_age_sex: "population_age_sex",
   regional_programs: "regional_programs",
   program_regions: "program_regions",
   events: "events",
@@ -44,6 +44,27 @@ export const getTableCount = async (tableKey) => {
   return fetchApi(`${endpoint}/get_count`);
 };
 
+export const getTableCountFromChunks = async (tableKey, chunkSize = 500) => {
+  let offset = 0;
+  let total = 0;
+
+  while (true) {
+    const chunk = await getTableChunk(tableKey, chunkSize, offset);
+    if (!Array.isArray(chunk) || chunk.length === 0) {
+      break;
+    }
+
+    total += chunk.length;
+    if (chunk.length < chunkSize) {
+      break;
+    }
+
+    offset += chunkSize;
+  }
+
+  return total;
+};
+
 export const getUploadIndicators = async () => fetchApi("data/upload/indicators");
 
 export const uploadDataFile = async ({ file, indicatorKey }) => {
@@ -56,3 +77,8 @@ export const uploadDataFile = async ({ file, indicatorKey }) => {
     body: formData,
   });
 };
+
+export const deleteIndicatorValueById = async (id) =>
+  fetchApi(`indicator_values/delete?id=${encodeURIComponent(String(id))}`, {
+    method: "DELETE",
+  });

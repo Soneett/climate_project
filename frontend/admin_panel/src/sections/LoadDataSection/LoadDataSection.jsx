@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import SectionBar from "../../components/SectionBar/SectionBar";
 import { DB_TABLES } from "../../data/mockData";
-import { getUploadIndicators, uploadDataFile } from "../../services/api";
+import { deleteIndicatorValueById, getUploadIndicators, uploadDataFile } from "../../services/api";
 import styles from "./LoadDataSection.module.scss";
 
 const REGIONS_LIST = [
@@ -10,21 +10,91 @@ const REGIONS_LIST = [
 
 const DATA_SOURCES_LIST = ["МЧС", "Росстат",];
 
-function TableManageCard({ table }) {
+function TableManageCard({ table, indicatorOptions }) {
+  const [indicatorIdToDelete, setIndicatorIdToDelete] = useState("");
+  const [indicatorKey, setIndicatorKey] = useState("");
+  const [file, setFile] = useState(null);
+  const [status, setStatus] = useState("");
+
+  async function handleDeleteIndicator() {
+    if (table.key !== "indicator_values" || !indicatorIdToDelete) {
+      setStatus("Удаление отдельных показателей доступно для indicator_values.");
+      return;
+    }
+
+    try {
+      await deleteIndicatorValueById(indicatorIdToDelete);
+      setStatus(`Показатель id=${indicatorIdToDelete} удалён из БД.`);
+      setIndicatorIdToDelete("");
+    } catch (error) {
+      console.error("Ошибка удаления показателя:", error);
+      setStatus("Не удалось удалить показатель. Проверьте ID.");
+    }
+  }
+
+  async function handleUploadIndicator() {
+    if (!file || !indicatorKey) {
+      setStatus("Выберите парсер и файл.");
+      return;
+    }
+
+    try {
+      const result = await uploadDataFile({ file, indicatorKey });
+      setStatus(`Данные загружены: ${result.uploaded}, пропущено: ${result.skipped}.`);
+      setFile(null);
+      setIndicatorKey("");
+    } catch (error) {
+      console.error("Ошибка загрузки показателя:", error);
+      setStatus("Не удалось загрузить файл показателя.");
+    }
+  }
+
   return (
     <div className={styles.manageCard}>
       <h3 className={styles.manageCardTitle}>{table.labelRu}</h3>
       <div className={styles.manageActions}>
         <button className={styles.actionBtn} type="button">➕ Новая запись</button>
         <button className={styles.actionBtn} type="button">✏️ Изменить запись</button>
-        <button className={styles.actionBtn} type="button">⬆️ Загрузить данные</button>
-        <button className={`${styles.actionBtn} ${styles.actionBtnDanger}`} type="button">🗑 Удалить таблицу</button>
+
+        <select
+          className={styles.selector}
+          value={indicatorKey}
+          onChange={(e) => setIndicatorKey(e.target.value)}
+          aria-label="Выберите парсер"
+        >
+          <option value="">Выберите парсер</option>
+          {indicatorOptions.map((option) => (
+            <option key={option.key} value={option.key}>{option.label}</option>
+          ))}
+        </select>
+
+        <label className={styles.fileLabel}>
+          <input
+            type="file"
+            accept=".pdf,.xlsx,.xls"
+            className={styles.fileInput}
+            onChange={(e) => setFile(e.target.files?.[0] || null)}
+          />
+          <span className={styles.fileLabelText}>⬆️ {file ? file.name : "Файл показателя"}</span>
+        </label>
+
+        <button className={styles.actionBtn} type="button" onClick={handleUploadIndicator}>⬆️ Загрузить показатель</button>
+
+        <input
+          type="number"
+          placeholder="ID показателя"
+          className={styles.selector}
+          value={indicatorIdToDelete}
+          onChange={(e) => setIndicatorIdToDelete(e.target.value)}
+        />
+        <button className={`${styles.actionBtn} ${styles.actionBtnDanger}`} type="button" onClick={handleDeleteIndicator}>🗑 Удалить показатель</button>
       </div>
+      {status && <p>{status}</p>}
     </div>
   );
 }
 
-function TablesManagePart() {
+function TablesManagePart({ indicatorOptions }) {
   const [openTableKey, setOpenTableKey] = useState(null);
 
   function handleToggle(key) {
@@ -43,7 +113,7 @@ function TablesManagePart() {
             >
               {table.labelEn}
             </button>
-            {openTableKey === table.key && <TableManageCard table={table} />}
+            {openTableKey === table.key && <TableManageCard table={table} indicatorOptions={indicatorOptions} />}
           </div>
         ))}
       </div>
@@ -51,12 +121,11 @@ function TablesManagePart() {
   );
 }
 
-function ChartsUploadPart() {
+function ChartsUploadPart({ indicatorOptions }) {
   const [region, setRegion] = useState("");
   const [indicatorKey, setIndicatorKey] = useState("");
   const [source, setSource] = useState("");
   const [file, setFile] = useState(null);
-  const [indicatorOptions, setIndicatorOptions] = useState([]);
   const [uploadStatus, setUploadStatus] = useState("");
   const [isUploading, setIsUploading] = useState(false);
 
@@ -66,23 +135,6 @@ function ChartsUploadPart() {
     () => indicatorOptions.find((item) => item.key === indicatorKey)?.label || "",
     [indicatorKey, indicatorOptions]
   );
-
-  useEffect(() => {
-    let isMounted = true;
-    getUploadIndicators()
-      .then((response) => {
-        if (isMounted && Array.isArray(response)) {
-          setIndicatorOptions(response);
-        }
-      })
-      .catch((error) => {
-        console.error("Не удалось загрузить список парсеров:", error);
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   function handleFileChange(e) {
     setFile(e.target.files[0] || null);
@@ -181,6 +233,25 @@ function ChartsUploadPart() {
 }
 
 export default function LoadDataSection({ role }) {
+  const [indicatorOptions, setIndicatorOptions] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    getUploadIndicators()
+      .then((response) => {
+        if (isMounted && Array.isArray(response)) {
+          setIndicatorOptions(response);
+        }
+      })
+      .catch((error) => {
+        console.error("Не удалось загрузить список парсеров:", error);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <div className={styles.section}>
       <SectionBar title="Загрузка и обновление данных таблиц" />
@@ -188,13 +259,13 @@ export default function LoadDataSection({ role }) {
       <div className={styles.content}>
         {role === "admin" && (
           <div className={styles.part}>
-            <TablesManagePart />
+            <TablesManagePart indicatorOptions={indicatorOptions} />
           </div>
         )}
 
         <div className={styles.part}>
           <SectionBar title="Загрузка и обновление данных графиков" />
-          <ChartsUploadPart />
+          <ChartsUploadPart indicatorOptions={indicatorOptions} />
         </div>
       </div>
     </div>
